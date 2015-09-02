@@ -21,7 +21,8 @@ public class SilkSpawnersShopAddonStorageImpl {
     }
 
     private class SilkSpawnersCleanupRunner implements Runnable {
-        public SilkSpawnersCleanupRunner() {}
+        public SilkSpawnersCleanupRunner() {
+        }
 
         @Override
         public void run() {

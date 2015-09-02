@@ -131,9 +131,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         FileConfiguration config = getConfig();
         config.options().header("Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB");
         config.addDefault("currencySign", "$");
-        List<String> tempAllowedActions = new ArrayList<>();
-        tempAllowedActions.add(Action.RIGHT_CLICK_BLOCK.toString());
-        config.addDefault("allowedActions", tempAllowedActions);
+        List<String> tempStringAllowedActions = new ArrayList<>();
+        tempStringAllowedActions.add(Action.RIGHT_CLICK_BLOCK.toString());
+        config.addDefault("allowedActions", tempStringAllowedActions);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
         config.addDefault("mongoDB.port", 27017);
@@ -154,12 +154,12 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         // Load values
         setCurrencySign(config.getString("currencySign"));
-        tempAllowedActions = config.getStringList("allowedActions");
-        ArrayList<Action> _tempAllowedActions = new ArrayList<>();
-        for (String allowedAction : tempAllowedActions) {
-            _tempAllowedActions.add(Action.valueOf(allowedAction));
+        tempStringAllowedActions = config.getStringList("allowedActions");
+        ArrayList<Action> tempAllowedActions = new ArrayList<>();
+        for (String allowedAction : tempStringAllowedActions) {
+            tempAllowedActions.add(Action.valueOf(allowedAction));
         }
-        setAllowedActions(_tempAllowedActions);
+        setAllowedActions(tempAllowedActions);
     }
 
     /**
