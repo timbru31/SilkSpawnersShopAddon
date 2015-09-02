@@ -128,8 +128,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         String mob = doc.getString("mob");
         double price = doc.getDouble("price");
         SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(doc.getString("mode"));
-        loc = new Location(plugin.getServer().getWorld(world), x, y, z);
-        SilkSpawnersShop shop = new SilkSpawnersShop(loc, mode, mob, price, UUID.fromString(shopId));
+        SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, mode, mob, price, UUID.fromString(shopId));
         cachedShops.add(shop);
         return shop;
     }

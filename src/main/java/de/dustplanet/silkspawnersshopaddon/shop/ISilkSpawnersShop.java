@@ -23,4 +23,20 @@ public interface ISilkSpawnersShop {
     UUID getId();
 
     void setId(UUID id);
+
+    double getX();
+
+    void setX(double x);
+
+    double getY();
+
+    void setY(double y);
+
+    double getZ();
+
+    void setZ(double z);
+
+    String getWorld();
+
+    void setWorld(String world);
 }

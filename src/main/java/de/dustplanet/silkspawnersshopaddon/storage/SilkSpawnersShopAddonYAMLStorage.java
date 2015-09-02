@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -84,8 +83,11 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         ArrayList<SilkSpawnersShop> shops = new ArrayList<>();
         for (String shopID : shopList) {
             List<String> rawShop = shopConfiguration.getStringList(shopID);
-            Location loc = new Location(plugin.getServer().getWorld(rawShop.get(0)), Double.valueOf(rawShop.get(1)), Double.valueOf(rawShop.get(2)), Double.valueOf(rawShop.get(3)));
-            SilkSpawnersShop shop = new SilkSpawnersShop(loc, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5), Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
+            String world = rawShop.get(0);
+            double x= Double.valueOf(rawShop.get(1));
+            double y = Double.valueOf(rawShop.get(2));
+            double z = Double.valueOf(rawShop.get(3));
+            SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5), Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
             shops.add(shop);
         }
         return shops;

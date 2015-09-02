@@ -133,8 +133,7 @@ implements ISilkSpawnersShopAddonStorage {
                     y = rs.getInt("y");
                     z = rs.getInt("z");
                     world = rs.getString("world");
-                    loc = new Location(plugin.getServer().getWorld(world), x, y, z);
-                    SilkSpawnersShop shop = new SilkSpawnersShop(loc, mode, mob, price, shopId);
+                    SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, mode, mob, price, shopId);
                     cachedShops.add(shop);
                     return shop;
                 }
