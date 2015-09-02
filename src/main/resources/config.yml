@@ -1,0 +1,22 @@
+# Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB
+currencySign: '$'
+allowedActions:
+- LEFT_CLICK_BLOCK
+storageMethod: 'YAML'
+mongoDB:
+  host: 'localhost'
+  port: 27017
+  user: ''
+  pass: ''
+  database: 'silkspawners'
+  collection: 'shops'
+MySQL:
+  host: 'localhost'
+  port: 3306
+  user: 'root'
+  pass: ''
+  database: 'shops'
+HSQLDB:
+  user: 'SA'
+  pass: ''
+  database: 'shops.db'

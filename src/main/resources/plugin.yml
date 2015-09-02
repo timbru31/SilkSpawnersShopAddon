@@ -1,0 +1,14 @@
+name: SilkSpawnersShopAddon
+author: xGhOsTkiLLeRx
+main: de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon
+version: ${project.version}-b${BUILD_NUMBER}
+url: http://FIXME
+description: A sign shop for SilkSpawners
+permissions:
+    silkspawners.createshop:
+        description: Grants the ability to create a shop
+        default: op
+    silkspawners.destroyshop:
+        description: Grants the ability to destroy a shop
+        default: op
+depend: [SilkSpawners, Vault]

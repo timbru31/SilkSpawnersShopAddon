@@ -1,0 +1,163 @@
+package de.dustplanet.silkspawnersshopaddon.shop;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
+import de.dustplanet.silkspawnersshopaddon.storage.ISilkSpawnersShopAddonStorage;
+import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonHSQLDBStorage;
+import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMongoStorage;
+import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMySQLStorage;
+import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonYAMLStorage;
+import de.dustplanet.util.SilkUtil;
+
+public class SilkSpawnersShopManager {
+    private SilkUtil su;
+    private SilkSpawnersShopAddon plugin;
+    private ISilkSpawnersShopAddonStorage storage;
+
+    public SilkSpawnersShopManager(SilkSpawnersShopAddon plugin) {
+        this.plugin = plugin;
+        this.su = plugin.getSilkUtil();
+        String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase();
+        switch (storageMethod) {
+        case "YML":
+        case "YAML":
+            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+            break;
+        case "MONGODB":
+        case "MONGO":
+            setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
+            break;
+        case "HSQLDB":
+            setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
+            break;
+        case "MYSQL":
+            setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
+            break;
+        default:
+            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+            break;
+        }
+    }
+
+    public ISilkSpawnersShopAddonStorage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(ISilkSpawnersShopAddonStorage storage) {
+        this.storage = storage;
+    }
+
+    public boolean removeShop(SilkSpawnersShop shop) {
+        if (shop == null) {
+            return false;
+        }
+        return storage.removeShop(shop);
+    }
+
+    public boolean addShop(SilkSpawnersShop shop) {
+        if (shop == null) {
+            return false;
+        }
+        return storage.addShop(shop);
+    }
+
+    public boolean isShop(Sign sign) {
+        if (sign == null) {
+            return false;
+        }
+        return storage.isShop(sign);
+    }
+
+    public SilkSpawnersShop getShop(Sign sign) {
+        return storage.getShop(sign);
+    }
+
+    public void handleShopInteraction(Player player, Sign sign, boolean hasItem, ItemStack item) {
+        SilkSpawnersShop shop = getShop(sign);
+        SilkspawnersShopMode mode = shop.getMode();
+        switch (mode) {
+        case BUY:
+            handleBuy(player, shop);
+            break;
+        case SELL:
+            handleSell(player, shop, hasItem, item);
+            break;
+        default:
+            plugin.getServer().getLogger()
+            .warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
+            removeShop(shop);
+            break;
+        }
+    }
+
+    public void handleBuy(Player player, SilkSpawnersShop shop) {
+        String mob = shop.getMob();
+        double price = shop.getPrice();
+        short entityID = su.name2Eid.get(mob);
+        if (!plugin.getEcon().has(player, price)) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.notEnoughMoney")));
+            return;
+        }
+        if (player.getInventory().firstEmpty() == -1) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.inventoryFull")));
+            return;
+        }
+        plugin.getEcon().withdrawPlayer(player, price);
+        mob = su.getCreatureName(entityID);
+        player.getInventory()
+        .addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(su.eid2MobID.get(entityID)), 1, false));
+        String priceString = plugin.getCurrencySign() + Double.toString(price);
+        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.success").replace("%creature%", mob).replace("%price%", priceString)));
+    }
+
+    public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
+        String mob = shop.getMob();
+        double price = shop.getPrice();
+        short entityID = su.name2Eid.get(mob);
+        if (!hasItem || !(item.getType() == Material.MOB_SPAWNER)) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noSpawnerInHand")));
+            return;
+        }
+        short entityIDInHand = su.getStoredSpawnerItemEntityID(item);
+        String creatureName = su.getCreatureName(entityID);
+        if (entityIDInHand != entityID) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.notTheSameMob").replace("%creature%", creatureName)));
+            return;
+        }
+        plugin.getEcon().depositPlayer(player, price);
+        player.setItemInHand(null);
+        String priceString = plugin.getCurrencySign() + Double.toString(price);
+        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.success").replace("%creature%", creatureName).replace("%price%", priceString)));
+    }
+
+    public boolean createShop(String[] lines, Sign sign, Player player) {
+        SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(lines[1]);
+        if (SilkspawnersShopMode.isValidMode(mode)) {
+            String mob = lines[2].toLowerCase();
+            if (su.isKnown(mob)) {
+                String priceString = lines[3];
+                try {
+                    double price = Double.parseDouble(priceString);
+                    SilkSpawnersShop shop = new SilkSpawnersShop(sign, mode, mob, price);
+                    if (addShop(shop)) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.success")));
+                        return true;
+                    }
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.error")));
+                } catch (NullPointerException | NumberFormatException e) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
+                }
+            } else {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMob")));
+            }
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMode")));
+        }
+        return false;
+    }
+}
