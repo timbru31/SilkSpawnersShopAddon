@@ -106,7 +106,6 @@ implements ISilkSpawnersShopAddonStorage {
         // Try to find in cache
         for (SilkSpawnersShop shop : cachedShops) {
             if (shop.getLocation().equals(sign.getLocation())) {
-                System.out.println("found in cache");
                 return shop;
             }
         }

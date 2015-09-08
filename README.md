@@ -30,7 +30,7 @@ Please see [LICENSE.md](LICENSE.md) for more information.
 # Valid storage methods are YAML, MONGODB, MYSQL and SQLITE
 currencySign: '$'
 allowedActions:
-- LEFT_CLICK_BLOCK
+- RIGHT_CLICK_BLOCK
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'

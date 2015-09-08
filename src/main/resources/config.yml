@@ -1,7 +1,7 @@
 # Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB
 currencySign: '$'
 allowedActions:
-- LEFT_CLICK_BLOCK
+- RIGHT_CLICK_BLOCK
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'
