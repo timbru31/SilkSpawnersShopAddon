@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.dustplanet</groupId>
   <artifactId>SilkSpawnersShopAddon</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>SilkSpawnersShopAddon</name>
   <description>A sign shop for SilkSpawners</description>
-  <url></url>
+  <url />
 
   <!-- Encode in UTF-8 -->
   <properties>
@@ -161,7 +160,7 @@
   <scm>
     <url>https://github.com/timbru31/SilkSpawnersShopAddon</url>
     <connection>scm:git:git://github.com/timbru31/SilkSpawnersShopAddon.git</connection>
-    <tag>master</tag>
+    <tag>_+SilkSpawnersShopAddon-0.0.1</tag>
     <developerConnection>scm:git:git@github.com:timbru31/SilkSpawnersShopAddon.git</developerConnection>
   </scm>
 
