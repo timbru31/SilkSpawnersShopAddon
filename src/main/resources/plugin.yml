@@ -2,7 +2,7 @@ name: SilkSpawnersShopAddon
 author: xGhOsTkiLLeRx
 main: de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon
 version: ${project.version}
-url: https://www.spigotmc.org/resources/silkspawnersshopaddon.12028/
+url: https://www.spigotmc.org/resources/12028/
 description: A sign shop for SilkSpawners
 permissions:
     silkspawners.createshop:

@@ -59,7 +59,7 @@ Both permissions are included in the silkspawners.* wildcard permission.
 | silkspawners.destroyshop | Grants the ability to destroy a shop |
 
 ## Support
-For support visit the dev.bukkit.org page: https://www.spigotmc.org/resources/silkspawnersshopaddon.12028/
+For support visit the dev.bukkit.org page: https://www.spigotmc.org/resources/12028/
 
 ## Usage statistics
 [![MCStats](http://mcstats.org/signature/SilkSpawnersShopAddon.png)](http://mcstats.org/plugin/SilkSpawnersShopAddon)
