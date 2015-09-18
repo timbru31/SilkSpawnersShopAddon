@@ -8,7 +8,7 @@ A valid sing looks like this.
 [SilkSpawners]
 BUY / SELL
 mob (name or ID)
-price
+price (only numbers)
 ````
 * Shops are stored via 4 different storage p
 roviders:
