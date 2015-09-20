@@ -104,7 +104,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         localization.addDefault("creating.error", "&6[SilkSpawners] &4There was an error creating the shop.");
         localization.addDefault("creating.invalidMob", "&6[SilkSpawners] &4The given mob is invald.");
         localization.addDefault("creating.invalidMode", "&6[SilkSpawners] &4The given shop mode is invalid.");
-        localization.addDefault("creating.invalidPrice", "&6[SilkSpawners] &4The given price is invalid.");
+        localization.addDefault("creating.invalidPrice", "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
         localization.addDefault("creating.success", "&6[SilkSpawners] &2You created the shop successfully.");
         localization.addDefault("noPermission.building", "&6[SilkSpawners] &4You do not have the permission to create a shop.");
         localization.addDefault("noPermission.destroying", "&6[SilkSpawners] &4You do not have the permission to destroy a shop.");
@@ -113,6 +113,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         localization.addDefault("selling.noSpawnerInHand", "&6[SilkSpawners] &4You do not have a spawner in your hand.");
         localization.addDefault("selling.notTheSameMob", "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4.");
         localization.addDefault("selling.success", "&6[SilkSpawners] &2You sold a(n) &e%creature% spawner &2for &e%price%&2.");
+        localization.addDefault("updating.error", "&6[SilkSpawners] &4There was an error updating the shop.");
+        localization.addDefault("updating.success", "&6[SilkSpawners] &2The shop was updated successfully!");
         localization.options().copyDefaults(true);
         saveLocalization();
     }

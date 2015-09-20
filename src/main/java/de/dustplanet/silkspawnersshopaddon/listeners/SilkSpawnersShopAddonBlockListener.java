@@ -46,14 +46,16 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
 
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
+        // Mac sends weird \uF700 and \uF701 chars
         String[] lines = event.getLines();
-        if (lines[0].equalsIgnoreCase("[SilkSpawners]")) {
+        if (ChatColor.stripColor(lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", "")).equalsIgnoreCase("[SilkSpawners]")) {
             Player player = event.getPlayer();
             if (player.hasPermission("silkspawners.createshop")) {
                 Sign sign = (Sign) event.getBlock().getState();
-                if (shopManager.createShop(lines, sign, player)) {
+                if (shopManager.createOrUpdateShop(lines, sign, player)) {
                     event.setLine(0, ChatColor.BLUE + "[SilkSpawners]");
-                    event.setLine(3, plugin.getCurrencySign() + lines[3]);
+                    // Strip everything else than numbers
+                    event.setLine(3, plugin.getCurrencySign() + lines[3].replaceAll("[^0-9.]", ""));
                 } else {
                     event.setLine(0, ChatColor.RED + "[SilkSpawners]");
                 }

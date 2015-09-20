@@ -110,8 +110,11 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
 
     @Override
     public boolean updateShop(SilkSpawnersShop shop) {
-        // TODO Auto-generated method stub
-        return false;
+        int index = cachedShops.indexOf(shop);
+        if (index != -1) {
+            cachedShops.set(index, shop);
+        }
+        return saveToYAML(shop, true);
     }
 
     @Override
