@@ -5,10 +5,20 @@ version: ${project.version}
 url: https://www.spigotmc.org/resources/12028/
 description: A sign shop for SilkSpawners
 permissions:
-    silkspawners.createshop:
-        description: Grants the ability to create a shop
-        default: op
-    silkspawners.destroyshop:
-        description: Grants the ability to destroy a shop
-        default: op
+  silkspawners.createshop:
+    description: Grants the ability to create a shop
+    default: op
+  silkspawners.destroyshop:
+    description: Grants the ability to destroy a shop
+    default: op
+  silkspawners.use.*:
+    children:
+      silkspawners.use.buy: true
+      silkspawners.use.sell: true
+  silkspawners.use.buy:
+    description: Allows you to use buy shops
+    default: true
+  silkspawners.use.sell:
+    description: Allows you to use sell shops
+    default: true
 depend: [SilkSpawners, Vault]

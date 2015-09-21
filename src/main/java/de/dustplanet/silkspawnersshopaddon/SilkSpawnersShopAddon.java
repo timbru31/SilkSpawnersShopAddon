@@ -107,7 +107,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         localization.addDefault("creating.invalidPrice", "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
         localization.addDefault("creating.success", "&6[SilkSpawners] &2You created the shop successfully.");
         localization.addDefault("noPermission.building", "&6[SilkSpawners] &4You do not have the permission to create a shop.");
+        localization.addDefault("noPermission.buy", "&6[SilkSpawners] &4You do not have the permission to buy spawners.");
         localization.addDefault("noPermission.destroying", "&6[SilkSpawners] &4You do not have the permission to destroy a shop.");
+        localization.addDefault("noPermission.sell", "&6[SilkSpawners] &4You do not have the permission to sell spawners.");
         localization.addDefault("removing.error", "&6[SilkSpawners] &4There was an error removing the shop.");
         localization.addDefault("removing.success", "&6[SilkSpawners] &2You removed the shop successfully.");
         localization.addDefault("selling.noSpawnerInHand", "&6[SilkSpawners] &4You do not have a spawner in your hand.");
@@ -183,8 +185,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
     // If no config is found, copy the default one(s)!
     public void copy(String yml, File file) {
-        try (OutputStream out = new FileOutputStream(file);
-                InputStream in = getResource(yml)) {
+        try (OutputStream out = new FileOutputStream(file); InputStream in = getResource(yml)) {
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {

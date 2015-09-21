@@ -57,6 +57,9 @@ Both permissions are included in the silkspawners.* wildcard permission.
 |:----------:|:----------:|
 | silkspawners.createshop | Grants the ability to create a shop |
 | silkspawners.destroyshop | Grants the ability to destroy a shop |
+| silkspawners.use.* | Allows to interact with buy and sell shops |
+| silkspawners.use.buy | Allows to interact with buy shops |
+| silkspawners.use.sell | Allows to interact with sell shops |
 
 ## Support
 For support visit the dev.bukkit.org page: https://www.spigotmc.org/resources/12028/

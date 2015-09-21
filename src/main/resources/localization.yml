@@ -10,7 +10,9 @@ creating:
   success: "&6[SilkSpawners] &2You created the shop successfully."
 noPermission:
   building: "&6[SilkSpawners] &4You do not have the permission to create a shop."
+  buy: "&6[SilkSpawners] &4You do not have the permission to buy spawners."
   destroying: "&6[SilkSpawners] &4You do not have the permission to destroy a shop."
+  sell: "&6[SilkSpawners] &4You do not have the permission to sell spawners."
 removing:
   error: "&6[SilkSpawners] &4There was an error removing the shop."
   success: "&6[SilkSpawners] &2You removed the shop successfully."

@@ -24,23 +24,23 @@ public class SilkSpawnersShopManager {
         this.su = plugin.getSilkUtil();
         String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase();
         switch (storageMethod) {
-        case "YML":
-        case "YAML":
-            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-            break;
-        case "MONGODB":
-        case "MONGO":
-            setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
-            break;
-        case "HSQLDB":
-            setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
-            break;
-        case "MYSQL":
-            setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
-            break;
-        default:
-            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-            break;
+            case "YML":
+            case "YAML":
+                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+                break;
+            case "MONGODB":
+            case "MONGO":
+                setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
+                break;
+            case "HSQLDB":
+                setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
+                break;
+            case "MYSQL":
+                setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
+                break;
+            default:
+                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+                break;
         }
     }
 
@@ -73,7 +73,6 @@ public class SilkSpawnersShopManager {
         return storage.addShop(shop);
     }
 
-
     public boolean updateShop(SilkSpawnersShop shop) {
         if (shop == null) {
             return false;
@@ -96,67 +95,74 @@ public class SilkSpawnersShopManager {
         SilkSpawnersShop shop = getShop(sign);
         SilkspawnersShopMode mode = shop.getMode();
         switch (mode) {
-        case BUY:
-            handleBuy(player, shop);
-            break;
-        case SELL:
-            handleSell(player, shop, hasItem, item);
-            break;
-        default:
-            plugin.getServer().getLogger()
-            .warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
-            removeShop(shop);
-            break;
+            case BUY:
+                handleBuy(player, shop);
+                break;
+            case SELL:
+                handleSell(player, shop, hasItem, item);
+                break;
+            default:
+                plugin.getServer().getLogger().warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
+                removeShop(shop);
+                break;
         }
     }
 
     public void handleBuy(Player player, SilkSpawnersShop shop) {
-        String mob = shop.getMob();
-        double price = shop.getPrice();
-        short entityID = su.name2Eid.get(mob);
-        if (!plugin.getEcon().has(player, price)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.notEnoughMoney")));
-            return;
+        if (player.hasPermission("silkspawners.use.buy")) {
+            String mob = shop.getMob();
+            double price = shop.getPrice();
+            short entityID = su.name2Eid.get(mob);
+            if (!plugin.getEcon().has(player, price)) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.notEnoughMoney")));
+                return;
+            }
+            if (player.getInventory().firstEmpty() == -1) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.inventoryFull")));
+                return;
+            }
+            plugin.getEcon().withdrawPlayer(player, price);
+            mob = su.getCreatureName(entityID);
+            player.getInventory().addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(su.eid2MobID.get(entityID)), 1, false));
+            String priceString = plugin.getCurrencySign() + Double.toString(price);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.success").replace("%creature%", mob).replace("%price%", priceString)));
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.buy")));
         }
-        if (player.getInventory().firstEmpty() == -1) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.inventoryFull")));
-            return;
-        }
-        plugin.getEcon().withdrawPlayer(player, price);
-        mob = su.getCreatureName(entityID);
-        player.getInventory()
-        .addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(su.eid2MobID.get(entityID)), 1, false));
-        String priceString = plugin.getCurrencySign() + Double.toString(price);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.success").replace("%creature%", mob).replace("%price%", priceString)));
     }
 
     public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
-        String mob = shop.getMob();
-        double price = shop.getPrice();
-        short entityID = su.name2Eid.get(mob);
-        if (!hasItem || !(item.getType() == Material.MOB_SPAWNER)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noSpawnerInHand")));
-            return;
-        }
-        short entityIDInHand = su.getStoredSpawnerItemEntityID(item);
-        String creatureName = su.getCreatureName(entityID);
-        if (entityIDInHand != entityID) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.notTheSameMob").replace("%creature%", creatureName)));
-            return;
-        }
-        plugin.getEcon().depositPlayer(player, price);
-        ItemStack itemInHand = player.getItemInHand();
-        if (itemInHand.getAmount() == 1) {
-            player.setItemInHand(null);
+        if (player.hasPermission("silkspawners.use.sell")) {
+            String mob = shop.getMob();
+            double price = shop.getPrice();
+            short entityID = su.name2Eid.get(mob);
+            if (!hasItem || !(item.getType() == Material.MOB_SPAWNER)) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noSpawnerInHand")));
+                return;
+            }
+            short entityIDInHand = su.getStoredSpawnerItemEntityID(item);
+            String creatureName = su.getCreatureName(entityID);
+            if (entityIDInHand != entityID) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.notTheSameMob").replace("%creature%", creatureName)));
+                return;
+            }
+            plugin.getEcon().depositPlayer(player, price);
+            ItemStack itemInHand = player.getItemInHand();
+            if (itemInHand.getAmount() == 1) {
+                player.setItemInHand(null);
+            } else {
+                itemInHand.setAmount(itemInHand.getAmount() - 1);
+            }
+            String priceString = plugin.getCurrencySign() + Double.toString(price);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.success").replace("%creature%", creatureName).replace("%price%", priceString)));
         } else {
-            itemInHand.setAmount(itemInHand.getAmount() - 1);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.sell")));
         }
-        String priceString = plugin.getCurrencySign() + Double.toString(price);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.success").replace("%creature%", creatureName).replace("%price%", priceString)));
     }
 
     public boolean createOrUpdateShop(String[] lines, Sign sign, Player player) {
         // Mac sends weird \uF700 and \uF701 chars
+
         boolean existingShop = isShop(sign);
         SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(lines[1].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""));
         if (SilkspawnersShopMode.isValidMode(mode)) {
