@@ -9,6 +9,7 @@ import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 public class SilkSpawnersShopAddonMySQLStorage extends SilkSpawnersShopAddonSQLStorage {
     public SilkSpawnersShopAddonMySQLStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
+        plugin.getLogger().info("Loading MySQL storage provider");
         String host = plugin.getConfig().getString("MySQL.host");
         int port = plugin.getConfig().getInt("MySQL.port");
         String user = plugin.getConfig().getString("MySQL.user");
@@ -26,6 +27,5 @@ public class SilkSpawnersShopAddonMySQLStorage extends SilkSpawnersShopAddonSQLS
             plugin.getLogger().severe("There was en error while connecting tothe MySQL database");
             e.printStackTrace();
         }
-        plugin.getLogger().info("Loading MySQL storage provider");
     }
 }

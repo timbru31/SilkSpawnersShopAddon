@@ -21,6 +21,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
 
     public SilkSpawnersShopAddonYAMLStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
+        plugin.getLogger().info("Loading yaml storage provider");
         shopConfiguration = new YamlConfiguration();
 
         shopFile = new File(plugin.getDataFolder(), "shops.yml");
@@ -34,7 +35,6 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         }
         // Try to load
         shopConfiguration = YamlConfiguration.loadConfiguration(shopFile);
-        plugin.getLogger().info("Loading yaml storage provider");
     }
 
     private boolean saveToYAML(SilkSpawnersShop shop, boolean save) {

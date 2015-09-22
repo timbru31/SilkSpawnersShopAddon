@@ -28,6 +28,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
 
     public SilkSpawnersShopAddonMongoStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
+        plugin.getLogger().info("Loading mongo storage provider");
         String host = plugin.getConfig().getString("mongoDB.host");
         int port = plugin.getConfig().getInt("mongoDB.port");
         String user = plugin.getConfig().getString("mongoDB.user");
@@ -43,16 +44,21 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         mongoClient.setWriteConcern(WriteConcern.SAFE);
         database = mongoClient.getDatabase(db);
         collection = database.getCollection(coll);
-        plugin.getLogger().info("Loading mongo storage provider");
     }
 
-    @Override
-    public boolean addShop(SilkSpawnersShop shop) {
+
+    private static Document createDocumentFromShop(SilkSpawnersShop shop) {
         Location shopLoc = shop.getLocation();
         Document loc = new Document("world", shopLoc.getWorld().getName());
         loc.append("x", shopLoc.getX()).append("y", shopLoc.getY()).append("z", shopLoc.getZ());
         Document doc = new Document("shopId", shop.getId().toString()).append("mode", shop.getMode().toString())
                 .append("mob", shop.getMob()).append("price", shop.getPrice()).append("location", loc);
+        return doc;
+    }
+
+    @Override
+    public boolean addShop(SilkSpawnersShop shop) {
+        Document doc = createDocumentFromShop(shop);
         try {
             collection.insertOne(doc);
             cachedShops.add(shop);
@@ -79,7 +85,12 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
 
     @Override
     public boolean updateShop(SilkSpawnersShop shop) {
-        // TODO Auto-generated method stub
+        Document doc = createDocumentFromShop(shop);
+        collection.updateOne(eq("shopId", shop.getId()), doc);
+        int index = cachedShops.indexOf(shop);
+        if (index != -1) {
+            cachedShops.set(index, shop);
+        }
         return false;
     }
 

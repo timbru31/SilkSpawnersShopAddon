@@ -11,6 +11,7 @@ import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 public class SilkSpawnersShopAddonHSQLDBStorage extends SilkSpawnersShopAddonSQLStorage {
     public SilkSpawnersShopAddonHSQLDBStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
+        plugin.getLogger().info("Loading HSQLDB storage provider");
         String user = plugin.getConfig().getString("HSQLDB.user");
         String pass = plugin.getConfig().getString("HSQLDB.pass");
         String db = plugin.getConfig().getString("HSQLDB.database");
@@ -28,6 +29,5 @@ public class SilkSpawnersShopAddonHSQLDBStorage extends SilkSpawnersShopAddonSQL
             plugin.getLogger().severe("There was en error while connecting the HSQLDB database");
             e.printStackTrace();
         }
-        plugin.getLogger().info("Loading HSQLDB storage provider");
     }
 }

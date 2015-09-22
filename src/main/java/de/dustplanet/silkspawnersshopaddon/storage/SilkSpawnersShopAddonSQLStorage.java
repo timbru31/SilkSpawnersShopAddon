@@ -62,8 +62,23 @@ implements ISilkSpawnersShopAddonStorage {
 
     @Override
     public boolean updateShop(SilkSpawnersShop shop) {
-        // TODO Auto-generated method stub
-        return false;
+        String query = "UPDATE SHOPS SET MODE = ?, MOB = ?, PRICE = ?, WHERE SHOPID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, shop.getMode().toString());
+            statement.setString(2, shop.getMob());
+            statement.setDouble(3, shop.getPrice());
+            statement.setString(4, shop.getId().toString());
+            statement.executeUpdate();
+            int index = cachedShops.indexOf(shop);
+            if (index != -1) {
+                cachedShops.set(index, shop);
+            }
+            return true;
+        } catch (SQLException e) {
+            plugin.getLogger().severe("There was an error updating the shop");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
