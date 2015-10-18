@@ -16,6 +16,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
+import de.dustplanet.silkspawnersshopaddon.commands.SilkSpawnersShopCommands;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonEntityListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonPlayerListener;
@@ -89,6 +90,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         pluginManager.registerEvents(blockListener, this);
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
+
+        // Load command
+        getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
 
         // Metrics
         try {

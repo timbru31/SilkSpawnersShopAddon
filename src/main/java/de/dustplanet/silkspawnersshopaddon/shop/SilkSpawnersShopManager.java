@@ -24,23 +24,23 @@ public class SilkSpawnersShopManager {
         this.su = plugin.getSilkUtil();
         String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase();
         switch (storageMethod) {
-            case "YML":
-            case "YAML":
-                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-                break;
-            case "MONGODB":
-            case "MONGO":
-                setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
-                break;
-            case "HSQLDB":
-                setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
-                break;
-            case "MYSQL":
-                setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
-                break;
-            default:
-                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-                break;
+        case "YML":
+        case "YAML":
+            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+            break;
+        case "MONGODB":
+        case "MONGO":
+            setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
+            break;
+        case "HSQLDB":
+            setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
+            break;
+        case "MYSQL":
+            setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
+            break;
+        default:
+            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+            break;
         }
     }
 
@@ -95,16 +95,16 @@ public class SilkSpawnersShopManager {
         SilkSpawnersShop shop = getShop(sign);
         SilkspawnersShopMode mode = shop.getMode();
         switch (mode) {
-            case BUY:
-                handleBuy(player, shop);
-                break;
-            case SELL:
-                handleSell(player, shop, hasItem, item);
-                break;
-            default:
-                plugin.getServer().getLogger().warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
-                removeShop(shop);
-                break;
+        case BUY:
+            handleBuy(player, shop);
+            break;
+        case SELL:
+            handleSell(player, shop, hasItem, item);
+            break;
+        default:
+            plugin.getServer().getLogger().warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
+            removeShop(shop);
+            break;
         }
     }
 
@@ -162,7 +162,6 @@ public class SilkSpawnersShopManager {
 
     public boolean createOrUpdateShop(String[] lines, Sign sign, Player player) {
         // Mac sends weird \uF700 and \uF701 chars
-
         boolean existingShop = isShop(sign);
         SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(lines[1].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""));
         if (SilkspawnersShopMode.isValidMode(mode)) {
@@ -180,11 +179,10 @@ public class SilkSpawnersShopManager {
                         shop.setPrice(price);
                         if (updateShop(shop)) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.success")));
-                        } else {
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.error")));
-                            removeShop(shop);
+                            return true;
                         }
-                        return true;
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.error")));
+                        removeShop(shop);
                     }
                     shop = new SilkSpawnersShop(sign, mode, mob, price);
                     if (addShop(shop)) {
