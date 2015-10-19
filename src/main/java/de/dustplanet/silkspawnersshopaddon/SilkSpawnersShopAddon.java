@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 import de.dustplanet.silkspawnersshopaddon.commands.SilkSpawnersShopCommands;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockListener;
@@ -97,6 +98,13 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         // Metrics
         try {
             Metrics metrics = new Metrics(this);
+            Graph graph = metrics.createGraph("storage provider");
+            graph.addPlotter(new Metrics.Plotter(getConfig().getString("storageMethod").toUpperCase()) {
+                @Override
+                public int getValue() {
+                    return 1;
+                }
+            });
             metrics.start();
         } catch (IOException e) {
             getLogger().info("Couldn't start Metrics, please report this!");
