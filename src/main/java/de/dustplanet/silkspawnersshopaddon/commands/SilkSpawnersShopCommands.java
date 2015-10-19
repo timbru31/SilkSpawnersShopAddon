@@ -2,6 +2,7 @@ package de.dustplanet.silkspawnersshopaddon.commands;
 
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -30,8 +31,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
             Player player = (Player) sender;
             if (player.hasPermission("silkspawners.editshop")) {
                 if (args.length != 2) {
-                    // message usage
-                    System.out.println("usage");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.commandUsage")));
                     return true;
                 }
                 Block block = player.getTargetBlock((Set<Material>) null, 6);
@@ -45,68 +45,54 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                         case "MODE":
                             SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(argument);
                             if (mode == null) {
-                                System.out.println("invalid mode");
-                                // message invalid mode
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMode")));
                             } else {
                                 shop.setMode(mode);
-                                System.out.println("new mode: " + mode.name());
-                                // message success
                             }
                             break;
                         case "MOB":
                             boolean knownMob = plugin.getSilkUtil().isKnown(argument);
                             if (!knownMob) {
-                                System.out.println("invalid mob");
-                                // message invalid mob
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMob")));
                             } else {
-                                System.out.println("new mob: " + argument);
                                 shop.setMob(argument);
-                                // message success
                             }
                             break;
                         case "PRICE":
                             try {
                                 double price = Double.parseDouble(argument.replaceAll("[^0-9.]", ""));
                                 shop.setPrice(price);
-                                System.out.println("new price "+ price);
-                                // message success
                             } catch(NumberFormatException e) {
-                                // message invalid price
-                                System.out.println("invalid price");
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
                             }
                             break;
                         default:
-                            // message the usage, unkown option
-                            System.out.println("unknown option");
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.commandUsage")));
                             change = false;
                             break;
                         }
                         if (change) {
                             if (shopManager.updateShop(shop)) {
-                                // success update
                                 sign.setLine(1, shop.getMode().toString());
                                 sign.setLine(2, shop.getMob());
                                 sign.setLine(3, plugin.getCurrencySign() + shop.getPrice());
                                 sign.update(true);
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.success")));
                             } else {
-                                // error update
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.error")));
                             }
                         }
                     } else {
-                        System.out.println("not a shop");
-                        // no shop
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
                     }
                 } else {
-                    System.out.println("no block in sight");
-                    // no block in sight
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
                 }
             } else {
-                System.out.println("no perms");
-                // message no perms
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermsission.edit")));
             }
         } else {
-            System.out.println("no console pls");
-            // message no console
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noConsole")));
         }
         return true;
     }
