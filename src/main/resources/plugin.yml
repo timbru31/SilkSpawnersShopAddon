@@ -4,6 +4,10 @@ main: de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon
 version: ${project.version}
 url: https://www.spigotmc.org/resources/12028/
 description: A sign shop for SilkSpawners
+commands:
+  silkspawnersshopaddon:
+    description: Used to edit shops, administrative command
+    aliases: [silkspawnersshop, silkspawnershop, sshop, ssshop, shop]
 permissions:
   silkspawners.createshop:
     description: Grants the ability to create a shop

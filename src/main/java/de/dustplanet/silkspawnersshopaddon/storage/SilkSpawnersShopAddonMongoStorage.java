@@ -86,12 +86,12 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
     @Override
     public boolean updateShop(SilkSpawnersShop shop) {
         Document doc = createDocumentFromShop(shop);
-        collection.updateOne(eq("shopId", shop.getId()), doc);
+        collection.replaceOne(eq("shopId", shop.getId().toString()), doc);
         int index = cachedShops.indexOf(shop);
         if (index != -1) {
             cachedShops.set(index, shop);
         }
-        return false;
+        return true;
     }
 
     @Override

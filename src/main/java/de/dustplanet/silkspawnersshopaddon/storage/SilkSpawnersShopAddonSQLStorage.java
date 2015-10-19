@@ -62,7 +62,7 @@ implements ISilkSpawnersShopAddonStorage {
 
     @Override
     public boolean updateShop(SilkSpawnersShop shop) {
-        String query = "UPDATE SHOPS SET MODE = ?, MOB = ?, PRICE = ?, WHERE SHOPID = ?";
+        String query = "UPDATE SHOPS SET MODE = ?, MOB = ?, PRICE = ? WHERE SHOPID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, shop.getMode().toString());
             statement.setString(2, shop.getMob());

@@ -4,7 +4,7 @@ buying:
   success: "&6[SilkSpawners] &2You bought a(n) &e%creature% spawner &2for &e%price%&2."
 creating:
   error: "&6[SilkSpawners] &4There was an error creating the shop."
-  invalidMob: "&6[SilkSpawners] &4The given mob is invald."
+  invalidMob: "&6[SilkSpawners] &4The given mob is invalid."
   invalidMode: "&6[SilkSpawners] &4The given shop mode is invalid."
   invalidPrice: "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!"
   success: "&6[SilkSpawners] &2You created the shop successfully."
@@ -12,6 +12,7 @@ noPermission:
   building: "&6[SilkSpawners] &4You do not have the permission to create a shop."
   buy: "&6[SilkSpawners] &4You do not have the permission to buy spawners."
   destroying: "&6[SilkSpawners] &4You do not have the permission to destroy a shop."
+  edit: "&6[SilkSpawners] &4You do not have the permission to edit a shop."
   sell: "&6[SilkSpawners] &4You do not have the permission to sell spawners."
 removing:
   error: "&6[SilkSpawners] &4There was an error removing the shop."
@@ -21,5 +22,8 @@ selling:
   notTheSameMob: "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4."
   success: "&6[SilkSpawners] &2You sold a(n) &e%creature% spawner &2for &e%price%&2."
 updating:
+  commandUsage: "&6[SilkSpawners] &eUsage for editing a shop: /shop mode|mob|price <newValue>"
   error: "&6[SilkSpawners] &4There was an error updating the shop."
+  noConsole: "&6[SilkSpawners] &4The console is not able to edit shops."
+  noShop: "&6[SilkSpawners] &4There is no shop in sight."
   success: "&6[SilkSpawners] &2The shop was updated successfully!"
