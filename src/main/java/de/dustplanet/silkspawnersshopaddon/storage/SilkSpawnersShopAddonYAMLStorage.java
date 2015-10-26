@@ -84,7 +84,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         for (String shopID : shopList) {
             List<String> rawShop = shopConfiguration.getStringList(shopID);
             String world = rawShop.get(0);
-            double x= Double.valueOf(rawShop.get(1));
+            double x = Double.valueOf(rawShop.get(1));
             double y = Double.valueOf(rawShop.get(2));
             double z = Double.valueOf(rawShop.get(3));
             SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5), Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));

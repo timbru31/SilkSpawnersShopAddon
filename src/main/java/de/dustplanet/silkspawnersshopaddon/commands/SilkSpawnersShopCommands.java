@@ -62,7 +62,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                             try {
                                 double price = Double.parseDouble(argument.replaceAll("[^0-9.]", ""));
                                 shop.setPrice(price);
-                            } catch(NumberFormatException e) {
+                            } catch (NumberFormatException e) {
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
                             }
                             break;

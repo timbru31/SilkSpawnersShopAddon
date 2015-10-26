@@ -9,7 +9,7 @@ public enum SilkspawnersShopMode {
         if (stringMode == null) {
             return null;
         }
-        switch(stringMode.toUpperCase()) {
+        switch (stringMode.toUpperCase()) {
         case "BUY":
             return BUY;
         case "SELL":
