@@ -2,6 +2,10 @@
 currencySign: '$'
 allowedActions:
 - RIGHT_CLICK_BLOCK
+invincibility:
+  burn: true
+  explode: true
+  ignite: true
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'

@@ -10,8 +10,7 @@ BUY / SELL
 mob (name or ID)
 price (only numbers)
 ````
-* Shops are stored via 4 different storage p
-roviders:
+* Shops are stored via 4 different storage providers:
   * yaml
   * mongoDB
   * MySQL
@@ -31,6 +30,10 @@ Please see [LICENSE.md](LICENSE.md) for more information.
 currencySign: '$'
 allowedActions:
 - RIGHT_CLICK_BLOCK
+invincibility:
+  burn: true
+  explode: true
+  ignite: true
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'
@@ -60,6 +63,13 @@ Both permissions are included in the silkspawners.* wildcard permission.
 | silkspawners.use.* | Allows to interact with buy and sell shops |
 | silkspawners.use.buy | Allows to interact with buy shops |
 | silkspawners.use.sell | Allows to interact with sell shops |
+| silkspawners.editshop | Allows you to edit shops via commands |
+
+
+## Commands
+| Command | Aliases | Description | Permission node |
+|:----------:|:----------:|:----------:|:----------:|
+| /silkspawnersshopaddon <mode OR mob OR price> <new value>| silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value | silkspawners.editshop |
 
 ## Support
 For support visit the dev.bukkit.org page: https://www.spigotmc.org/resources/12028/

@@ -3,6 +3,7 @@ package de.dustplanet.silkspawnersshopaddon.listeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,11 +23,9 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
         shopManager = plugin.getShopManager();
     }
 
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Block brokenBlock = event.getBlock();
-        if (brokenBlock.getType() == Material.SIGN_POST || brokenBlock.getType() == Material.WALL_SIGN) {
-            Sign sign = (Sign) brokenBlock.getState();
+    private boolean checkBlock(Block block, BlockBreakEvent event) {
+        if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
+            Sign sign = (Sign) block.getState();
             Player player = event.getPlayer();
             if (shopManager.isShop(sign)) {
                 if (player.hasPermission("silkspawners.destroyshop")) {
@@ -39,6 +38,21 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                 } else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.destroying")));
                     event.setCancelled(true);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Block brokenBlock = event.getBlock();
+        if (!checkBlock(brokenBlock, event)) {
+            for (BlockFace face : BlockFace.values()) {
+                Block attachedBlock = brokenBlock.getRelative(face);
+                if (checkBlock(attachedBlock, event)) {
+                    break;
                 }
             }
         }

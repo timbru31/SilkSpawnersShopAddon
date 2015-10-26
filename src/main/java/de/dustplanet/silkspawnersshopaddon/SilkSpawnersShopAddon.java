@@ -19,8 +19,8 @@ import org.mcstats.Metrics.Graph;
 
 import de.dustplanet.silkspawnersshopaddon.commands.SilkSpawnersShopCommands;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockListener;
-import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonEntityListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonPlayerListener;
+import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonProtectionListener;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.util.SilkUtil;
 import net.milkbowl.vault.economy.Economy;
@@ -87,7 +87,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
         SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(this);
-        SilkSpawnersShopAddonEntityListener entityListener = new SilkSpawnersShopAddonEntityListener(this);
+        SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(this);
         pluginManager.registerEvents(blockListener, this);
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
@@ -157,6 +157,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         List<String> tempStringAllowedActions = new ArrayList<>();
         tempStringAllowedActions.add(Action.RIGHT_CLICK_BLOCK.toString());
         config.addDefault("allowedActions", tempStringAllowedActions);
+        config.addDefault("invincibility.burn", true);
+        config.addDefault("invincibility.explode", true);
+        config.addDefault("invincibility.ignite", true);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
         config.addDefault("mongoDB.port", 27017);
