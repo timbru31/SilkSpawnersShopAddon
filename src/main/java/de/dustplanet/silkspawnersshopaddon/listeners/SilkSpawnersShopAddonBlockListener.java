@@ -23,8 +23,15 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
         shopManager = plugin.getShopManager();
     }
 
-    private boolean checkBlock(Block block, BlockBreakEvent event) {
-        if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
+    private boolean checkBlockFaces(Block block, BlockBreakEvent event, Material[] signMaterials) {
+        boolean match = false;
+        for (Material m : signMaterials) {
+            if (block.getType() == m) {
+                match = true;
+                break;
+            }
+        }
+        if (match) {
             Sign sign = (Sign) block.getState();
             Player player = event.getPlayer();
             if (shopManager.isShop(sign)) {
@@ -47,14 +54,19 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        // Check block itself
         Block brokenBlock = event.getBlock();
-        if (!checkBlock(brokenBlock, event)) {
-            for (BlockFace face : BlockFace.values()) {
+        if (!checkBlockFaces(brokenBlock, event, new Material[] {Material.WALL_SIGN, Material.SIGN_POST})) {
+            // Check attached blocks
+            for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = brokenBlock.getRelative(face);
-                if (checkBlock(attachedBlock, event)) {
+                if (checkBlockFaces(attachedBlock, event, new Material[] {Material.WALL_SIGN})) {
                     break;
                 }
             }
+            // Check block up (sign post)
+            Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
+            checkBlockFaces(attachedBlock, event, new Material[] {Material.SIGN_POST});
         }
     }
 
