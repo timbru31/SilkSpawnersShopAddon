@@ -89,7 +89,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
                 }
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermsission.edit")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.edit")));
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noConsole")));
