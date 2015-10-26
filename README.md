@@ -88,6 +88,7 @@ The file ../plugins/Plugin Metrics/config.yml contains an option to *opt-out*
 * Server version string (the same version string you see in /version)
 * Plugin version of the metrics-supported plugin
 * Mineshafter status - it does not properly propagate Metrics requests however it is a very simple check and does not read the filesystem
+* Storage method of SilkSpawnersShopAddon
 
 #### The following data is **sent** to http://mcstats.org and can be seen under http://mcstats.org/plugin/SilkSpawnersShopAddon
 * Metrics revision of the implementing class
@@ -95,6 +96,7 @@ The file ../plugins/Plugin Metrics/config.yml contains an option to *opt-out*
 * Players currently online (not max player count)
 * Server version string (the same version string you see in /version)
 * Plugin version of the metrics-supported plugin
+* Storage method of SilkSpawnersShopAddon
 
 ## Donation
 [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif "Donation via PayPal")](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T9TEV7Q88B9M2)
