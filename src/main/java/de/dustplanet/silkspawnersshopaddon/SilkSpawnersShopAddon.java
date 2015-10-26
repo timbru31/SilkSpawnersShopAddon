@@ -281,6 +281,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     }
 
     public BlockFace[] getBlockFaces() {
-        return blockFaces;
+        return blockFaces.clone();
     }
 }
