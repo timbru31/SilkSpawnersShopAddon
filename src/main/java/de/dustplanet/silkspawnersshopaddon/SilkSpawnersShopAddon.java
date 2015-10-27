@@ -36,7 +36,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private FileConfiguration localization;
     private File configFile, localizationFile;
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
-    private final int resourceId = 12028;
+    private static final int resourceId = 12028;
     /**
      * Economy provider with Vault.
      */
