@@ -46,6 +46,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                             SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(argument);
                             if (mode == null) {
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMode")));
+                                change = false;
                             } else {
                                 shop.setMode(mode);
                             }
@@ -54,6 +55,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                             boolean knownMob = plugin.getSilkUtil().isKnown(argument);
                             if (!knownMob) {
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMob")));
+                                change = false;
                             } else {
                                 shop.setMob(argument);
                             }
@@ -64,6 +66,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                 shop.setPrice(price);
                             } catch (NumberFormatException e) {
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
+                                change = false;
                             }
                             break;
                         default:
