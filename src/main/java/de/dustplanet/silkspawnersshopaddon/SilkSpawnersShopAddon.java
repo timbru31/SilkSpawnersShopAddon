@@ -23,6 +23,8 @@ import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockL
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonPlayerListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonProtectionListener;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
+import de.dustplanet.silkspawnersshopaddon.util.Updater;
+import de.dustplanet.silkspawnersshopaddon.util.Updater.UpdateResult;
 import de.dustplanet.util.SilkUtil;
 import net.milkbowl.vault.economy.Economy;
 
@@ -34,6 +36,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private FileConfiguration localization;
     private File configFile, localizationFile;
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
+    private final int resourceId = 12028;
     /**
      * Economy provider with Vault.
      */
@@ -112,6 +115,27 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             getLogger().info("Couldn't start Metrics, please report this!");
             e.printStackTrace();
         }
+
+        // Updater
+        getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                Updater updater = new Updater(getPlugin(), resourceId, false);
+                UpdateResult result = updater.getResult();
+                if (result == UpdateResult.NO_UPDATE) {
+                    getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
+                } else if (result == UpdateResult.UPDATE_AVAILABLE) {
+                    getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
+                    getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is " + updater.getVersion());
+                } else {
+                    getLogger().warning("The Updater returned the following value: " + result.name());
+                }
+            }
+        }, 40L);
+    }
+
+    public JavaPlugin getPlugin() {
+        return this;
     }
 
     private void loadLocalization() {
