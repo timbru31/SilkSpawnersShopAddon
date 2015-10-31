@@ -25,4 +25,7 @@ permissions:
   silkspawners.use.sell:
     description: Allows you to use sell shops
     default: true
+  silkspawners.editshop:
+    description: Allows you to edit shops via the command
+    default: op
 depend: [SilkSpawners, Vault]
