@@ -64,12 +64,14 @@ Both permissions are included in the silkspawners.* wildcard permission.
 | silkspawners.use.buy | Allows to interact with buy shops |
 | silkspawners.use.sell | Allows to interact with sell shops |
 | silkspawners.editshop | Allows you to edit shops via commands |
+| silkspawners.updateshops | Allows you to remove invalid shops. MAY CAUSE LAG |
 
 
 ## Commands
 | Command | Aliases | Description | Permission node |
 |:----------:|:----------:|:----------:|:----------:|
-| /silkspawnersshopaddon <mode OR mob OR price> <new value>| silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value | silkspawners.editshop |
+| /silkspawnersshopaddon <mode OR mob OR price> <new value> | silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value | silkspawners.editshop |
+| /silkspawnersshopaddon check | same as above | Searches the database for invalid shops and removes them. MAY CAUSE LAG | silkspawners.updateshops |
 
 ## Support
 For support visit the dev.bukkit.org page: https://www.spigotmc.org/resources/12028/

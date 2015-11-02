@@ -143,35 +143,28 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadLocalization() {
         localization.addDefault("buying.inventoryFull", "&6[SilkSpawners] &4Your inventory is full.");
         localization.addDefault("buying.notEnoughMoney", "&6[SilkSpawners] &4You do not have enough money.");
-        localization.addDefault("buying.success",
-                "&6[SilkSpawners] &2You bought a(n) &e%creature% spawner &2for &e%price%&2.");
+        localization.addDefault("buying.success", "&6[SilkSpawners] &2You bought a(n) &e%creature% spawner &2for &e%price%&2.");
+        localization.addDefault("checking.error", "&6[SilkSpawners] &4There was an error removing the invalid shops.");
+        localization.addDefault("checking.invalid", "&6[SilkSpawners] &4Found an invalid shop at &ex %x%&4, &ey %y%&4, &ez %z% &4in world &e%world%&4.");
+        localization.addDefault("checking.success", "&6[SilkSpawners] &2Removed &e%size% &2invalid shops from the database.");
         localization.addDefault("creating.error", "&6[SilkSpawners] &4There was an error creating the shop.");
         localization.addDefault("creating.invalidMob", "&6[SilkSpawners] &4The given mob is invalid.");
         localization.addDefault("creating.invalidMode", "&6[SilkSpawners] &4The given shop mode is invalid.");
-        localization.addDefault("creating.invalidPrice",
-                "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
+        localization.addDefault("creating.invalidPrice", "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
         localization.addDefault("creating.success", "&6[SilkSpawners] &2You created the shop successfully.");
-        localization.addDefault("noPermission.building",
-                "&6[SilkSpawners] &4You do not have the permission to create a shop.");
-        localization.addDefault("noPermission.buy",
-                "&6[SilkSpawners] &4You do not have the permission to buy spawners.");
-        localization.addDefault("noPermission.destroying",
-                "&6[SilkSpawners] &4You do not have the permission to destroy a shop.");
-        localization.addDefault("noPermission.edit",
-                "&6[SilkSpawners] &4You do not have the permission to edit a shop.");
-        localization.addDefault("noPermission.sell",
-                "&6[SilkSpawners] &4You do not have the permission to sell spawners.");
+        localization.addDefault("noPermission.building", "&6[SilkSpawners] &4You do not have the permission to create a shop.");
+        localization.addDefault("noPermission.buy", "&6[SilkSpawners] &4You do not have the permission to buy spawners.");
+        localization.addDefault("noPermission.check", "&6[SilkSpawners] &4You do not have the permission to check for invalid shops.");
+        localization.addDefault("noPermission.destroying", "&6[SilkSpawners] &4You do not have the permission to destroy a shop.");
+        localization.addDefault("noPermission.edit", "&6[SilkSpawners] &4You do not have the permission to edit a shop.");
+        localization.addDefault("noPermission.sell", "&6[SilkSpawners] &4You do not have the permission to sell spawners.");
         localization.addDefault("removing.error", "&6[SilkSpawners] &4There was an error removing the shop.");
         localization.addDefault("removing.success", "&6[SilkSpawners] &2You removed the shop successfully.");
-        localization.addDefault("selling.noSpawnerInHand",
-                "&6[SilkSpawners] &4You do not have a spawner in your hand.");
-        localization.addDefault("selling.notTheSameMob",
-                "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4.");
-        localization.addDefault("selling.success",
-                "&6[SilkSpawners] &2You sold a(n) &e%creature% spawner &2for &e%price%&2.");
-        localization.addDefault("updating.commandUsage",
-                "&6[SilkSpawners] &eUsage for editing a shop: /shop mode|mob|price <newValue>");
-        localization.addDefault("updating.noConsole", "&6[SilkSpawners] &4The console is not able to edit shops.");
+        localization.addDefault("selling.noSpawnerInHand", "&6[SilkSpawners] &4You do not have a spawner in your hand.");
+        localization.addDefault("selling.notTheSameMob", "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4.");
+        localization.addDefault("selling.success", "&6[SilkSpawners] &2You sold a(n) &e%creature% spawner &2for &e%price%&2.");
+        localization.addDefault("updating.commandUsage", "&6[SilkSpawners] &eUsage for editing a shop: /shop mode|mob|price <newValue>");
+        localization.addDefault("updating.noConsole", "&6[SilkSpawners] &4The console is not able to edit shops, only remove invalid shops via /shop check");
         localization.addDefault("updating.noShop", "&6[SilkSpawners] &4There is no shop in sight.");
         localization.addDefault("updating.error", "&6[SilkSpawners] &4There was an error updating the shop.");
         localization.addDefault("updating.success", "&6[SilkSpawners] &2The shop was updated successfully!");

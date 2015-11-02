@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -55,6 +56,29 @@ implements ISilkSpawnersShopAddonStorage {
             return result == 1;
         } catch (SQLException e) {
             plugin.getLogger().severe("There was an error removing the shop");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
+        StringBuilder builder = new StringBuilder();
+        for( int i = 0 ; i < shopList.size(); i++ ) {
+            builder.append("?,");
+        }
+        String query = "DELETE FROM SHOPS WHERE SHOPID IN (" + builder.deleteCharAt(builder.length() -1).toString() + ")";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            int index = 1;
+            for(SilkSpawnersShop shop: shopList ) {
+                statement.setObject(index++, shop.getId().toString());
+            }
+            int result = statement.executeUpdate();
+            cachedShops.removeAll(shopList);
+            // Only one row should be affected
+            return result == shopList.size();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("There was an error removing the shops");
             e.printStackTrace();
             return false;
         }
@@ -139,15 +163,7 @@ implements ISilkSpawnersShopAddonStorage {
             statement.setString(4, world);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    String shopId = rs.getString("shopID");
-                    SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(rs.getString("mode"));
-                    String mob = rs.getString("mob");
-                    double price = rs.getDouble("price");
-                    x = rs.getInt("x");
-                    y = rs.getInt("y");
-                    z = rs.getInt("z");
-                    world = rs.getString("world");
-                    SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, mode, mob, price, shopId);
+                    SilkSpawnersShop shop = getShopFromResultSet(rs);
                     cachedShops.add(shop);
                     return shop;
                 }
@@ -164,6 +180,28 @@ implements ISilkSpawnersShopAddonStorage {
     }
 
     @Override
+    public ArrayList<SilkSpawnersShop> getAllShops() {
+        ArrayList<SilkSpawnersShop> shopList = new ArrayList<>();
+        String query = "SELECT * FROM SHOPS";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    SilkSpawnersShop shop = getShopFromResultSet(rs);
+                    shopList.add(shop);
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().severe("There was an error getting the shop list");
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().severe("There was an error getting the shop list");
+            e.printStackTrace();
+            return null;
+        }
+        return shopList;
+    }
+
+    @Override
     public void disable() {
         try {
             conn.close();
@@ -172,5 +210,17 @@ implements ISilkSpawnersShopAddonStorage {
             e.printStackTrace();
         }
         super.disable();
+    }
+
+    private SilkSpawnersShop getShopFromResultSet(ResultSet rs) throws SQLException {
+        String shopId = rs.getString("shopID");
+        SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(rs.getString("mode"));
+        String mob = rs.getString("mob");
+        double price = rs.getDouble("price");
+        double x = rs.getInt("x");
+        double y = rs.getInt("y");
+        double z = rs.getInt("z");
+        String world = rs.getString("world");
+        return new SilkSpawnersShop(x, y, z, world, mode, mob, price, shopId);
     }
 }

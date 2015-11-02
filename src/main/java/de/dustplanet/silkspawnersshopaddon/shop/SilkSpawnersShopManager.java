@@ -1,5 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.shop;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -66,6 +68,10 @@ public class SilkSpawnersShopManager {
         return removeShop(getShop(sign));
     }
 
+    public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
+        return storage.removeShops(shopList);
+    }
+
     public boolean addShop(SilkSpawnersShop shop) {
         if (shop == null) {
             return false;
@@ -89,6 +95,10 @@ public class SilkSpawnersShopManager {
 
     public SilkSpawnersShop getShop(Sign sign) {
         return storage.getShop(sign);
+    }
+
+    public ArrayList<SilkSpawnersShop> getAllShops() {
+        return storage.getAllShops();
     }
 
     public void handleShopInteraction(Player player, Sign sign, boolean hasItem, ItemStack item) {

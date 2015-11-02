@@ -61,14 +61,18 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
 
     private boolean removeFromYAML(SilkSpawnersShop shop) {
         shopConfiguration.set(shop.getId().toString(), null);
+        return saveYAML();
+    }
+
+    private boolean saveYAML() {
         try {
             shopConfiguration.save(shopFile);
+            return true;
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to remove shop from YAML");
+            plugin.getLogger().severe("Failed to save the YAML");
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     @SuppressWarnings("unused")
@@ -78,7 +82,8 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         }
     }
 
-    private ArrayList<SilkSpawnersShop> loadShops() {
+    @Override
+    public ArrayList<SilkSpawnersShop> getAllShops() {
         Set<String> shopList = shopConfiguration.getKeys(false);
         ArrayList<SilkSpawnersShop> shops = new ArrayList<>();
         for (String shopID : shopList) {
@@ -109,6 +114,15 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
     }
 
     @Override
+    public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
+        for (SilkSpawnersShop shop : shopList) {
+            cachedShops.remove(shop);
+            shopConfiguration.set(shop.getId().toString(), null);
+        }
+        return saveYAML();
+    }
+
+    @Override
     public boolean updateShop(SilkSpawnersShop shop) {
         int index = cachedShops.indexOf(shop);
         if (index != -1) {
@@ -127,7 +141,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         }
 
         // Lookup in yml
-        ArrayList<SilkSpawnersShop> shops = loadShops();
+        ArrayList<SilkSpawnersShop> shops = getAllShops();
         for (SilkSpawnersShop shop : shops) {
             if (shop.getLocation().equals(sign.getLocation())) {
                 cachedShops.add(shop);
@@ -147,7 +161,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         }
 
         // Lookup in yml
-        ArrayList<SilkSpawnersShop> shops = loadShops();
+        ArrayList<SilkSpawnersShop> shops = getAllShops();
         for (SilkSpawnersShop shop : shops) {
             if (shop.getLocation().equals(sign.getLocation())) {
                 cachedShops.add(shop);
@@ -161,5 +175,4 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
     public void disable() {
         super.disable();
     }
-
 }

@@ -1,8 +1,10 @@
 package de.dustplanet.silkspawnersshopaddon.commands;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -26,7 +28,37 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(final CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("check")) {
+            if (sender.hasPermission("silkspawners.updateshops")) {
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        ArrayList<SilkSpawnersShop> shopList = shopManager.getAllShops();
+                        ArrayList<SilkSpawnersShop> invalidShops = new ArrayList<>();
+                        String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("checking.invalid"));
+                        for (SilkSpawnersShop shop : shopList) {
+                            Location shopLoc = shop.getLocation();
+                            if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN_POST) {
+                                continue;
+                            }
+                            sender.sendMessage(invalidMessage.replace("%world%", shopLoc.getWorld().getName())
+                                    .replace("%x%", Double.toString(shopLoc.getX()))
+                                    .replace("%y%", Double.toString(shopLoc.getY()))
+                                    .replace("%z%", Double.toString(shopLoc.getZ())));
+                            invalidShops.add(shop);
+                        }
+                        if (shopList.size() > 0 && !shopManager.removeShops(invalidShops)) {
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("checking.error")));
+                        }
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("checking.success")).replace("%size%", Integer.toString(invalidShops.size())));
+                    }
+                });
+            } else {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.check")));
+            }
+            return true;
+        }
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (player.hasPermission("silkspawners.editshop")) {
