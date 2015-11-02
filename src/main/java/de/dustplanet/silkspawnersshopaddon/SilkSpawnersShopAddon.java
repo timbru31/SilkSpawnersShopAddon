@@ -36,7 +36,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private FileConfiguration localization;
     private File configFile, localizationFile;
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
-    private static final int resourceId = 12028;
+    private static final int RESOURCEID = 12028;
     /**
      * Economy provider with Vault.
      */
@@ -120,13 +120,15 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
             @Override
             public void run() {
-                Updater updater = new Updater(getPlugin(), resourceId, false);
+                Updater updater = new Updater(getPlugin(), RESOURCEID, false);
                 UpdateResult result = updater.getResult();
                 if (result == UpdateResult.NO_UPDATE) {
                     getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
                 } else if (result == UpdateResult.UPDATE_AVAILABLE) {
                     getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
                     getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is " + updater.getVersion());
+                } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
+                    getLogger().info("Update checking is disabled because you are running a dev build.");
                 } else {
                     getLogger().warning("The Updater returned the following value: " + result.name());
                 }

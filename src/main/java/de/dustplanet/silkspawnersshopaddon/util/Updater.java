@@ -34,7 +34,7 @@ public class Updater {
     private HttpURLConnection connection;
 
     public enum UpdateResult {
-        NO_UPDATE, DISABLED, FAIL_SPIGOT, FAIL_NOVERSION, BAD_API_KEY, BAD_RESOURCEID, UPDATE_AVAILABLE
+        NO_UPDATE, DISABLED, FAIL_SPIGOT, FAIL_NOVERSION, BAD_API_KEY, BAD_RESOURCEID, UPDATE_AVAILABLE, SNAPSHOT_DISABLED
     }
 
     public Updater(JavaPlugin plugin, Integer resourceId, boolean disabled) {
@@ -44,6 +44,11 @@ public class Updater {
 
         if (disabled) {
             result = UpdateResult.DISABLED;
+            return;
+        }
+
+        if (oldVersion.contains("SNAPSHOT")) {
+            result = UpdateResult.SNAPSHOT_DISABLED;
             return;
         }
 
