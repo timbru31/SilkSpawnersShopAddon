@@ -1,6 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.shop;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public enum SilkspawnersShopMode {
     SELL, BUY;
@@ -9,7 +10,7 @@ public enum SilkspawnersShopMode {
         if (stringMode == null) {
             return null;
         }
-        switch (stringMode.toUpperCase()) {
+        switch (stringMode.toUpperCase(Locale.ENGLISH)) {
         case "BUY":
             return BUY;
         case "SELL":

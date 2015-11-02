@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -104,7 +105,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         try {
             Metrics metrics = new Metrics(this);
             Graph graph = metrics.createGraph("storage provider");
-            graph.addPlotter(new Metrics.Plotter(getConfig().getString("storageMethod").toUpperCase()) {
+            graph.addPlotter(new Metrics.Plotter(getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH)) {
                 @Override
                 public int getValue() {
                     return 1;

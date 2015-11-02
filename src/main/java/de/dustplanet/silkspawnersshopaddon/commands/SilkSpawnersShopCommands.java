@@ -22,6 +22,14 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     private SilkSpawnersShopAddon plugin;
     private SilkSpawnersShopManager shopManager;
 
+    public SilkSpawnersShopAddon getPlugin() {
+        return plugin;
+    }
+
+    public SilkSpawnersShopManager getShopManager() {
+        return shopManager;
+    }
+
     public SilkSpawnersShopCommands(SilkSpawnersShopAddon instance) {
         plugin = instance;
         shopManager = plugin.getShopManager();
@@ -34,9 +42,9 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<SilkSpawnersShop> shopList = shopManager.getAllShops();
+                        ArrayList<SilkSpawnersShop> shopList = getShopManager().getAllShops();
                         ArrayList<SilkSpawnersShop> invalidShops = new ArrayList<>();
-                        String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("checking.invalid"));
+                        String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.invalid"));
                         for (SilkSpawnersShop shop : shopList) {
                             Location shopLoc = shop.getLocation();
                             if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN_POST) {
@@ -48,10 +56,10 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                     .replace("%z%", Double.toString(shopLoc.getZ())));
                             invalidShops.add(shop);
                         }
-                        if (shopList.size() > 0 && !shopManager.removeShops(invalidShops)) {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("checking.error")));
+                        if (shopList.size() > 0 && !getShopManager().removeShops(invalidShops)) {
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.error")));
                         }
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("checking.success")).replace("%size%", Integer.toString(invalidShops.size())));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.success")).replace("%size%", Integer.toString(invalidShops.size())));
                     }
                 });
             } else {
