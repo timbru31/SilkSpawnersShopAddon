@@ -57,16 +57,18 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
         // Check block itself
         Block brokenBlock = event.getBlock();
         if (!checkBlockFaces(brokenBlock, event, new Material[] {Material.WALL_SIGN, Material.SIGN_POST})) {
-            // Check attached blocks
-            for (BlockFace face : plugin.getBlockFaces()) {
-                Block attachedBlock = brokenBlock.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, new Material[] {Material.WALL_SIGN})) {
-                    break;
+            // Check attached blocks if the block broken block wasn't a sign
+            if (brokenBlock.getType() != Material.WALL_SIGN && brokenBlock.getType() != Material.SIGN_POST) {
+                for (BlockFace face : plugin.getBlockFaces()) {
+                    Block attachedBlock = brokenBlock.getRelative(face);
+                    if (checkBlockFaces(attachedBlock, event, new Material[] {Material.WALL_SIGN})) {
+                        break;
+                    }
                 }
+                // Check block up (sign post)
+                Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
+                checkBlockFaces(attachedBlock, event, new Material[] {Material.SIGN_POST});
             }
-            // Check block up (sign post)
-            Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, new Material[] {Material.SIGN_POST});
         }
     }
 
