@@ -34,6 +34,7 @@ invincibility:
   burn: true
   explode: true
   ignite: true
+forceInventoryUpdate: false
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'

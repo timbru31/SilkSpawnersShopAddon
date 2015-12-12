@@ -193,6 +193,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         config.addDefault("invincibility.burn", true);
         config.addDefault("invincibility.explode", true);
         config.addDefault("invincibility.ignite", true);
+        config.addDefault("forceInventoryUpdate", false);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
         config.addDefault("mongoDB.port", 27017);

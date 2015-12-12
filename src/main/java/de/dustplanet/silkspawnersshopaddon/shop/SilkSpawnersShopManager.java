@@ -134,6 +134,9 @@ public class SilkSpawnersShopManager {
             plugin.getEcon().withdrawPlayer(player, price);
             mob = su.getCreatureName(entityID);
             player.getInventory().addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(su.eid2MobID.get(entityID)), 1, false));
+            if (plugin.getConfig().getBoolean("forceInventoryUpdate", false)) {
+                player.updateInventory();
+            }
             String priceString = plugin.getCurrencySign() + Double.toString(price);
             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.success").replace("%creature%", mob).replace("%price%", priceString)));
         } else {
@@ -162,6 +165,9 @@ public class SilkSpawnersShopManager {
                 player.setItemInHand(null);
             } else {
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
+            }
+            if (plugin.getConfig().getBoolean("forceInventoryUpdate", false)) {
+                player.updateInventory();
             }
             String priceString = plugin.getCurrencySign() + Double.toString(price);
             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.success").replace("%creature%", creatureName).replace("%price%", priceString)));
