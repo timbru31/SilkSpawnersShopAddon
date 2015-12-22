@@ -1,6 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.shop;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +25,7 @@ public class SilkSpawnersShopManager {
     public SilkSpawnersShopManager(SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
         this.su = plugin.getSilkUtil();
-        String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase();
+        String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH);
         switch (storageMethod) {
         case "YML":
         case "YAML":

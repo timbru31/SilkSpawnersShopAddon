@@ -1,6 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.commands;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -81,7 +82,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                         boolean change = true;
                         SilkSpawnersShop shop = shopManager.getShop(sign);
                         String argument = args[1];
-                        switch (args[0].toUpperCase()) {
+                        switch (args[0].toUpperCase(Locale.ENGLISH)) {
                         case "MODE":
                             SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(argument);
                             if (mode == null) {

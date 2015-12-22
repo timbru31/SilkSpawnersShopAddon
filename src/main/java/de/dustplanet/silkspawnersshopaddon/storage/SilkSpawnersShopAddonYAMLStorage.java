@@ -75,13 +75,6 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         }
     }
 
-    @SuppressWarnings("unused")
-    private void saveToYAML(ArrayList<SilkSpawnersShop> shops) {
-        for (SilkSpawnersShop shop : shops) {
-            saveToYAML(shop, false);
-        }
-    }
-
     @Override
     public ArrayList<SilkSpawnersShop> getAllShops() {
         Set<String> shopList = shopConfiguration.getKeys(false);

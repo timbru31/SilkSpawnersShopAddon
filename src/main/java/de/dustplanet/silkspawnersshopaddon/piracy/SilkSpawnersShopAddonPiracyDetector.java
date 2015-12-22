@@ -1,6 +1,6 @@
-package de.dustplanet.silkspawnersshopaddon.privacy;
+package de.dustplanet.silkspawnersshopaddon.piracy;
 
-public class SilkSpawnersShopAddonPrivacyDetector {
+public class SilkSpawnersShopAddonPiracyDetector {
     private String userID = "%%__USER__%%";
 
     public String getUserID() {
