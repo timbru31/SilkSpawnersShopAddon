@@ -22,7 +22,7 @@ public class Updater {
     private static final String API_KEY = "98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4";
     private static final String REQUEST_METHOD = "POST";
     private final String RESOURCE_ID;
-    private static final String HOST = "http://www.spigotmc.org";
+    private static final String HOST = "https://www.spigotmc.org";
     private static final String QUERY = "/api/general.php";
     private String WRITE_STRING;
 
