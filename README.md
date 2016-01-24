@@ -1,7 +1,9 @@
-# SilkSpawnersShopAddon [![Build Status](http://ci.dustplanet.de/buildStatus/icon?job=SilkSpawnersShopAddon)](http://ci.dustplanet.de/job/SilkSpawnersShopAddon/)
+# SilkSpawnersShopAddon
+[![Build Status](http://ci.dustplanet.de/buildStatus/icon?job=SilkSpawnersShopAddon)](http://ci.dustplanet.de/job/SilkSpawnersShopAddon/)
+[![Build Status](https://travis-ci.com/timbru31/SilkSpawnersShopAddon.svg?token=xMwFbvUujsG645zQBus3&branch=master)](https://travis-ci.com/timbru31/SilkSpawnersShopAddon)
 
 ## Info
-This CraftBukkit plugin adds an optional store for selling and buying spawner via signs.
+This CraftBukkit/Spigot plugin adds an optional store for selling and buying spawner via signs.
 The two modes are specified via BUY or SELL.
 A valid sing looks like this.
 ````
