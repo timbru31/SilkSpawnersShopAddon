@@ -25,14 +25,14 @@ public class SilkSpawnersShopAddonPiracyChecker {
     }
 
     // HTTP POST request
-    public void sendPost() throws BlackListedException {
+    public int sendPost() throws BlackListedException {
         // URL
         URL url = null;
         try {
             url = new URL("http://api.dustplanet.de/");
         } catch (MalformedURLException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return -1;
         }
 
         // HTTP Connection
@@ -41,7 +41,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
             con = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return -1;
         }
 
         // Get user id
@@ -52,7 +52,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
             encodedData = rawData + URLEncoder.encode(userId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return -1;
         }
 
         // Make POST request
@@ -60,7 +60,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
             con.setRequestMethod("POST");
         } catch (ProtocolException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return -1;
         }
         con.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -73,7 +73,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
             wr.close();
         } catch (IOException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return -1;
         }
 
         // Get response
@@ -82,19 +82,22 @@ public class SilkSpawnersShopAddonPiracyChecker {
             responseCode = con.getResponseCode();
         } catch (IOException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return responseCode;
         }
 
         String inputLine;
         StringBuffer response = new StringBuffer();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
+        if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_UNAVAILABLE
+                || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY) {
+            return responseCode;
+        } else if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))) {
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
             } catch (IOException e) {
                 disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-                return;
+                return responseCode;
             }
         } else {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream(), "UTF-8"))) {
@@ -103,7 +106,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
                 }
             } catch (IOException e) {
                 disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-                return;
+                return responseCode;
             }
         }
         JSONObject responseJSON;
@@ -111,12 +114,13 @@ public class SilkSpawnersShopAddonPiracyChecker {
             responseJSON = new JSONObject(response.toString());
         } catch (JSONException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
-            return;
+            return responseCode;
         }
         boolean blacklisted = responseJSON.getBoolean("blacklisted");
         if (blacklisted) {
             disableDueToError("You are blacklisted...");
         }
+        return responseCode;
     }
 
     private void disableDueToError(String... messages) throws BlackListedException {

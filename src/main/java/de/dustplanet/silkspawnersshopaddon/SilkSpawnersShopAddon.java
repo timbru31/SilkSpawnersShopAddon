@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +34,7 @@ import net.milkbowl.vault.economy.Economy;
 
 public class SilkSpawnersShopAddon extends JavaPlugin {
     private SilkSpawnersShopManager shopManager;
-    private String currencySign = "$";
+    private DecimalFormat numberFormat;
     private SilkUtil su;
     private ArrayList<Action> allowedActions = new ArrayList<>();
     private FileConfiguration localization;
@@ -90,13 +91,20 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         loadLocalization();
 
         // Load piracy task runner
-        SilkSpawnersShopAddonPiracyTask piracyTask = new SilkSpawnersShopAddonPiracyTask(this);
-        try {
-            piracyTask.checkPiracy();
-        } catch (BlackListedException e1) {
-            setEnabled(false);
-            return;
-        }
+        final SilkSpawnersShopAddon addon = this;
+        getServer().getScheduler().runTaskLater(this, new Runnable() {
+            @Override
+            public void run() {
+                SilkSpawnersShopAddonPiracyTask piracyTask = new SilkSpawnersShopAddonPiracyTask(addon);
+                try {
+                    piracyTask.checkPiracy();
+                } catch (BlackListedException e) {
+                    addon.disable();
+                    return;
+                }
+            }
+        }, 20L * 120);
+
 
         // Setup SilkUtil, shop manager and storage provider
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
@@ -131,29 +139,38 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
 
         // Updater
-        getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
-            @Override
-            public void run() {
-                Updater updater = new Updater(getPlugin(), RESOURCEID, false);
-                UpdateResult result = updater.getResult();
-                if (result == UpdateResult.NO_UPDATE) {
-                    getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
-                } else if (result == UpdateResult.UPDATE_AVAILABLE) {
-                    getLogger()
-                    .info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
-                    getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is "
-                            + updater.getVersion());
-                } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
-                    getLogger().info("Update checking is disabled because you are running a dev build.");
-                } else {
-                    getLogger().warning("The Updater returned the following value: " + result.name());
+        boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
+        if (!updaterDisabled) {
+            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+                @Override
+                public void run() {
+                    Updater updater = new Updater(getPlugin(), RESOURCEID, false);
+                    UpdateResult result = updater.getResult();
+                    if (result == UpdateResult.NO_UPDATE) {
+                        getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
+                    } else if (result == UpdateResult.UPDATE_AVAILABLE) {
+                        getLogger()
+                        .info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
+                        getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is "
+                                + updater.getVersion());
+                    } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
+                        getLogger().info("Update checking is disabled because you are running a dev build.");
+                    } else {
+                        getLogger().warning("The Updater returned the following value: " + result.name());
+                    }
                 }
-            }
-        }, 40L);
+            }, 40L);
+        } else {
+            getLogger().info("Updater is disabled");
+        }
     }
 
     public JavaPlugin getPlugin() {
         return this;
+    }
+
+    public void disable() {
+        this.setEnabled(false);
     }
 
     private void loadLocalization() {
@@ -216,9 +233,10 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         // Add defaults
         FileConfiguration config = getConfig();
         config.options().header("Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB");
-        config.addDefault("currencySign", "$");
+        config.addDefault("numberFormat", "$ 00.##");
         List<String> tempStringAllowedActions = new ArrayList<>();
         tempStringAllowedActions.add(Action.RIGHT_CLICK_BLOCK.toString());
+        config.addDefault("disableUpdater", false);
         config.addDefault("allowedActions", tempStringAllowedActions);
         config.addDefault("invincibility.burn", true);
         config.addDefault("invincibility.explode", true);
@@ -243,7 +261,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         saveConfig();
 
         // Load values
-        setCurrencySign(config.getString("currencySign"));
+        String numberFormatString = config.getString("numberFormat", "$ 00.##");
+        setNumberFormat(new DecimalFormat(numberFormatString));
         tempStringAllowedActions = config.getStringList("allowedActions");
         ArrayList<Action> tempAllowedActions = new ArrayList<>();
         for (String allowedAction : tempStringAllowedActions) {
@@ -283,20 +302,21 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
     }
 
+    public String getFormattedPrice(String price) {
+        return getFormattedPrice(Double.parseDouble(price));
+    }
+
+    public String getFormattedPrice(double price) {
+        DecimalFormat df = getNumberFormat();
+        return df.format(price);
+    }
+
     public SilkSpawnersShopManager getShopManager() {
         return shopManager;
     }
 
     public void setShopManager(SilkSpawnersShopManager shopManager) {
         this.shopManager = shopManager;
-    }
-
-    public String getCurrencySign() {
-        return currencySign;
-    }
-
-    public void setCurrencySign(String currencySign) {
-        this.currencySign = currencySign;
     }
 
     public SilkUtil getSilkUtil() {
@@ -333,5 +353,13 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
     public BlockFace[] getBlockFaces() {
         return blockFaces.clone();
+    }
+
+    public DecimalFormat getNumberFormat() {
+        return numberFormat;
+    }
+
+    public void setNumberFormat(DecimalFormat numberFormat) {
+        this.numberFormat = numberFormat;
     }
 }

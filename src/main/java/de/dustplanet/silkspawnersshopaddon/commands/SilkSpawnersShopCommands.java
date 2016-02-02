@@ -119,7 +119,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                             if (shopManager.updateShop(shop)) {
                                 sign.setLine(1, shop.getMode().toString());
                                 sign.setLine(2, shop.getMob());
-                                sign.setLine(3, plugin.getCurrencySign() + shop.getPrice());
+                                sign.setLine(3, plugin.getFormattedPrice(shop.getPrice()));
                                 sign.update(true);
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.success")));
                             } else {

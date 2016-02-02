@@ -1,5 +1,6 @@
 # Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB
-currencySign: '$'
+disableUpdater: false
+numberFormat: '$ 00.##'
 allowedActions:
 - RIGHT_CLICK_BLOCK
 invincibility:

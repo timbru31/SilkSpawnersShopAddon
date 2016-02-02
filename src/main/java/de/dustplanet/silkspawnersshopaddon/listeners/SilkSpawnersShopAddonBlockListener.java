@@ -83,7 +83,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                 if (shopManager.createOrUpdateShop(lines, sign, player)) {
                     event.setLine(0, ChatColor.BLUE + "[SilkSpawners]");
                     // Strip everything else than numbers
-                    event.setLine(3, plugin.getCurrencySign() + lines[3].replaceAll("[^0-9.]", ""));
+                    event.setLine(3, plugin.getFormattedPrice(lines[3].replaceAll("[^0-9.]", "")));
                 } else {
                     event.setLine(0, ChatColor.RED + "[SilkSpawners]");
                 }

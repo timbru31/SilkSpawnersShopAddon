@@ -29,7 +29,8 @@ Please see [LICENSE.md](LICENSE.md) for more information.
 ## Standard config
 ````yaml
 # Valid storage methods are YAML, MONGODB, MYSQL and SQLITE
-currencySign: '$'
+disableUpdater: false
+numberFormat: '$ 00.##'
 allowedActions:
 - RIGHT_CLICK_BLOCK
 invincibility:

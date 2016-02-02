@@ -11,8 +11,8 @@ public class SilkSpawnersShopAddonPiracyTask {
         this.plugin = plugin;
     }
 
-    public void checkPiracy() throws BlackListedException {
+    public int checkPiracy() throws BlackListedException {
         SilkSpawnersShopAddonPiracyChecker piracyChecker = new SilkSpawnersShopAddonPiracyChecker(plugin);
-        piracyChecker.sendPost();
+        return piracyChecker.sendPost();
     }
 }
