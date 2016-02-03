@@ -105,7 +105,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             }
         }, 20L * 120);
 
-
         // Setup SilkUtil, shop manager and storage provider
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
         setShopManager(new SilkSpawnersShopManager(this));
@@ -149,8 +148,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
                     if (result == UpdateResult.NO_UPDATE) {
                         getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
                     } else if (result == UpdateResult.UPDATE_AVAILABLE) {
-                        getLogger()
-                        .info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
+                        getLogger().info(
+                                "There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
                         getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is "
                                 + updater.getVersion());
                     } else if (result == UpdateResult.SNAPSHOT_DISABLED) {

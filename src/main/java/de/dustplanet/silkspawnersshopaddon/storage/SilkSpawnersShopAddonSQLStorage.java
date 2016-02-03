@@ -64,13 +64,13 @@ implements ISilkSpawnersShopAddonStorage {
     @Override
     public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
         StringBuilder builder = new StringBuilder();
-        for( int i = 0 ; i < shopList.size(); i++ ) {
+        for (int i = 0; i < shopList.size(); i++) {
             builder.append("?,");
         }
-        String query = "DELETE FROM SHOPS WHERE SHOPID IN (" + builder.deleteCharAt(builder.length() -1).toString() + ")";
+        String query = "DELETE FROM SHOPS WHERE SHOPID IN (" + builder.deleteCharAt(builder.length() - 1).toString() + ")";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             int index = 1;
-            for(SilkSpawnersShop shop: shopList ) {
+            for (SilkSpawnersShop shop : shopList) {
                 statement.setObject(index++, shop.getId().toString());
             }
             int result = statement.executeUpdate();
