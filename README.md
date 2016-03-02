@@ -1,5 +1,5 @@
 # SilkSpawnersShopAddon
-[![Build Status](http://ci.dustplanet.de/buildStatus/icon?job=SilkSpawnersShopAddon)](http://ci.dustplanet.de/job/SilkSpawnersShopAddon/)
+[![Build Status](https://ci.dustplanet.de/buildStatus/icon?job=SilkSpawnersShopAddon)](https://ci.dustplanet.de/job/SilkSpawnersShopAddon/)
 [![Build Status](https://travis-ci.com/timbru31/SilkSpawnersShopAddon.svg?token=xMwFbvUujsG645zQBus3&branch=master)](https://travis-ci.com/timbru31/SilkSpawnersShopAddon)
 [![Circle CI](https://circleci.com/gh/timbru31/SilkSpawnersShopAddon.svg?style=svg&circle-token=eefb04331ad48de77cc8102ca762b83be5cdb928)](https://circleci.com/gh/timbru31/SilkSpawnersShopAddon)
 
