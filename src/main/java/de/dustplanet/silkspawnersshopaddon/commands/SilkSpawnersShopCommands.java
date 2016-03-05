@@ -117,6 +117,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                         }
                         if (change) {
                             if (shopManager.updateShop(shop)) {
+                                sign.setLine(0, ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier")));
                                 sign.setLine(1, shop.getMode().toString());
                                 sign.setLine(2, shop.getMob());
                                 sign.setLine(3, plugin.getFormattedPrice(shop.getPrice()));

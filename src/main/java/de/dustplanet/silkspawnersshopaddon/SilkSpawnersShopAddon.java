@@ -232,10 +232,11 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         // Add defaults
         FileConfiguration config = getConfig();
         config.options().header("Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB");
+        config.addDefault("disableUpdater", false);
+        config.addDefault("shopIdentifier", "&9[SilkSpawners]");
         config.addDefault("numberFormat", "$ 00.##");
         List<String> tempStringAllowedActions = new ArrayList<>();
         tempStringAllowedActions.add(Action.RIGHT_CLICK_BLOCK.toString());
-        config.addDefault("disableUpdater", false);
         config.addDefault("allowedActions", tempStringAllowedActions);
         config.addDefault("invincibility.burn", true);
         config.addDefault("invincibility.explode", true);

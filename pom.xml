@@ -2,13 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.dustplanet</groupId>
   <artifactId>SilkSpawnersShopAddon</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <name>SilkSpawnersShopAddon</name>
   <description>A sign shop for SilkSpawners</description>
   <url>https://www.spigotmc.org/resources/12028/</url>
 
   <!-- Encode in UTF-8 -->
   <properties>
+    <build.number>-b${BUILD_NUMBER}</build.number>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -97,7 +98,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5</version>
+        <version>3.5.1</version>
         <configuration>
           <verbose>true</verbose>
           <source>1.7</source>
@@ -204,7 +205,7 @@
 
   <!-- Jenkins information -->
   <ciManagement>
-    <url>http://ci.dustplanet.de/job/SilkSpawnerShopAddon</url>
+    <url>https://ci.dustplanet.de/job/SilkSpawnerShopAddon</url>
     <system>jenkins</system>
   </ciManagement>
 </project>

@@ -37,13 +37,16 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
             if (shopManager.isShop(sign)) {
                 if (player.hasPermission("silkspawners.destroyshop")) {
                     if (!shopManager.removeShop(shopManager.getShop(sign))) {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.error")));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                plugin.getLocalization().getString("removing.error")));
                         event.setCancelled(true);
                     } else {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.success")));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                plugin.getLocalization().getString("removing.success")));
                     }
                 } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.destroying")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                            plugin.getLocalization().getString("noPermission.destroying")));
                     event.setCancelled(true);
                 }
                 return true;
@@ -56,18 +59,18 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         // Check block itself
         Block brokenBlock = event.getBlock();
-        if (!checkBlockFaces(brokenBlock, event, new Material[] {Material.WALL_SIGN, Material.SIGN_POST})) {
+        if (!checkBlockFaces(brokenBlock, event, new Material[] { Material.WALL_SIGN, Material.SIGN_POST })) {
             // Check attached blocks if the block broken block wasn't a sign
             if (brokenBlock.getType() != Material.WALL_SIGN && brokenBlock.getType() != Material.SIGN_POST) {
                 for (BlockFace face : plugin.getBlockFaces()) {
                     Block attachedBlock = brokenBlock.getRelative(face);
-                    if (checkBlockFaces(attachedBlock, event, new Material[] {Material.WALL_SIGN})) {
+                    if (checkBlockFaces(attachedBlock, event, new Material[] { Material.WALL_SIGN })) {
                         break;
                     }
                 }
                 // Check block up (sign post)
                 Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
-                checkBlockFaces(attachedBlock, event, new Material[] {Material.SIGN_POST});
+                checkBlockFaces(attachedBlock, event, new Material[] { Material.SIGN_POST });
             }
         }
     }
@@ -76,20 +79,24 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     public void onSignChange(SignChangeEvent event) {
         // Mac sends weird \uF700 and \uF701 chars
         String[] lines = event.getLines();
-        if (ChatColor.stripColor(lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", "")).equalsIgnoreCase("[SilkSpawners]")) {
+        String shopIdentifier = ChatColor.translateAlternateColorCodes('\u0026',
+                plugin.getConfig().getString("shopIdentifier"));
+        if (ChatColor.stripColor(lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""))
+                .equalsIgnoreCase(ChatColor.stripColor(shopIdentifier))) {
             Player player = event.getPlayer();
             if (player.hasPermission("silkspawners.createshop")) {
                 Sign sign = (Sign) event.getBlock().getState();
                 if (shopManager.createOrUpdateShop(lines, sign, player)) {
-                    event.setLine(0, ChatColor.BLUE + "[SilkSpawners]");
+                    event.setLine(0, shopIdentifier);
                     // Strip everything else than numbers
                     event.setLine(3, plugin.getFormattedPrice(lines[3].replaceAll("[^0-9.]", "")));
                 } else {
-                    event.setLine(0, ChatColor.RED + "[SilkSpawners]");
+                    event.setLine(0, ChatColor.RED + ChatColor.stripColor(shopIdentifier));
                 }
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.building")));
-                event.setLine(0, ChatColor.RED + "[SilkSpawners]");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("noPermission.building")));
+                event.setLine(0, ChatColor.RED + ChatColor.stripColor(shopIdentifier));
             }
         }
     }

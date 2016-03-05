@@ -25,7 +25,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
         shopManager = plugin.getShopManager();
     }
 
-    private boolean checkBlockFaces(Block block, BlockEvent event, String mode,  Material[] signMaterials) {
+    private boolean checkBlockFaces(Block block, BlockEvent event, String mode, Material[] signMaterials) {
         boolean match = false;
         for (Material m : signMaterials) {
             if (block.getType() == m) {
@@ -49,30 +49,30 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent event) {
         Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "ignite", new Material[] {Material.WALL_SIGN, Material.SIGN_POST})) {
+        if (!checkBlockFaces(block, event, "ignite", new Material[] { Material.WALL_SIGN, Material.SIGN_POST })) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = block.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, "ignite", new Material[] {Material.WALL_SIGN})) {
+                if (checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.WALL_SIGN })) {
                     break;
                 }
             }
             Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "ignite", new Material[] {Material.SIGN_POST});
+            checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.SIGN_POST });
         }
     }
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "burn", new Material[] {Material.WALL_SIGN, Material.SIGN_POST})) {
+        if (!checkBlockFaces(block, event, "burn", new Material[] { Material.WALL_SIGN, Material.SIGN_POST })) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = block.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, "burn", new Material[] {Material.WALL_SIGN})) {
+                if (checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.WALL_SIGN })) {
                     break;
                 }
             }
             Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "burn", new Material[] {Material.SIGN_POST});
+            checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.SIGN_POST });
         }
     }
 

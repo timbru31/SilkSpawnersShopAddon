@@ -1,5 +1,6 @@
 # Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB
 disableUpdater: false
+shopIdentifier: '&9[SilkSpawners]'
 numberFormat: '$ 00.##'
 allowedActions:
 - RIGHT_CLICK_BLOCK
