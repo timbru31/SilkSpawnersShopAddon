@@ -7,12 +7,12 @@
 This CraftBukkit/Spigot plugin adds an optional store for selling and buying spawner via signs.
 The two modes are specified via BUY or SELL.
 A valid sing looks like this.
-````
-[SilkSpawners]
+```
+&6[SilkSpawners] (configurable)
 BUY / SELL
 mob (name or ID)
 price (only numbers)
-````
+```
 * Shops are stored via 4 different storage providers:
   * yaml
   * mongoDB
@@ -30,9 +30,10 @@ Please not that decompilation is a violation of this license.
 One purchase is valid for one server, if you plan to use it on multiple servers you will need to purchase the resource again.
 
 ## Standard config
-````yaml
+```yaml
 # Valid storage methods are YAML, MONGODB, MYSQL and SQLITE
 disableUpdater: false
+shopIdentifier: '&6[SilkSpawners]'
 numberFormat: '$ 00.##'
 allowedActions:
 - RIGHT_CLICK_BLOCK
@@ -57,7 +58,7 @@ MySQL:
   database: 'shops'
 SQLite:
   database: 'shops.db'
-````
+```
 
 ## Permissions
 (Fallback to OPs, if no permissions system is found)
