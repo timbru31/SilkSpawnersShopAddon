@@ -16,7 +16,7 @@ import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
 public abstract class SilkSpawnersShopAddonSQLStorage extends SilkSpawnersShopAddonStorageImpl
 implements ISilkSpawnersShopAddonStorage {
     protected Connection conn;
-    protected static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS SHOPS(SHOPID VARCHAR(36) PRIMARY KEY, MODE VARCHAR(4) NOT NULL, MOB VARCHAR(255) NOT NULL, PRICE NUMERIC(10,3) NOT NULL, X INTEGER NOT NULL, Y INTEGER NOT NULL, Z INTEGER NOT NULL, WORLD VARCHAR(255) NOT NULL)";
+    protected static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS SHOPS(SHOPID VARCHAR(36) PRIMARY KEY, MODE VARCHAR(4) NOT NULL, MOB VARCHAR(255) NOT NULL, AMOUNT INTEGER NOT NULL DEFAULT 1, PRICE NUMERIC(10,3) NOT NULL, X INTEGER NOT NULL, Y INTEGER NOT NULL, Z INTEGER NOT NULL, WORLD VARCHAR(255) NOT NULL)";
 
     public SilkSpawnersShopAddonSQLStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
@@ -25,16 +25,17 @@ implements ISilkSpawnersShopAddonStorage {
     @Override
     public boolean addShop(SilkSpawnersShop shop) {
         Location loc = shop.getLocation();
-        String query = "INSERT INTO SHOPS VALUES(?,?,?,?,?,?,?,?)";
+        String query = "INSERT INTO SHOPS VALUES(?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, shop.getId().toString());
             statement.setString(2, shop.getMode().toString());
             statement.setString(3, shop.getMob());
-            statement.setDouble(4, shop.getPrice());
-            statement.setDouble(5, loc.getX());
-            statement.setDouble(6, loc.getY());
-            statement.setDouble(7, loc.getZ());
-            statement.setString(8, loc.getWorld().getName());
+            statement.setInt(4, shop.getAmount());
+            statement.setDouble(5, shop.getPrice());
+            statement.setDouble(6, loc.getX());
+            statement.setDouble(7, loc.getY());
+            statement.setDouble(8, loc.getZ());
+            statement.setString(9, loc.getWorld().getName());
             statement.executeUpdate();
             cachedShops.add(shop);
             return true;
@@ -86,12 +87,13 @@ implements ISilkSpawnersShopAddonStorage {
 
     @Override
     public boolean updateShop(SilkSpawnersShop shop) {
-        String query = "UPDATE SHOPS SET MODE = ?, MOB = ?, PRICE = ? WHERE SHOPID = ?";
+        String query = "UPDATE SHOPS SET MODE = ?, MOB = ?, PRICE = ?, AMOUNT = ? WHERE SHOPID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, shop.getMode().toString());
             statement.setString(2, shop.getMob());
             statement.setDouble(3, shop.getPrice());
-            statement.setString(4, shop.getId().toString());
+            statement.setInt(4, shop.getAmount());
+            statement.setString(5, shop.getId().toString());
             statement.executeUpdate();
             int index = cachedShops.indexOf(shop);
             if (index != -1) {
@@ -183,15 +185,10 @@ implements ISilkSpawnersShopAddonStorage {
     public ArrayList<SilkSpawnersShop> getAllShops() {
         ArrayList<SilkSpawnersShop> shopList = new ArrayList<>();
         String query = "SELECT * FROM SHOPS";
-        try (PreparedStatement statement = conn.prepareStatement(query)) {
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    SilkSpawnersShop shop = getShopFromResultSet(rs);
-                    shopList.add(shop);
-                }
-            } catch (SQLException e) {
-                plugin.getLogger().severe("There was an error getting the shop list");
-                e.printStackTrace();
+        try (PreparedStatement statement = conn.prepareStatement(query); ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
+                SilkSpawnersShop shop = getShopFromResultSet(rs);
+                shopList.add(shop);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe("There was an error getting the shop list");
@@ -221,6 +218,18 @@ implements ISilkSpawnersShopAddonStorage {
         double y = rs.getInt("y");
         double z = rs.getInt("z");
         String world = rs.getString("world");
-        return new SilkSpawnersShop(x, y, z, world, mode, mob, price, shopId);
+        int amount = rs.getInt("amount");
+        return new SilkSpawnersShop(x, y, z, world, mode, mob, amount, price, shopId);
+    }
+
+    @Override
+    public boolean upgradeDatabase() {
+        String query = "ALTER TABLE SHOPS ADD AMOUNT INTEGER DEFAULT 1 AFTER MOB";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

@@ -23,4 +23,6 @@ public interface ISilkSpawnersShopAddonStorage {
     SilkSpawnersShop getShop(Sign sign);
 
     void disable();
+
+    boolean upgradeDatabase();
 }

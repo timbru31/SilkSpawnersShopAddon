@@ -10,7 +10,8 @@ public enum SilkspawnersShopMode {
         if (stringMode == null) {
             return null;
         }
-        switch (stringMode.toUpperCase(Locale.ENGLISH)) {
+        // In case one sends a new syntax like BUY:16
+        switch (stringMode.split(":")[0].toUpperCase(Locale.ENGLISH)) {
         case "BUY":
             return BUY;
         case "SELL":

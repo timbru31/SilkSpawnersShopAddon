@@ -19,6 +19,7 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
@@ -55,7 +56,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         Document loc = new Document("world", shopLoc.getWorld().getName());
         loc.append("x", shopLoc.getX()).append("y", shopLoc.getY()).append("z", shopLoc.getZ());
         Document doc = new Document("shopId", shop.getId().toString()).append("mode", shop.getMode().toString())
-                .append("mob", shop.getMob()).append("price", shop.getPrice()).append("location", loc);
+                .append("mob", shop.getMob()).append("amount", shop.getAmount()).append("price", shop.getPrice()).append("location", loc);
         return doc;
     }
 
@@ -69,7 +70,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         String mob = doc.getString("mob");
         double price = doc.getDouble("price");
         SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(doc.getString("mode"));
-        return new SilkSpawnersShop(x, y, z, world, mode, mob, price, UUID.fromString(shopId));
+        int amount = doc.getInteger("amount", 1);
+        return new SilkSpawnersShop(x, y, z, world, mode, mob, amount, price, UUID.fromString(shopId));
     }
 
     @Override
@@ -183,5 +185,12 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
     public void disable() {
         mongoClient.close();
         super.disable();
+    }
+
+
+    @Override
+    public boolean upgradeDatabase() {
+        UpdateResult result = collection.updateMany(new Document(), new Document("$set", new Document("amount", 1)));
+        return true;
     }
 }

@@ -46,6 +46,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         data.add(shop.getMode().toString());
         data.add(shop.getMob());
         data.add(String.valueOf(shop.getPrice()));
+        data.add(String.valueOf(shop.getAmount()));
         shopConfiguration.set(shop.getId().toString(), data);
         if (save) {
             try {
@@ -85,7 +86,13 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
             double x = Double.valueOf(rawShop.get(1));
             double y = Double.valueOf(rawShop.get(2));
             double z = Double.valueOf(rawShop.get(3));
-            SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5), Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
+            int amount;
+            try {
+                amount = Integer.valueOf(rawShop.get(7));
+            } catch(IndexOutOfBoundsException e) {
+                amount = 1;
+            }
+            SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5), amount, Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
             shops.add(shop);
         }
         return shops;
@@ -167,5 +174,11 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
     @Override
     public void disable() {
         super.disable();
+    }
+
+    @Override
+    public boolean upgradeDatabase() {
+        // not necessary with YAML
+        return false;
     }
 }

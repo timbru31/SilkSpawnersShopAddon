@@ -9,7 +9,7 @@ The two modes are specified via BUY or SELL.
 A valid sing looks like this.
 ```
 &6[SilkSpawners] (configurable)
-BUY / SELL
+BUY|SELL:amount
 mob (name or ID)
 price (only numbers)
 ```
@@ -62,7 +62,7 @@ SQLite:
 
 ## Permissions
 (Fallback to OPs, if no permissions system is found)
-Both permissions are included in the silkspawners.* wildcard permission.
+All permissions are included in the silkspawners.* wildcard permission.
 
 | Permission node | Description |
 |:----------:|:----------:|
@@ -78,7 +78,7 @@ Both permissions are included in the silkspawners.* wildcard permission.
 ## Commands
 | Command | Aliases | Description | Permission node |
 |:----------:|:----------:|:----------:|:----------:|
-| /silkspawnersshopaddon <mode OR mob OR price> <new value> | silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value | silkspawners.editshop |
+| /silkspawnersshopaddon <mode OR mob OR price OR amount> <new value> | silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value | silkspawners.editshop |
 | /silkspawnersshopaddon check | same as above | Searches the database for invalid shops and removes them. MAY CAUSE LAG | silkspawners.updateshops |
 
 ## Support

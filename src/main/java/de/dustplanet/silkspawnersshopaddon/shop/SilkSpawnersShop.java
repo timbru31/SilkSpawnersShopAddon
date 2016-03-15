@@ -17,8 +17,9 @@ public class SilkSpawnersShop implements ISilkSpawnersShop, Serializable {
     private SilkspawnersShopMode mode;
     private String mob;
     private UUID id;
+    private int amount;
 
-    public SilkSpawnersShop(double x, double y, double z, String world, SilkspawnersShopMode mode, String mob, double price, UUID id) {
+    public SilkSpawnersShop(double x, double y, double z, String world, SilkspawnersShopMode mode, String mob, int amount, double price, UUID id) {
         this.mode = mode;
         this.price = price;
         this.mob = mob;
@@ -27,38 +28,39 @@ public class SilkSpawnersShop implements ISilkSpawnersShop, Serializable {
         this.z = z;
         this.world = world;
         this.id = id;
+        this.amount = amount;
     }
 
-    public SilkSpawnersShop(double x, double y, double z, String world, SilkspawnersShopMode mode, String mob, double price, String id) {
-        this(x, y, z, world, mode, mob, price, UUID.fromString(id));
+    public SilkSpawnersShop(double x, double y, double z, String world, SilkspawnersShopMode mode, String mob, int amount, double price, String id) {
+        this(x, y, z, world, mode, mob, amount, price, UUID.fromString(id));
     }
 
-    public SilkSpawnersShop(double x, double y, double z, String world, SilkspawnersShopMode mode, String mob, double price) {
-        this(x, y, z, world, mode, mob, price, UUID.randomUUID());
+    public SilkSpawnersShop(double x, double y, double z, String world, SilkspawnersShopMode mode, String mob, int amount, double price) {
+        this(x, y, z, world, mode, mob, amount, price, UUID.randomUUID());
     }
 
-    public SilkSpawnersShop(Sign sign, SilkspawnersShopMode mode, String mob, double price) {
-        this(sign.getLocation().getX(), sign.getLocation().getY(), sign.getLocation().getZ(), sign.getLocation().getWorld().getName(), mode, mob, price, UUID.randomUUID());
+    public SilkSpawnersShop(Sign sign, SilkspawnersShopMode mode, String mob, int amount, double price) {
+        this(sign.getLocation().getX(), sign.getLocation().getY(), sign.getLocation().getZ(), sign.getLocation().getWorld().getName(), mode, mob, amount, price, UUID.randomUUID());
     }
 
-    public SilkSpawnersShop(Sign sign, SilkspawnersShopMode mode, String mob, double price, UUID id) {
-        this(sign.getLocation().getX(), sign.getLocation().getY(), sign.getLocation().getZ(), sign.getLocation().getWorld().getName(), mode, mob, price, id);
+    public SilkSpawnersShop(Sign sign, SilkspawnersShopMode mode, String mob, int amount, double price, UUID id) {
+        this(sign.getLocation().getX(), sign.getLocation().getY(), sign.getLocation().getZ(), sign.getLocation().getWorld().getName(), mode, mob, amount, price, id);
     }
 
-    public SilkSpawnersShop(Sign sign, SilkspawnersShopMode mode, String mob, double price, String id) {
-        this(sign.getLocation().getX(), sign.getLocation().getY(), sign.getLocation().getZ(), sign.getLocation().getWorld().getName(), mode, mob, price, UUID.fromString(id));
+    public SilkSpawnersShop(Sign sign, SilkspawnersShopMode mode, String mob, int amount, double price, String id) {
+        this(sign.getLocation().getX(), sign.getLocation().getY(), sign.getLocation().getZ(), sign.getLocation().getWorld().getName(), mode, mob, amount, price, UUID.fromString(id));
     }
 
-    public SilkSpawnersShop(Location location, SilkspawnersShopMode mode, String mob, double price) {
-        this(location.getX(), location.getY(), location.getZ(), location.getWorld().getName(), mode, mob, price, UUID.randomUUID());
+    public SilkSpawnersShop(Location location, SilkspawnersShopMode mode, String mob, int amount, double price) {
+        this(location.getX(), location.getY(), location.getZ(), location.getWorld().getName(), mode, mob, amount, price, UUID.randomUUID());
     }
 
-    public SilkSpawnersShop(Location location, SilkspawnersShopMode mode, String mob, double price, UUID id) {
-        this(location.getX(), location.getY(), location.getZ(), location.getWorld().getName(), mode, mob, price, id);
+    public SilkSpawnersShop(Location location, SilkspawnersShopMode mode, String mob, int amount, double price, UUID id) {
+        this(location.getX(), location.getY(), location.getZ(), location.getWorld().getName(), mode, mob, amount, price, id);
     }
 
-    public SilkSpawnersShop(Location location, SilkspawnersShopMode mode, String mob, double price, String id) {
-        this(location.getX(), location.getY(), location.getZ(), location.getWorld().getName(), mode, mob, price, UUID.fromString(id));
+    public SilkSpawnersShop(Location location, SilkspawnersShopMode mode, String mob, int amount, double price, String id) {
+        this(location.getX(), location.getY(), location.getZ(), location.getWorld().getName(), mode, mob, amount, price, UUID.fromString(id));
     }
 
     @Override
@@ -144,5 +146,15 @@ public class SilkSpawnersShop implements ISilkSpawnersShop, Serializable {
     @Override
     public void setWorld(String world) {
         this.world = world;
+    }
+
+    @Override
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

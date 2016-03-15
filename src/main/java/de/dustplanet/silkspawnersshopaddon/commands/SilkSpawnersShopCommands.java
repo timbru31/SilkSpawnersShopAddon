@@ -110,6 +110,15 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                 change = false;
                             }
                             break;
+                        case "AMOUNT":
+                            try {
+                                int amount = Integer.parseInt(argument.replaceAll("[^0-9.]", ""));
+                                shop.setAmount(amount);
+                            } catch (NumberFormatException e) {
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidAmount")));
+                                change = false;
+                            }
+                            break;
                         default:
                             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.commandUsage")));
                             change = false;
@@ -118,7 +127,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                         if (change) {
                             if (shopManager.updateShop(shop)) {
                                 sign.setLine(0, ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier")));
-                                sign.setLine(1, shop.getMode().toString());
+                                sign.setLine(1, shop.getMode().toString() + ":" + shop.getAmount());
                                 sign.setLine(2, shop.getMob());
                                 sign.setLine(3, plugin.getFormattedPrice(shop.getPrice()));
                                 sign.update(true);

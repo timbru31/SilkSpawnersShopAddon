@@ -39,4 +39,8 @@ public interface ISilkSpawnersShop {
     String getWorld();
 
     void setWorld(String world);
+
+    int getAmount();
+
+    void setAmount(int amount);
 }

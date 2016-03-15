@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
@@ -45,6 +46,8 @@ public class SilkSpawnersShopManager {
             setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
             break;
         }
+
+        storage.upgradeDatabase();
     }
 
     public ISilkSpawnersShopAddonStorage getStorage() {
@@ -102,7 +105,7 @@ public class SilkSpawnersShopManager {
         return storage.getAllShops();
     }
 
-    public void handleShopInteraction(Player player, Sign sign, boolean hasItem, ItemStack item) {
+    public void handleShopInteraction(Player player, Sign sign, boolean hasItem, ItemStack item, EquipmentSlot hand) {
         SilkSpawnersShop shop = getShop(sign);
         SilkspawnersShopMode mode = shop.getMode();
         switch (mode) {
@@ -110,10 +113,11 @@ public class SilkSpawnersShopManager {
             handleBuy(player, shop);
             break;
         case SELL:
-            handleSell(player, shop, hasItem, item);
+            handleSell(player, shop, hasItem, item, hand);
             break;
         default:
-            plugin.getServer().getLogger().warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
+            plugin.getServer().getLogger()
+            .warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
             removeShop(shop);
             break;
         }
@@ -125,68 +129,108 @@ public class SilkSpawnersShopManager {
             double price = shop.getPrice();
             short entityID = su.name2Eid.get(mob);
             if (!plugin.getEcon().has(player, price)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.notEnoughMoney")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("buying.notEnoughMoney")));
                 return;
             }
             if (player.getInventory().firstEmpty() == -1) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.inventoryFull")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("buying.inventoryFull")));
                 return;
             }
             plugin.getEcon().withdrawPlayer(player, price);
             mob = su.getCreatureName(entityID);
-            player.getInventory().addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(su.eid2MobID.get(entityID)), 1, false));
+            player.getInventory().addItem(su.newSpawnerItem(entityID,
+                    su.getCustomSpawnerName(su.eid2MobID.get(entityID)), shop.getAmount(), false));
             if (plugin.getConfig().getBoolean("forceInventoryUpdate", false)) {
                 player.updateInventory();
             }
             String priceString = plugin.getFormattedPrice(price);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("buying.success").replace("%creature%", mob).replace("%price%", priceString)));
+            player.sendMessage(
+                    ChatColor.translateAlternateColorCodes('\u0026',
+                            plugin.getLocalization().getString("buying.success").replace("%creature%", mob)
+                            .replace("%price%", priceString)
+                            .replace("%amount%", Integer.toString(shop.getAmount()))));
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.buy")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                    plugin.getLocalization().getString("noPermission.buy")));
         }
     }
 
-    public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
+    public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item, EquipmentSlot hand) {
         if (player.hasPermission("silkspawners.use.sell")) {
             String mob = shop.getMob();
             double price = shop.getPrice();
             short entityID = su.name2Eid.get(mob);
             if (!hasItem || !(item.getType() == Material.MOB_SPAWNER)) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noSpawnerInHand")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("selling.noSpawnerInHand")));
                 return;
             }
             short entityIDInHand = su.getStoredSpawnerItemEntityID(item);
             String creatureName = su.getCreatureName(entityID);
             if (entityIDInHand != entityID) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.notTheSameMob").replace("%creature%", creatureName)));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization()
+                        .getString("selling.notTheSameMob").replace("%creature%", creatureName)));
                 return;
             }
             plugin.getEcon().depositPlayer(player, price);
-            ItemStack itemInHand = player.getItemInHand();
-            if (itemInHand.getAmount() == 1) {
-                player.setItemInHand(null);
+            ItemStack itemInHand;
+            if (hand == EquipmentSlot.OFF_HAND) {
+                itemInHand = player.getInventory().getItemInOffHand();
             } else {
-                itemInHand.setAmount(itemInHand.getAmount() - 1);
+                itemInHand = player.getInventory().getItemInMainHand();
+            }
+            int inHandAmount = itemInHand.getAmount();
+            if (inHandAmount < shop.getAmount()) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("selling.notEnoughSpawners")));
+                return;
+            }
+            if (inHandAmount - shop.getAmount() == 0) {
+                if (hand == EquipmentSlot.OFF_HAND) {
+                    player.getInventory().setItemInOffHand(null);
+                } else {
+                    player.getInventory().setItemInMainHand(null);
+                }
+            } else {
+                itemInHand.setAmount(itemInHand.getAmount() - shop.getAmount());
             }
             if (plugin.getConfig().getBoolean("forceInventoryUpdate", false)) {
                 player.updateInventory();
             }
             String priceString = plugin.getFormattedPrice(price);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.success").replace("%creature%", creatureName).replace("%price%", priceString)));
+            player.sendMessage(
+                    ChatColor.translateAlternateColorCodes('\u0026',
+                            plugin.getLocalization().getString("selling.success").replace("%creature%", creatureName)
+                            .replace("%price%", priceString)
+                            .replace("%amount%", Integer.toString(shop.getAmount()))));
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.sell")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                    plugin.getLocalization().getString("noPermission.sell")));
         }
     }
 
     public boolean createOrUpdateShop(String[] lines, Sign sign, Player player) {
         // Mac sends weird \uF700 and \uF701 chars
         boolean existingShop = isShop(sign);
-        SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(lines[1].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""));
+        String secondLine = lines[1].trim().replaceAll("\uF700", "").replaceAll("\uF701", "");
+        SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(secondLine);
         if (SilkspawnersShopMode.isValidMode(mode)) {
             String mob = lines[2].toLowerCase().trim().replaceAll("\uF700", "").replaceAll("\uF701", "");
             if (su.isKnown(mob)) {
                 String priceString = lines[3];
                 try {
                     double price = Double.parseDouble(priceString.replaceAll("[^0-9.]", ""));
+                    int amount;
+                    try {
+                        amount = Integer.parseInt(secondLine.split(":")[1].replaceAll("[^0-9]", ""));
+                    } catch (IndexOutOfBoundsException | NumberFormatException e) {
+                        amount = 1;
+                        sign.setLine(2, secondLine + ":1");
+                    }
+                    sign.setLine(3, plugin.getFormattedPrice(price));
+                    sign.update(true);
                     // Update existing shop or create a new one
                     SilkSpawnersShop shop;
                     if (existingShop) {
@@ -195,28 +239,35 @@ public class SilkSpawnersShopManager {
                         shop.setMode(mode);
                         shop.setPrice(price);
                         if (updateShop(shop)) {
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.success")));
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                    plugin.getLocalization().getString("updating.success")));
                             return true;
                         }
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.error")));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                plugin.getLocalization().getString("updating.error")));
                         removeShop(shop);
                     }
-                    shop = new SilkSpawnersShop(sign, mode, mob, price);
+                    shop = new SilkSpawnersShop(sign, mode, mob, amount, price);
                     if (addShop(shop)) {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.success")));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                plugin.getLocalization().getString("creating.success")));
                         return true;
                     }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.error")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                            plugin.getLocalization().getString("creating.error")));
                 } catch (NullPointerException | NumberFormatException e) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                            plugin.getLocalization().getString("creating.invalidPrice")));
                     removeShop(sign);
                 }
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMob")));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("creating.invalidMob")));
                 removeShop(sign);
             }
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMode")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                    plugin.getLocalization().getString("creating.invalidMode")));
             removeShop(sign);
         }
         return false;
