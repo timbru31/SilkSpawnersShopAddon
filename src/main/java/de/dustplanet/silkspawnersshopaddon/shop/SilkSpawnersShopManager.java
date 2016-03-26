@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
@@ -105,7 +104,7 @@ public class SilkSpawnersShopManager {
         return storage.getAllShops();
     }
 
-    public void handleShopInteraction(Player player, Sign sign, boolean hasItem, ItemStack item, EquipmentSlot hand) {
+    public void handleShopInteraction(Player player, Sign sign, boolean hasItem, ItemStack item) {
         SilkSpawnersShop shop = getShop(sign);
         SilkspawnersShopMode mode = shop.getMode();
         switch (mode) {
@@ -113,7 +112,7 @@ public class SilkSpawnersShopManager {
             handleBuy(player, shop);
             break;
         case SELL:
-            handleSell(player, shop, hasItem, item, hand);
+            handleSell(player, shop, hasItem, item);
             break;
         default:
             plugin.getServer().getLogger()
@@ -157,7 +156,7 @@ public class SilkSpawnersShopManager {
         }
     }
 
-    public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item, EquipmentSlot hand) {
+    public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
         if (player.hasPermission("silkspawners.use.sell")) {
             String mob = shop.getMob();
             double price = shop.getPrice();
@@ -175,12 +174,7 @@ public class SilkSpawnersShopManager {
                 return;
             }
             plugin.getEcon().depositPlayer(player, price);
-            ItemStack itemInHand;
-            if (hand == EquipmentSlot.OFF_HAND) {
-                itemInHand = player.getInventory().getItemInOffHand();
-            } else {
-                itemInHand = player.getInventory().getItemInMainHand();
-            }
+            ItemStack itemInHand = player.getInventory().getItemInMainHand();
             int inHandAmount = itemInHand.getAmount();
             if (inHandAmount < shop.getAmount()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
@@ -188,11 +182,7 @@ public class SilkSpawnersShopManager {
                 return;
             }
             if (inHandAmount - shop.getAmount() == 0) {
-                if (hand == EquipmentSlot.OFF_HAND) {
-                    player.getInventory().setItemInOffHand(null);
-                } else {
-                    player.getInventory().setItemInMainHand(null);
-                }
+                player.getInventory().setItemInMainHand(null);
             } else {
                 itemInHand.setAmount(itemInHand.getAmount() - shop.getAmount());
             }
