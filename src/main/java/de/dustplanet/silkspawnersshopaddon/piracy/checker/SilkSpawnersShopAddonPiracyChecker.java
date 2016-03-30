@@ -29,7 +29,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         // URL
         URL url = null;
         try {
-            url = new URL("http://api.dustplanet.de/");
+            url = new URL("https://api.dustplanet.de/");
         } catch (MalformedURLException e) {
             disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
             return -1;
