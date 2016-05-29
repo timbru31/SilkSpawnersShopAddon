@@ -64,6 +64,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         }
         con.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
 
         // Send POST request
         con.setDoOutput(true);
