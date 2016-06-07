@@ -190,7 +190,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
 
     @Override
     public boolean upgradeDatabase() {
-        UpdateResult result = collection.updateMany(new Document(), new Document("$set", new Document("amount", 1)));
+        collection.updateMany(new Document(), new Document("$set", new Document("amount", 1)));
         return true;
     }
 }

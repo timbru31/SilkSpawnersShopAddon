@@ -88,7 +88,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
             double z = Double.valueOf(rawShop.get(3));
             int amount;
             try {
-                amount = Integer.valueOf(rawShop.get(7));
+                amount = Integer.parseInt(rawShop.get(7));
             } catch(IndexOutOfBoundsException e) {
                 amount = 1;
             }
