@@ -21,9 +21,6 @@ public class SilkSpawnersShopAddonStorageImpl {
     }
 
     private class SilkSpawnersCleanupRunner implements Runnable {
-        public SilkSpawnersCleanupRunner() {
-        }
-
         @Override
         public void run() {
             cachedShops.clear();
