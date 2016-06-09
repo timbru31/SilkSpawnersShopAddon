@@ -12,7 +12,6 @@ import java.util.Locale;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.block.Action;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -27,6 +26,7 @@ import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonProtec
 import de.dustplanet.silkspawnersshopaddon.piracy.checker.BlackListedException;
 import de.dustplanet.silkspawnersshopaddon.piracy.task.SilkSpawnersShopAddonPiracyTask;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
+import de.dustplanet.silkspawnersshopaddon.util.ScalarYamlConfiguration;
 import de.dustplanet.silkspawnersshopaddon.util.Updater;
 import de.dustplanet.silkspawnersshopaddon.util.Updater.UpdateResult;
 import de.dustplanet.util.SilkUtil;
@@ -87,7 +87,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             copy("localization.yml", localizationFile);
         }
 
-        setLocalization(YamlConfiguration.loadConfiguration(localizationFile));
+        setLocalization(ScalarYamlConfiguration.loadConfiguration(localizationFile));
         loadLocalization();
 
         // Load piracy task runner
