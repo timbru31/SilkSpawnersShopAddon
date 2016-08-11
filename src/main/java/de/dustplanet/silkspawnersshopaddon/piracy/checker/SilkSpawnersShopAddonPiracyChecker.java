@@ -31,7 +31,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         try {
             url = new URL("https://api.dustplanet.de/");
         } catch (MalformedURLException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (1)");
             return -1;
         }
 
@@ -40,7 +40,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         try {
             con = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (2)");
             return -1;
         }
 
@@ -51,7 +51,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         try {
             encodedData = rawData + URLEncoder.encode(userId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (3)");
             return -1;
         }
 
@@ -59,7 +59,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         try {
             con.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (4)");
             return -1;
         }
         con.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
@@ -73,7 +73,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
             wr.flush();
             wr.close();
         } catch (IOException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (5)");
             return -1;
         }
 
@@ -82,14 +82,14 @@ public class SilkSpawnersShopAddonPiracyChecker {
         try {
             responseCode = con.getResponseCode();
         } catch (IOException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (6)");
             return responseCode;
         }
 
         String inputLine;
         StringBuffer response = new StringBuffer();
         if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_UNAVAILABLE
-                || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY) {
+                || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT) {
             return responseCode;
         } else if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))) {
@@ -97,7 +97,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
                     response.append(inputLine);
                 }
             } catch (IOException e) {
-                disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+                disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (7)");
                 return responseCode;
             }
         } else {
@@ -106,7 +106,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
                     response.append(inputLine);
                 }
             } catch (IOException e) {
-                disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+                disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (8)");
                 return responseCode;
             }
         }
@@ -114,7 +114,7 @@ public class SilkSpawnersShopAddonPiracyChecker {
         try {
             responseJSON = new JSONObject(response.toString());
         } catch (JSONException e) {
-            disableDueToError("An error occured, disabling SilkSpawnersShopAddon");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (9)");
             return responseCode;
         }
         boolean blacklisted = responseJSON.getBoolean("blacklisted");
