@@ -31,11 +31,11 @@
     </repository>
     <repository>
       <id>Plugin Metrics</id>
-      <url>http://repo.mcstats.org/content/repositories/public</url>
+      <url>https://repo.mcstats.org/content/repositories/public</url>
     </repository>
     <repository>
       <id>SilkSpawners-Repo</id>
-      <url>http://ci.dustplanet.de/plugin/repository/everything</url>
+      <url>https://ci.dustplanet.de/plugin/repository/everything</url>
     </repository>
   </repositories>
 
