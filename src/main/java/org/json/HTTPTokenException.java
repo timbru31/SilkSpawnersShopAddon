@@ -1,7 +1,6 @@
 package org.json;
 
 public class HTTPTokenException extends Exception {
-
     private static final long serialVersionUID = 551973567466799446L;
 
     public HTTPTokenException() {

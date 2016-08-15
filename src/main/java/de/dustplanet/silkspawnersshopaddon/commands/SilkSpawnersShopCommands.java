@@ -14,6 +14,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.dustplanet.silkspawnersshopaddon.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
@@ -113,8 +114,11 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                         case "AMOUNT":
                             try {
                                 int amount = Integer.parseInt(argument.replaceAll("[^0-9.]", ""));
+                                if (amount < 1) {
+                                    throw new InvalidAmountException("Amount must be greater or equal to 1");
+                                }
                                 shop.setAmount(amount);
-                            } catch (NumberFormatException e) {
+                            } catch (NumberFormatException | InvalidAmountException e) {
                                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidAmount")));
                                 change = false;
                             }
@@ -127,7 +131,11 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                         if (change) {
                             if (shopManager.updateShop(shop)) {
                                 sign.setLine(0, ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier")));
-                                sign.setLine(1, shop.getMode().toString() + ":" + shop.getAmount());
+                                if (shop.getAmount() > 1) {
+                                    sign.setLine(1, shop.getMode().toString() + ":" + shop.getAmount());
+                                } else {
+                                    sign.setLine(1, shop.getMode().toString());
+                                }
                                 sign.setLine(2, shop.getMob());
                                 sign.setLine(3, plugin.getFormattedPrice(shop.getPrice()));
                                 sign.update(true);

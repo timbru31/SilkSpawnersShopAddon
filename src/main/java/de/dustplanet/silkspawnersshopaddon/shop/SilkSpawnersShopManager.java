@@ -9,6 +9,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import de.dustplanet.silkspawnersshopaddon.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.storage.ISilkSpawnersShopAddonStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonHSQLDBStorage;
@@ -214,12 +215,19 @@ public class SilkSpawnersShopManager {
                 String priceString = lines[3];
                 try {
                     double price = Double.parseDouble(priceString.replaceAll("[^0-9.]", ""));
-                    int amount;
-                    try {
-                        amount = Integer.parseInt(secondLine.split(":")[1].replaceAll("[^0-9]", ""));
-                    } catch (IndexOutOfBoundsException | NumberFormatException e) {
-                        amount = 1;
-                        sign.setLine(2, secondLine + ":1");
+                    int amount = 1;
+                    if (secondLine.contains(":")) {
+                        try {
+                            amount = Integer.parseInt(secondLine.split(":")[1].replaceAll("[^0-9]", ""));
+                            if (amount < 1) {
+                                throw new InvalidAmountException("Amount must be greater or equal to 1");
+                            }
+                        } catch (IndexOutOfBoundsException | InvalidAmountException | NumberFormatException e) {
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                    plugin.getLocalization().getString("creating.invalidAmount")));
+                            removeShop(sign);
+                            return false;
+                        }
                     }
                     sign.setLine(3, plugin.getFormattedPrice(price));
                     sign.update(true);
