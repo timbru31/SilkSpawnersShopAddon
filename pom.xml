@@ -31,7 +31,7 @@
     </repository>
     <repository>
       <id>Plugin Metrics</id>
-      <url>https://repo.mcstats.org/content/repositories/public</url>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
     </repository>
     <repository>
       <id>SilkSpawners-Repo</id>
