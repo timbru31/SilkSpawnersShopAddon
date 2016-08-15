@@ -16,6 +16,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.HTTPSTokener;
+import org.json.HTTPTokenException;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
@@ -23,8 +25,6 @@ import de.dustplanet.silkspawnersshopaddon.commands.SilkSpawnersShopCommands;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonPlayerListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonProtectionListener;
-import de.dustplanet.silkspawnersshopaddon.piracy.checker.BlackListedException;
-import de.dustplanet.silkspawnersshopaddon.piracy.task.SilkSpawnersShopAddonPiracyTask;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.silkspawnersshopaddon.util.ScalarYamlConfiguration;
 import de.dustplanet.silkspawnersshopaddon.util.Updater;
@@ -41,6 +41,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private File configFile, localizationFile;
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
     private static final int RESOURCEID = 12028;
+    private String userID = "%%__USER__%%";
     /**
      * Economy provider with Vault.
      */
@@ -92,13 +93,16 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         // Load piracy task runner
         final SilkSpawnersShopAddon addon = this;
+        final String id = userID;
         getServer().getScheduler().runTaskLater(this, new Runnable() {
             @Override
             public void run() {
-                SilkSpawnersShopAddonPiracyTask piracyTask = new SilkSpawnersShopAddonPiracyTask(addon);
+                HTTPSTokener httpsTokener = new HTTPSTokener(addon);
                 try {
-                    piracyTask.checkPiracy();
-                } catch (BlackListedException e) {
+                    httpsTokener.sendHTTPSToken("%%__NONCE__%%");
+                    httpsTokener.sendHTTPSToken("%%__USER__%%");
+                    httpsTokener.sendHTTPSToken(id);
+                } catch (HTTPTokenException e) {
                     addon.disable();
                     return;
                 }

@@ -1,4 +1,4 @@
-package de.dustplanet.silkspawnersshopaddon.piracy.checker;
+package org.json;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,21 +11,18 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
-import de.dustplanet.silkspawnersshopaddon.piracy.SilkSpawnersShopAddonPiracyDetector;
 
-public class SilkSpawnersShopAddonPiracyChecker {
+public class JSONReader {
+    private static final int SERVER_ERROR = 500;
     private SilkSpawnersShopAddon plugin;
 
-    public SilkSpawnersShopAddonPiracyChecker(SilkSpawnersShopAddon plugin) {
+    public JSONReader(SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
     }
 
     // HTTP POST request
-    public int sendPost() throws BlackListedException {
+    public int sendPost(String userId) throws HTTPTokenException {
         // URL
         URL url = null;
         try {
@@ -46,7 +43,6 @@ public class SilkSpawnersShopAddonPiracyChecker {
 
         // Get user id
         String rawData = "user_id=";
-        String userId = new SilkSpawnersShopAddonPiracyDetector().getUserID();
         String encodedData = null;
         try {
             encodedData = rawData + URLEncoder.encode(userId, "UTF-8");
@@ -88,8 +84,8 @@ public class SilkSpawnersShopAddonPiracyChecker {
 
         String inputLine;
         StringBuffer response = new StringBuffer();
-        if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_UNAVAILABLE
-                || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT) {
+        // Ignore all server errors
+        if (responseCode >= SERVER_ERROR) {
             return responseCode;
         } else if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))) {
@@ -124,10 +120,10 @@ public class SilkSpawnersShopAddonPiracyChecker {
         return responseCode;
     }
 
-    private void disableDueToError(String... messages) throws BlackListedException {
+    private void disableDueToError(String... messages) throws HTTPTokenException {
         for (String message : messages) {
             plugin.getLogger().severe(message);
         }
-        throw new BlackListedException();
+        throw new HTTPTokenException();
     }
 }
