@@ -123,10 +123,11 @@ public class SilkSpawnersShopManager {
     }
 
     public void handleBuy(Player player, SilkSpawnersShop shop) {
-        if (player.hasPermission("silkspawners.use.buy")) {
-            String mob = shop.getMob();
+        String mob = shop.getMob();
+        short entityID = su.name2Eid.get(mob);
+        String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
+        if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.buy") || player.hasPermission("silkspawners.use.buy." + mobName)) {
             double price = shop.getPrice();
-            short entityID = su.name2Eid.get(mob);
             if (!plugin.getEcon().has(player, price)) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                         plugin.getLocalization().getString("buying.notEnoughMoney")));
@@ -157,10 +158,11 @@ public class SilkSpawnersShopManager {
     }
 
     public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
-        if (player.hasPermission("silkspawners.use.sell")) {
-            String mob = shop.getMob();
+        String mob = shop.getMob();
+        short entityID = su.name2Eid.get(mob);
+        String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
+        if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.sell") || player.hasPermission("silkspawners.use.sell." + mobName)) {
             double price = shop.getPrice();
-            short entityID = su.name2Eid.get(mob);
             if (!hasItem || !(item.getType() == Material.MOB_SPAWNER)) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                         plugin.getLocalization().getString("selling.noSpawnerInHand")));

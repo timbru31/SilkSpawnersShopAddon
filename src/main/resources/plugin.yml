@@ -18,7 +18,9 @@ permissions:
   silkspawners.use.*:
     children:
       silkspawners.use.buy: true
+      silkspawners.use.buy.*: true
       silkspawners.use.sell: true
+      silkspawners.use.sell.*: true
   silkspawners.use.buy:
     description: Allows you to use buy shops
     default: true

@@ -42,6 +42,7 @@ invincibility:
   explode: true
   ignite: true
 forceInventoryUpdate: false
+perMobPermissions: false
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'

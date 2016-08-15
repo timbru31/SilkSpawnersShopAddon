@@ -7,12 +7,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.Action;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +45,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
     private static final int RESOURCEID = 12028;
     private String userID = "%%__USER__%%";
+    private boolean perMobPermissions;
     /**
      * Economy provider with Vault.
      */
@@ -113,6 +117,12 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
         setShopManager(new SilkSpawnersShopManager(this));
 
+        // Load dynamic mob permissions
+        if (isPerMobPermissions()) {
+            loadPermissions("buy", "Allows you to use buy shops");
+            loadPermissions("sell", "Allows you to use sell shops");
+        }
+
         // Register events
         PluginManager pluginManager = getServer().getPluginManager();
         SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
@@ -166,6 +176,16 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         } else {
             getLogger().info("Updater is disabled");
         }
+    }
+
+    private void loadPermissions(String permissionPart, String description) {
+        HashMap<String, Boolean> childPermissions = new HashMap<>();
+        for (String mobAlias : su.eid2DisplayName.values()) {
+            mobAlias = mobAlias.toLowerCase().replace(" ", "");
+            childPermissions.put("silkspawners.use" + permissionPart + "." + mobAlias, true);
+        }
+        Permission perm = new Permission("silkspawners.use" + permissionPart + ".*", description, PermissionDefault.TRUE, childPermissions);
+        getServer().getPluginManager().addPermission(perm);
     }
 
     public JavaPlugin getPlugin() {
@@ -248,6 +268,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         config.addDefault("invincibility.explode", true);
         config.addDefault("invincibility.ignite", true);
         config.addDefault("forceInventoryUpdate", false);
+        config.addDefault("perMobPermissions", false);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
         config.addDefault("mongoDB.port", 27017);
@@ -275,6 +296,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             tempAllowedActions.add(Action.valueOf(allowedAction));
         }
         setAllowedActions(tempAllowedActions);
+        setPerMobPermissions(config.getBoolean("perMobPermissions", false));
     }
 
     /**
@@ -367,5 +389,13 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
     public void setNumberFormat(DecimalFormat numberFormat) {
         this.numberFormat = numberFormat;
+    }
+
+    public boolean isPerMobPermissions() {
+        return perMobPermissions;
+    }
+
+    public void setPerMobPermissions(boolean perMobPermissions) {
+        this.perMobPermissions = perMobPermissions;
     }
 }
