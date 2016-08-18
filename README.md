@@ -85,7 +85,7 @@ All permissions are included in the silkspawners.* wildcard permission.
 | /silkspawnersshopaddon check | same as above | Searches the database for invalid shops and removes them. MAY CAUSE LAG | silkspawners.updateshops |
 
 ## Support
-For support visit the dev.bukkit.org page: https://www.spigotmc.org/resources/12028/
+For support visit the SpigotMC page: https://www.spigotmc.org/resources/12028/
 
 ## Usage statistics
 [![MCStats](http://mcstats.org/signature/SilkSpawnersShopAddon.png)](http://mcstats.org/plugin/SilkSpawnersShopAddon)
