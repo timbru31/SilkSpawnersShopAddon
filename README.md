@@ -57,6 +57,10 @@ MySQL:
   user: 'root'
   pass: ''
   database: 'shops'
+HSQLDB:
+  user: 'SA'
+  pass: ''
+  database: 'shops.db'
 ```
 
 ## Permissions
