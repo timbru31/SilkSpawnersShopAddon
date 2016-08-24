@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -68,13 +69,15 @@ public class JSONReader {
         con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
-
         // Send POST request
         con.setDoOutput(true);
         try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
             wr.write(encodedData.getBytes("UTF-8"));
             wr.flush();
             wr.close();
+        } catch (UnknownHostException e) {
+            // Handle being offline nice
+            return -1;
         } catch (IOException e) {
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (5)");
             return -1;
