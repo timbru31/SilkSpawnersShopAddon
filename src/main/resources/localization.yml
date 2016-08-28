@@ -24,6 +24,7 @@ removing:
   error: "&6[SilkSpawners] &4There was an error removing the shop."
   success: "&6[SilkSpawners] &2You removed the shop successfully."
 selling:
+  error: "&6[SilkSpawners] &4There was an error processing the transaction. The transaction has been cancelled."
   noSpawnerInHand: "&6[SilkSpawners] &4You do not have a spawner in your hand."
   notEnoughSpawners: "&6[SilkSpawners] &4You do not have enough spawners in your hand."
   notTheSameMob: "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4."

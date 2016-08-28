@@ -9,8 +9,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import de.dustplanet.silkspawnersshopaddon.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
+import de.dustplanet.silkspawnersshopaddon.exception.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.storage.ISilkSpawnersShopAddonStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonHSQLDBStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMongoStorage;
@@ -176,16 +176,33 @@ public class SilkSpawnersShopManager {
                         .getString("selling.notTheSameMob").replace("%creature%", creatureName)));
                 return;
             }
-            plugin.getEcon().depositPlayer(player, price);
-            ItemStack itemInHand = player.getInventory().getItemInMainHand();
+            ItemStack itemInHand = null;
+            try {
+                itemInHand = player.getInventory().getItemInMainHand();
+            } catch (NoSuchMethodError e) {
+                // 1.8 has getItemInHand
+                itemInHand = player.getItemInHand();
+            }
+            if (itemInHand == null) {
+                plugin.getLogger().severe("Unable to get item in hand, please report this. Aborting transaction");
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("selling.error")));
+                return;
+            }
             int inHandAmount = itemInHand.getAmount();
             if (inHandAmount < shop.getAmount()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                         plugin.getLocalization().getString("selling.notEnoughSpawners")));
                 return;
             }
+            plugin.getEcon().depositPlayer(player, price);
             if (inHandAmount - shop.getAmount() == 0) {
-                player.getInventory().setItemInMainHand(null);
+                try {
+                    player.getInventory().setItemInMainHand(null);
+                } catch (NoSuchMethodError e) {
+                    // 1.8 has setItemInHand
+                    player.setItemInHand(null);
+                }
             } else {
                 itemInHand.setAmount(itemInHand.getAmount() - shop.getAmount());
             }

@@ -42,7 +42,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private ArrayList<Action> allowedActions = new ArrayList<>();
     private FileConfiguration localization;
     private File configFile, localizationFile;
-    private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
+    private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST,
+            BlockFace.NORTH, BlockFace.SOUTH };
     private static final int RESOURCEID = 12028;
     private String userID = "%%__USER__%%";
     private boolean perMobPermissions;
@@ -77,7 +78,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             if (configFile.getParentFile().mkdirs()) {
                 copy("config.yml", configFile);
             } else {
-                getLogger().severe("The config folder could NOT be created, make sure it's writable!");
+                getLogger().severe(
+                        "The config folder could NOT be created, make sure it's writable!");
                 getLogger().severe("Disabling now!");
                 setEnabled(false);
                 return;
@@ -92,7 +94,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             copy("localization.yml", localizationFile);
         }
 
-        setLocalization(ScalarYamlConfiguration.loadConfiguration(localizationFile));
+        setLocalization(
+                ScalarYamlConfiguration.loadConfiguration(localizationFile));
         loadLocalization();
 
         // Load piracy task runner
@@ -125,21 +128,26 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         // Register events
         PluginManager pluginManager = getServer().getPluginManager();
-        SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
-        SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(this);
-        SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(this);
+        SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(
+                this);
+        SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(
+                this);
+        SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(
+                this);
         pluginManager.registerEvents(blockListener, this);
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
 
         // Load command
-        getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
+        getCommand("silkspawnersshopaddon")
+        .setExecutor(new SilkSpawnersShopCommands(this));
 
         // Metrics
         try {
             Metrics metrics = new Metrics(this);
             Graph graph = metrics.createGraph("storage provider");
-            graph.addPlotter(new Metrics.Plotter(getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH)) {
+            graph.addPlotter(new Metrics.Plotter(getConfig()
+                    .getString("storageMethod").toUpperCase(Locale.ENGLISH)) {
                 @Override
                 public int getValue() {
                     return 1;
@@ -152,24 +160,34 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
 
         // Updater
-        boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
+        boolean updaterDisabled = getConfig().getBoolean("disableUpdater",
+                false);
         if (!updaterDisabled) {
-            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+            getServer().getScheduler().runTaskLaterAsynchronously(this,
+                    new Runnable() {
                 @Override
                 public void run() {
-                    Updater updater = new Updater(getPlugin(), RESOURCEID, false);
+                    Updater updater = new Updater(getPlugin(),
+                            RESOURCEID, false);
                     UpdateResult result = updater.getResult();
                     if (result == UpdateResult.NO_UPDATE) {
-                        getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
+                        getLogger().info(
+                                "You are running the latest version of SilkSpawnersShopAddon!");
                     } else if (result == UpdateResult.UPDATE_AVAILABLE) {
                         getLogger().info(
                                 "There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
-                        getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is "
+                        getLogger().info("You are running "
+                                + getPlugin().getDescription()
+                                .getVersion()
+                                + ", latest is "
                                 + updater.getVersion());
                     } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
-                        getLogger().info("Update checking is disabled because you are running a dev build.");
+                        getLogger().info(
+                                "Update checking is disabled because you are running a dev build.");
                     } else {
-                        getLogger().warning("The Updater returned the following value: " + result.name());
+                        getLogger().warning(
+                                "The Updater returned the following value: "
+                                        + result.name());
                     }
                 }
             }, 40L);
@@ -182,9 +200,12 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         HashMap<String, Boolean> childPermissions = new HashMap<>();
         for (String mobAlias : su.eid2DisplayName.values()) {
             mobAlias = mobAlias.toLowerCase().replace(" ", "");
-            childPermissions.put("silkspawners.use" + permissionPart + "." + mobAlias, true);
+            childPermissions.put(
+                    "silkspawners.use" + permissionPart + "." + mobAlias, true);
         }
-        Permission perm = new Permission("silkspawners.use" + permissionPart + ".*", description, PermissionDefault.TRUE, childPermissions);
+        Permission perm = new Permission(
+                "silkspawners.use" + permissionPart + ".*", description,
+                PermissionDefault.TRUE, childPermissions);
         getServer().getPluginManager().addPermission(perm);
     }
 
@@ -197,22 +218,30 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     }
 
     private void loadLocalization() {
-        localization.addDefault("buying.inventoryFull", "&6[SilkSpawners] &4Your inventory is full.");
-        localization.addDefault("buying.notEnoughMoney", "&6[SilkSpawners] &4You do not have enough money.");
+        localization.addDefault("buying.inventoryFull",
+                "&6[SilkSpawners] &4Your inventory is full.");
+        localization.addDefault("buying.notEnoughMoney",
+                "&6[SilkSpawners] &4You do not have enough money.");
         localization.addDefault("buying.success",
                 "&6[SilkSpawners] &2You bought &e%amount% %creature% spawners &2for &e%price%&2.");
-        localization.addDefault("checking.error", "&6[SilkSpawners] &4There was an error removing the invalid shops.");
+        localization.addDefault("checking.error",
+                "&6[SilkSpawners] &4There was an error removing the invalid shops.");
         localization.addDefault("checking.invalid",
                 "&6[SilkSpawners] &4Found an invalid shop at &ex %x%&4, &ey %y%&4, &ez %z% &4in world &e%world%&4.");
         localization.addDefault("checking.success",
                 "&6[SilkSpawners] &2Removed &e%size% &2invalid shops from the database.");
-        localization.addDefault("creating.error", "&6[SilkSpawners] &4There was an error creating the shop.");
-        localization.addDefault("creating.invalidAmount", "&6[SilkSpawners] &4The given amount is invalid.");
-        localization.addDefault("creating.invalidMob", "&6[SilkSpawners] &4The given mob is invalid.");
-        localization.addDefault("creating.invalidMode", "&6[SilkSpawners] &4The given shop mode is invalid.");
+        localization.addDefault("creating.error",
+                "&6[SilkSpawners] &4There was an error creating the shop.");
+        localization.addDefault("creating.invalidAmount",
+                "&6[SilkSpawners] &4The given amount is invalid.");
+        localization.addDefault("creating.invalidMob",
+                "&6[SilkSpawners] &4The given mob is invalid.");
+        localization.addDefault("creating.invalidMode",
+                "&6[SilkSpawners] &4The given shop mode is invalid.");
         localization.addDefault("creating.invalidPrice",
                 "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
-        localization.addDefault("creating.success", "&6[SilkSpawners] &2You created the shop successfully.");
+        localization.addDefault("creating.success",
+                "&6[SilkSpawners] &2You created the shop successfully.");
         localization.addDefault("noPermission.building",
                 "&6[SilkSpawners] &4You do not have the permission to create a shop.");
         localization.addDefault("noPermission.buy",
@@ -225,11 +254,16 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
                 "&6[SilkSpawners] &4You do not have the permission to edit a shop.");
         localization.addDefault("noPermission.sell",
                 "&6[SilkSpawners] &4You do not have the permission to sell spawners.");
-        localization.addDefault("removing.error", "&6[SilkSpawners] &4There was an error removing the shop.");
-        localization.addDefault("removing.success", "&6[SilkSpawners] &2You removed the shop successfully.");
+        localization.addDefault("removing.error",
+                "&6[SilkSpawners] &4There was an error removing the shop.");
+        localization.addDefault("removing.success",
+                "&6[SilkSpawners] &2You removed the shop successfully.");
+        localization.addDefault("selling.error",
+                "&6[SilkSpawners] &4There was an error processing the transaction. The transaction has been cancelled.");
         localization.addDefault("selling.noSpawnerInHand",
                 "&6[SilkSpawners] &4You do not have a spawner in your hand.");
-        localization.addDefault("selling.notEnoughSpawners", "&6[SilkSpawners] &4You do not have enough spawners in your hand.");
+        localization.addDefault("selling.notEnoughSpawners",
+                "&6[SilkSpawners] &4You do not have enough spawners in your hand.");
         localization.addDefault("selling.notTheSameMob",
                 "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4.");
         localization.addDefault("selling.success",
@@ -238,9 +272,12 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
                 "&6[SilkSpawners] &eUsage for editing a shop: /shop amount|mode|mob|price <newValue>");
         localization.addDefault("updating.noConsole",
                 "&6[SilkSpawners] &4The console is not able to edit shops, only remove invalid shops via /shop check");
-        localization.addDefault("updating.noShop", "&6[SilkSpawners] &4There is no shop in sight.");
-        localization.addDefault("updating.error", "&6[SilkSpawners] &4There was an error updating the shop.");
-        localization.addDefault("updating.success", "&6[SilkSpawners] &2The shop was updated successfully!");
+        localization.addDefault("updating.noShop",
+                "&6[SilkSpawners] &4There is no shop in sight.");
+        localization.addDefault("updating.error",
+                "&6[SilkSpawners] &4There was an error updating the shop.");
+        localization.addDefault("updating.success",
+                "&6[SilkSpawners] &2The shop was updated successfully!");
         localization.options().copyDefaults(true);
         saveLocalization();
     }
@@ -249,7 +286,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         try {
             localization.save(localizationFile);
         } catch (IOException e) {
-            getLogger().warning("Failed to save the localization! Please report this! (I/O)");
+            getLogger().warning(
+                    "Failed to save the localization! Please report this! (I/O)");
             e.printStackTrace();
         }
     }
@@ -257,7 +295,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadConfig() {
         // Add defaults
         FileConfiguration config = getConfig();
-        config.options().header("Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB");
+        config.options().header(
+                "Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB");
         config.addDefault("disableUpdater", false);
         config.addDefault("shopIdentifier", "&9[SilkSpawners]");
         config.addDefault("numberFormat", "$ 00.##");
@@ -308,7 +347,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = getServer()
+                .getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
@@ -318,7 +358,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
     // If no config is found, copy the default one(s)!
     public void copy(String yml, File file) {
-        try (OutputStream out = new FileOutputStream(file); InputStream in = getResource(yml)) {
+        try (OutputStream out = new FileOutputStream(file);
+                InputStream in = getResource(yml)) {
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {

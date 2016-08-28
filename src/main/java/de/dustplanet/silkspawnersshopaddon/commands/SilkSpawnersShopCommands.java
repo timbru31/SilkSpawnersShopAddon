@@ -14,8 +14,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.dustplanet.silkspawnersshopaddon.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
+import de.dustplanet.silkspawnersshopaddon.exception.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;

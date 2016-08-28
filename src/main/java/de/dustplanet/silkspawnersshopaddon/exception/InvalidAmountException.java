@@ -1,4 +1,4 @@
-package de.dustplanet.silkspawnersshopaddon;
+package de.dustplanet.silkspawnersshopaddon.exception;
 
 public class InvalidAmountException extends Exception {
     private static final long serialVersionUID = -8178693365567126589L;
