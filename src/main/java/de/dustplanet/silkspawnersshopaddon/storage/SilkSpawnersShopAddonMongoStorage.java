@@ -12,6 +12,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoWriteConcernException;
 import com.mongodb.MongoWriteException;
@@ -19,7 +21,6 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.UpdateResult;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
@@ -43,9 +44,9 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         if (user != null && !user.isEmpty() && pass != null && !pass.isEmpty()) {
             userPass = user + ":" + pass + "@";
         }
-        MongoClientURI connectionString = new MongoClientURI("mongodb://" + userPass + host + ":" + port + "/" + db);
+        Builder mongoClientOptions = MongoClientOptions.builder().writeConcern(WriteConcern.ACKNOWLEDGED);
+        MongoClientURI connectionString = new MongoClientURI("mongodb://" + userPass + host + ":" + port + "/" + db, mongoClientOptions);
         mongoClient = new MongoClient(connectionString);
-        mongoClient.setWriteConcern(WriteConcern.SAFE);
         database = mongoClient.getDatabase(db);
         collection = database.getCollection(coll);
     }
