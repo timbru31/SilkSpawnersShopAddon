@@ -125,6 +125,7 @@
             <option>-keepattributes *Annotation*</option>
             <option>-keep class de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon</option>
             <option>-keep class org.json.HTTPSTokener</option>
+            <option>-keep class org.json.HTTPSTokenNormalizer</option>
             <option>-keep class org.json.HTTPTokenException</option>
             <option>-keep class org.json.JSONReader</option>
             <option>-keep class com.mongodb.connection.Rot13Codec</option>

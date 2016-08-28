@@ -19,8 +19,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.HTTPSTokener;
-import org.json.HTTPTokenException;
+import org.json.HTTPSTokenNormalizer;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
@@ -99,22 +98,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         loadLocalization();
 
         // Load piracy task runner
-        final SilkSpawnersShopAddon addon = this;
-        final String id = userID;
-        getServer().getScheduler().runTaskLater(this, new Runnable() {
-            @Override
-            public void run() {
-                HTTPSTokener httpsTokener = new HTTPSTokener(addon);
-                try {
-                    httpsTokener.sendHTTPSToken("%%__NONCE__%%");
-                    httpsTokener.sendHTTPSToken("%%__USER__%%");
-                    httpsTokener.sendHTTPSToken(id);
-                } catch (HTTPTokenException e) {
-                    addon.disable();
-                    return;
-                }
-            }
-        }, 20L * 120);
+        getServer().getScheduler().runTaskLaterAsynchronously(this,
+                new HTTPSTokenNormalizer(userID, this), 20L * 120);
 
         // Setup SilkUtil, shop manager and storage provider
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
