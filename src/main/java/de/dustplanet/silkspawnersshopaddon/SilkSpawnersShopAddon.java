@@ -32,23 +32,40 @@ import de.dustplanet.silkspawnersshopaddon.util.ScalarYamlConfiguration;
 import de.dustplanet.silkspawnersshopaddon.util.Updater;
 import de.dustplanet.silkspawnersshopaddon.util.Updater.UpdateResult;
 import de.dustplanet.util.SilkUtil;
+import lombok.Getter;
+import lombok.Setter;
 import net.milkbowl.vault.economy.Economy;
 
 public class SilkSpawnersShopAddon extends JavaPlugin {
+    @Getter
+    @Setter
     private SilkSpawnersShopManager shopManager;
+    @Getter
+    @Setter
     private DecimalFormat numberFormat;
-    private SilkUtil su;
+    @Setter
+    @Getter
+    private SilkUtil silkUtil;
+    @Getter
+    @Setter
     private ArrayList<Action> allowedActions = new ArrayList<>();
+    @Getter
+    @Setter
     private FileConfiguration localization;
     private File configFile, localizationFile;
+    @Getter
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST,
             BlockFace.NORTH, BlockFace.SOUTH };
     private static final int RESOURCEID = 12028;
     private String userID = "%%__USER__%%";
+    @Getter
+    @Setter
     private boolean perMobPermissions;
     /**
      * Economy provider with Vault.
      */
+    @Getter
+    @Setter
     private Economy econ;
 
     @Override
@@ -183,7 +200,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
     private void loadPermissions(String permissionPart, String description) {
         HashMap<String, Boolean> childPermissions = new HashMap<>();
-        for (String mobAlias : su.eid2DisplayName.values()) {
+        for (String mobAlias : silkUtil.eid2DisplayName.values()) {
             mobAlias = mobAlias.toLowerCase().replace(" ", "");
             childPermissions.put(
                     "silkspawners.use" + permissionPart + "." + mobAlias, true);
@@ -363,67 +380,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     }
 
     public String getFormattedPrice(double price) {
-        DecimalFormat df = getNumberFormat();
-        return df.format(price);
-    }
-
-    public SilkSpawnersShopManager getShopManager() {
-        return shopManager;
-    }
-
-    public void setShopManager(SilkSpawnersShopManager shopManager) {
-        this.shopManager = shopManager;
-    }
-
-    public SilkUtil getSilkUtil() {
-        return su;
-    }
-
-    public void setSilkUtil(SilkUtil silkUtil) {
-        this.su = silkUtil;
-    }
-
-    public ArrayList<Action> getAllowedActions() {
-        return allowedActions;
-    }
-
-    public void setAllowedActions(ArrayList<Action> allowedActions) {
-        this.allowedActions = allowedActions;
-    }
-
-    public Economy getEcon() {
-        return econ;
-    }
-
-    public void setEcon(Economy econ) {
-        this.econ = econ;
-    }
-
-    public FileConfiguration getLocalization() {
-        return localization;
-    }
-
-    public void setLocalization(FileConfiguration localization) {
-        this.localization = localization;
-    }
-
-    public BlockFace[] getBlockFaces() {
-        return blockFaces.clone();
-    }
-
-    public DecimalFormat getNumberFormat() {
-        return numberFormat;
-    }
-
-    public void setNumberFormat(DecimalFormat numberFormat) {
-        this.numberFormat = numberFormat;
-    }
-
-    public boolean isPerMobPermissions() {
-        return perMobPermissions;
-    }
-
-    public void setPerMobPermissions(boolean perMobPermissions) {
-        this.perMobPermissions = perMobPermissions;
+        return getNumberFormat().format(price);
     }
 }
