@@ -27,7 +27,10 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         shopFile = new File(plugin.getDataFolder(), "shops.yml");
         if (!shopFile.exists()) {
             try {
-                shopFile.createNewFile();
+                boolean success = shopFile.createNewFile();
+                if (!success) {
+                    throw new IOException();
+                }
             } catch (IOException e) {
                 plugin.getLogger().severe("Failed to create YAML shops file!");
                 e.printStackTrace();
