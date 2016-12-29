@@ -32,6 +32,7 @@ import de.dustplanet.silkspawnersshopaddon.util.ScalarYamlConfiguration;
 import de.dustplanet.silkspawnersshopaddon.util.Updater;
 import de.dustplanet.silkspawnersshopaddon.util.Updater.UpdateResult;
 import de.dustplanet.util.SilkUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.economy.Economy;
@@ -53,6 +54,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @Setter
     private FileConfiguration localization;
     private File configFile, localizationFile;
+    @SuppressFBWarnings(justification="Would cost more to return a copy each time e.g. a BlockPhysicsEvent is called", value="EI_EXPOSE_REP")
     @Getter
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST,
             BlockFace.NORTH, BlockFace.SOUTH };

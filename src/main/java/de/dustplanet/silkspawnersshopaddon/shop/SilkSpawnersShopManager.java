@@ -222,7 +222,7 @@ public class SilkSpawnersShopManager {
     }
 
     public boolean createOrUpdateShop(String[] lines, Sign sign, Player player) {
-        // Mac sends weird \uF700 and \uF701 chars
+        // macOS sends weird \uF700 and \uF701 chars
         boolean existingShop = isShop(sign);
         String secondLine = lines[1].trim().replaceAll("\uF700", "").replaceAll("\uF701", "");
         SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(secondLine);

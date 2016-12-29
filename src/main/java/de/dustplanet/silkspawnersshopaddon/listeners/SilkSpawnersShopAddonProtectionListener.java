@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class SilkSpawnersShopAddonProtectionListener implements Listener {
     private SilkSpawnersShopAddon plugin;
@@ -98,6 +99,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
         if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
+                @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
                 Block attachedBlock = block.getRelative(((org.bukkit.material.Sign) sign.getData()).getAttachedFace());
                 if (attachedBlock.getType() == Material.AIR) {
                     shopManager.removeShop(sign);

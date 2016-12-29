@@ -175,11 +175,6 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
     }
 
     @Override
-    public void disable() {
-        super.disable();
-    }
-
-    @Override
     public boolean upgradeDatabase() {
         // not necessary with YAML
         return false;

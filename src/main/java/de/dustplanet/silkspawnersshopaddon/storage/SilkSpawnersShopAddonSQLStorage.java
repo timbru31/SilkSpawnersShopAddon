@@ -12,6 +12,7 @@ import org.bukkit.block.Sign;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public abstract class SilkSpawnersShopAddonSQLStorage extends SilkSpawnersShopAddonStorageImpl
 implements ISilkSpawnersShopAddonStorage {
@@ -68,6 +69,7 @@ implements ISilkSpawnersShopAddonStorage {
         for (int i = 0; i < shopList.size(); i++) {
             builder.append("?,");
         }
+        @SuppressFBWarnings(justification = "builder is only used in for loop to calculate size of shops to remove", value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
         String query = "DELETE FROM SHOPS WHERE SHOPID IN (" + builder.deleteCharAt(builder.length() - 1).toString() + ")";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             int index = 1;
@@ -158,6 +160,7 @@ implements ISilkSpawnersShopAddonStorage {
         String world = loc.getWorld().getName();
 
         String query = "SELECT * FROM SHOPS WHERE X = ? AND Y = ? AND Z = ? AND WORLD = ?";
+        SilkSpawnersShop shop = null;
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setDouble(1, x);
             statement.setDouble(2, y);
@@ -165,9 +168,9 @@ implements ISilkSpawnersShopAddonStorage {
             statement.setString(4, world);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    SilkSpawnersShop shop = getShopFromResultSet(rs);
+                    shop = getShopFromResultSet(rs);
                     cachedShops.add(shop);
-                    return shop;
+                    break;
                 }
             } catch (SQLException e) {
                 plugin.getLogger().severe("There was an error getting the shop");
@@ -176,9 +179,9 @@ implements ISilkSpawnersShopAddonStorage {
         } catch (SQLException e) {
             plugin.getLogger().severe("There was an error getting the shop");
             e.printStackTrace();
-            return null;
+            return shop;
         }
-        return null;
+        return shop;
     }
 
     @Override
