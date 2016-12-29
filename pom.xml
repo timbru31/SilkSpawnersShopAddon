@@ -241,6 +241,14 @@
           <targetJdk>1.7</targetJdk>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.4</version>
+        <configuration>
+          <maxRank>1</maxRank>
+        </configuration>
+      </plugin>
     </plugins>
   </reporting>
 
