@@ -43,6 +43,7 @@ invincibility:
   ignite: true
 forceInventoryUpdate: false
 perMobPermissions: false
+eggMode: false
 storageMethod: 'YAML'
 mongoDB:
   host: 'localhost'

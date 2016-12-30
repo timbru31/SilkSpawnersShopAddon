@@ -63,6 +63,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @Getter
     @Setter
     private boolean perMobPermissions;
+    @Getter
+    @Setter
+    private boolean eggMode;
     /**
      * Economy provider with Vault.
      */
@@ -226,8 +229,10 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
                 "&6[SilkSpawners] &4Your inventory is full.");
         localization.addDefault("buying.notEnoughMoney",
                 "&6[SilkSpawners] &4You do not have enough money.");
-        localization.addDefault("buying.success",
-                "&6[SilkSpawners] &2You bought &e%amount% %creature% spawners &2for &e%price%&2.");
+        localization.addDefault("buying.successEgg",
+                "&6[SilkSpawners] &2You bought &e%amount% %creature% egg(s) &2for &e%price%&2.");
+        localization.addDefault("buying.successSpawner",
+                "&6[SilkSpawners] &2You bought &e%amount% %creature% spawner(s) &2for &e%price%&2.");
         localization.addDefault("checking.error",
                 "&6[SilkSpawners] &4There was an error removing the invalid shops.");
         localization.addDefault("checking.invalid",
@@ -249,7 +254,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         localization.addDefault("noPermission.building",
                 "&6[SilkSpawners] &4You do not have the permission to create a shop.");
         localization.addDefault("noPermission.buy",
-                "&6[SilkSpawners] &4You do not have the permission to buy spawners.");
+                "&6[SilkSpawners] &4You do not have the permission to buy items.");
         localization.addDefault("noPermission.check",
                 "&6[SilkSpawners] &4You do not have the permission to check for invalid shops.");
         localization.addDefault("noPermission.destroying",
@@ -257,21 +262,29 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         localization.addDefault("noPermission.edit",
                 "&6[SilkSpawners] &4You do not have the permission to edit a shop.");
         localization.addDefault("noPermission.sell",
-                "&6[SilkSpawners] &4You do not have the permission to sell spawners.");
+                "&6[SilkSpawners] &4You do not have the permission to sell items.");
         localization.addDefault("removing.error",
                 "&6[SilkSpawners] &4There was an error removing the shop.");
         localization.addDefault("removing.success",
                 "&6[SilkSpawners] &2You removed the shop successfully.");
         localization.addDefault("selling.error",
                 "&6[SilkSpawners] &4There was an error processing the transaction. The transaction has been cancelled.");
+        localization.addDefault("selling.noEggInHand",
+                "&6[SilkSpawners] &4You do not have an egg in your hand.");
+        localization.addDefault("selling.noItemInHand",
+                "&6[SilkSpawners] &4You do not have an item in your hand.");
         localization.addDefault("selling.noSpawnerInHand",
                 "&6[SilkSpawners] &4You do not have a spawner in your hand.");
+        localization.addDefault("selling.notEnoughEggs",
+                "&6[SilkSpawners] &4You do not have enough eggs in your hand.");
         localization.addDefault("selling.notEnoughSpawners",
                 "&6[SilkSpawners] &4You do not have enough spawners in your hand.");
         localization.addDefault("selling.notTheSameMob",
-                "&6[SilkSpawners] &4The spawner in your hand is not a(n) &e%creature% spawner&4.");
-        localization.addDefault("selling.success",
-                "&6[SilkSpawners] &2You sold &e%amount% %creature% spawners &2for &e%price%&2.");
+                "&6[SilkSpawners] &4The item in your hand is not a(n) &e%creature% item&4.");
+        localization.addDefault("selling.successEgg",
+                "&6[SilkSpawners] &2You sold &e%amount% %creature% egg(s) &2for &e%price%&2.");
+        localization.addDefault("selling.successSpawner",
+                "&6[SilkSpawners] &2You sold &e%amount% %creature% spawner(s) &2for &e%price%&2.");
         localization.addDefault("updating.commandUsage",
                 "&6[SilkSpawners] &eUsage for editing a shop: /shop amount|mode|mob|price <newValue>");
         localization.addDefault("updating.noConsole",
@@ -312,6 +325,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         config.addDefault("invincibility.ignite", true);
         config.addDefault("forceInventoryUpdate", false);
         config.addDefault("perMobPermissions", false);
+        config.addDefault("eggMode", false);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
         config.addDefault("mongoDB.port", 27017);
@@ -340,6 +354,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
         setAllowedActions(tempAllowedActions);
         setPerMobPermissions(config.getBoolean("perMobPermissions", false));
+        setEggMode(config.getBoolean("eggMode", false));
     }
 
     /**

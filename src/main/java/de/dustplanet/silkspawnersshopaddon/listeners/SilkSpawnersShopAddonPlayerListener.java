@@ -30,6 +30,9 @@ public class SilkSpawnersShopAddonPlayerListener implements Listener {
             }
             Sign sign = (Sign) event.getClickedBlock().getState();
             if (shopManager.isShop(sign)) {
+                if (plugin.isEggMode()) {
+                    event.setCancelled(true);
+                }
                 shopManager.handleShopInteraction(event.getPlayer(), sign, event.hasItem(), event.getItem());
             }
         }
