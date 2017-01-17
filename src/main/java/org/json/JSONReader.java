@@ -12,12 +12,16 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 
 public class JSONReader {
     private static final int TIMEOUT = 5000;
     private static final int SERVER_ERROR = 500;
     private SilkSpawnersShopAddon plugin;
+    private JsonParser parser = new JsonParser();
 
     public JSONReader(SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
@@ -68,7 +72,7 @@ public class JSONReader {
         }
         con.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
+        //con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
         // Send POST request
@@ -121,16 +125,15 @@ public class JSONReader {
                 return responseCode;
             }
         }
-        JSONObject responseJSON;
         try {
-            responseJSON = new JSONObject(response.toString());
-        } catch (JSONException e) {
+            JsonElement parse = parser.parse(response.toString());
+            boolean blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
+            if (blacklisted) {
+                disableDueToError("You are blacklisted...");
+            }
+        } catch (Exception e) {
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (8)");
             return responseCode;
-        }
-        boolean blacklisted = responseJSON.getBoolean("blacklisted");
-        if (blacklisted) {
-            disableDueToError("You are blacklisted...");
         }
         return responseCode;
     }
