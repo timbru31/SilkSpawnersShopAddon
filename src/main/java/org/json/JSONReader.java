@@ -72,7 +72,7 @@ public class JSONReader {
         }
         con.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        //con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
+        con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
         // Send POST request
@@ -125,15 +125,17 @@ public class JSONReader {
                 return responseCode;
             }
         }
+        boolean blacklisted = true;
         try {
             JsonElement parse = parser.parse(response.toString());
-            boolean blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
-            if (blacklisted) {
-                disableDueToError("You are blacklisted...");
-            }
-        } catch (Exception e) {
+            blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (8)");
             return responseCode;
+        }
+        if (blacklisted) {
+            disableDueToError("You are blacklisted...");
         }
         return responseCode;
     }
