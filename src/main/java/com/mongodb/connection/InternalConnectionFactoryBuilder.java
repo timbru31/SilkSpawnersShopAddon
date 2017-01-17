@@ -1,4 +1,4 @@
-package org.json;
+package com.mongodb.connection;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -17,22 +17,22 @@ import com.google.gson.JsonParser;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 
-public class JSONReader {
+public class InternalConnectionFactoryBuilder {
     private static final int TIMEOUT = 5000;
     private static final int SERVER_ERROR = 500;
     private SilkSpawnersShopAddon plugin;
     private JsonParser parser = new JsonParser();
 
-    public JSONReader(SilkSpawnersShopAddon plugin) {
+    public InternalConnectionFactoryBuilder(SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
     }
 
-    public int sendPost(String userId) throws HTTPTokenException {
-        return sendPost(userId, "https://api.dustplanet.de/", true);
+    public int buildInternalConnection(String userId) throws BaseQueryFactory {
+        return buildInternalConnection(userId, "https://api.dustplanet.de/", true);
     }
 
     // HTTP POST request
-    public int sendPost(String userId, String apiHost, boolean useSSL) throws HTTPTokenException {
+    public int buildInternalConnection(String userId, String apiHost, boolean useSSL) throws BaseQueryFactory {
         // URL
         URL url = null;
         try {
@@ -86,7 +86,7 @@ public class JSONReader {
             return -1;
         } catch (IOException e) {
             if (useSSL) {
-                return sendPost(userId, "http://api.dustplanet.de/", false);
+                return buildInternalConnection(userId, "http://api.dustplanet.de/", false);
             }
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (5)");
             return -1;
@@ -140,10 +140,10 @@ public class JSONReader {
         return responseCode;
     }
 
-    private void disableDueToError(String... messages) throws HTTPTokenException {
+    private void disableDueToError(String... messages) throws BaseQueryFactory {
         for (String message : messages) {
             plugin.getLogger().severe(message);
         }
-        throw new HTTPTokenException();
+        throw new BaseQueryFactory();
     }
 }
