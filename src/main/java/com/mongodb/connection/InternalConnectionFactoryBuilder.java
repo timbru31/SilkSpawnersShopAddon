@@ -4,15 +4,14 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
@@ -54,31 +53,29 @@ public class InternalConnectionFactoryBuilder {
         }
 
         // Get user id
-        String rawData = "user_id=";
-        String encodedData = null;
-        try {
-            encodedData = rawData + URLEncoder.encode(userId, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (3)");
-            return -1;
-        }
+        String serverPort = String.valueOf(plugin.getServer().getPort());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("user_id", userId);
+        jsonObject.addProperty("port", serverPort);
+        jsonObject.addProperty("plugin", plugin.getDescription().getFullName());
+        String data = jsonObject.toString();
 
         // Make POST request
         try {
             con.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (4)");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (3)");
             return -1;
         }
-        con.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
-        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        con.setRequestProperty("Bukkit-Server-Port", String.valueOf(plugin.getServer().getPort()));
+        con.setRequestProperty("Content-Length", String.valueOf(data.length()));
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Bukkit-Server-Port", serverPort);
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
         // Send POST request
         con.setDoOutput(true);
         try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-            wr.write(encodedData.getBytes("UTF-8"));
+            wr.write(data.getBytes("UTF-8"));
             wr.flush();
             wr.close();
         } catch (UnknownHostException e) {
@@ -88,7 +85,7 @@ public class InternalConnectionFactoryBuilder {
             if (useSSL) {
                 return buildInternalConnection(userId, "http://api.dustplanet.de/", false);
             }
-            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (5)");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (4)");
             return -1;
         }
 
@@ -112,7 +109,7 @@ public class InternalConnectionFactoryBuilder {
                     response.append(inputLine);
                 }
             } catch (IOException e) {
-                disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (6)");
+                disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (5)");
                 return responseCode;
             }
         } else {
@@ -121,7 +118,7 @@ public class InternalConnectionFactoryBuilder {
                     response.append(inputLine);
                 }
             } catch (IOException e) {
-                disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (7)");
+                disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (6)");
                 return responseCode;
             }
         }
@@ -129,9 +126,9 @@ public class InternalConnectionFactoryBuilder {
         try {
             JsonElement parse = parser.parse(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (8)");
+            disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (7)");
             return responseCode;
         }
         if (blacklisted) {

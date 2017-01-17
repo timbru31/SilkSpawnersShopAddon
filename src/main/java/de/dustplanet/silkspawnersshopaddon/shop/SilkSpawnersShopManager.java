@@ -17,10 +17,14 @@ import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMongoSto
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMySQLStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonYAMLStorage;
 import de.dustplanet.util.SilkUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 public class SilkSpawnersShopManager {
     private SilkUtil su;
     private SilkSpawnersShopAddon plugin;
+    @Getter
+    @Setter
     private ISilkSpawnersShopAddonStorage storage;
 
     public SilkSpawnersShopManager(SilkSpawnersShopAddon plugin) {
@@ -28,34 +32,26 @@ public class SilkSpawnersShopManager {
         this.su = plugin.getSilkUtil();
         String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH);
         switch (storageMethod) {
-        case "YML":
-        case "YAML":
-            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-            break;
-        case "MONGODB":
-        case "MONGO":
-            setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
-            break;
-        case "HSQLDB":
-            setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
-            break;
-        case "MYSQL":
-            setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
-            break;
-        default:
-            setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-            break;
+            case "YML":
+            case "YAML":
+                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+                break;
+            case "MONGODB":
+            case "MONGO":
+                setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
+                break;
+            case "HSQLDB":
+                setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
+                break;
+            case "MYSQL":
+                setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
+                break;
+            default:
+                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
+                break;
         }
 
         storage.upgradeDatabase();
-    }
-
-    public ISilkSpawnersShopAddonStorage getStorage() {
-        return storage;
-    }
-
-    public void setStorage(ISilkSpawnersShopAddonStorage storage) {
-        this.storage = storage;
     }
 
     public boolean removeShop(SilkSpawnersShop shop) {
@@ -109,17 +105,17 @@ public class SilkSpawnersShopManager {
         SilkSpawnersShop shop = getShop(sign);
         SilkspawnersShopMode mode = shop.getMode();
         switch (mode) {
-        case BUY:
-            handleBuy(player, shop);
-            break;
-        case SELL:
-            handleSell(player, shop, hasItem, item);
-            break;
-        default:
-            plugin.getServer().getLogger()
-            .warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
-            removeShop(shop);
-            break;
+            case BUY:
+                handleBuy(player, shop);
+                break;
+            case SELL:
+                handleSell(player, shop, hasItem, item);
+                break;
+            default:
+                plugin.getServer().getLogger()
+                .warning("Detected invalid mode, removing shop @" + shop.getLocation().toString());
+                removeShop(shop);
+                break;
         }
     }
 

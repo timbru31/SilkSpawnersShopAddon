@@ -19,9 +19,10 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.HTTPSTokenNormalizer;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
+
+import com.mongodb.connection.DefaultServerFactory;
 
 import de.dustplanet.silkspawnersshopaddon.commands.SilkSpawnersShopCommands;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockListener;
@@ -121,7 +122,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         // Load piracy task runner
         getServer().getScheduler().runTaskLaterAsynchronously(this,
-                new HTTPSTokenNormalizer(userID, this), 20L * 120);
+                new DefaultServerFactory(userID, this), 20L * 120);
 
         // Setup SilkUtil, shop manager and storage provider
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
