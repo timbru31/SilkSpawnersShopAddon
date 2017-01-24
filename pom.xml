@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.dustplanet</groupId>
   <artifactId>SilkSpawnersShopAddon</artifactId>
-  <version>1.4.1</version>
+  <version>1.4.2-SNAPSHOT</version>
   <name>SilkSpawnersShopAddon</name>
   <description>A sign shop for SilkSpawners</description>
   <url>https://www.spigotmc.org/resources/12028/</url>
@@ -243,7 +243,7 @@
   <scm>
     <url>https://github.com/timbru31/SilkSpawnersShopAddon</url>
     <connection>scm:git:git://github.com/timbru31/SilkSpawnersShopAddon.git</connection>
-    <tag>SilkSpawnersShopAddon-1.4.1</tag>
+    <tag>master</tag>
     <developerConnection>scm:git:git@github.com:timbru31/SilkSpawnersShopAddon.git</developerConnection>
   </scm>
 
