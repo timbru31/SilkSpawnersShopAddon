@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.bstats.Metrics;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.Action;
@@ -19,8 +20,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
 
 import com.mongodb.connection.DefaultServerFactory;
 
@@ -50,7 +49,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private SilkUtil silkUtil;
     @Getter
     @Setter
-    private ArrayList<Action> allowedActions = new ArrayList<>();
+    private List<Action> allowedActions = new ArrayList<>();
     @Getter
     @Setter
     private FileConfiguration localization;
@@ -136,36 +135,23 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         // Register events
         PluginManager pluginManager = getServer().getPluginManager();
-        SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(
-                this);
-        SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(
-                this);
-        SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(
-                this);
+        SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
+        SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(this);
+        SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(this);
         pluginManager.registerEvents(blockListener, this);
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
 
         // Load command
-        getCommand("silkspawnersshopaddon")
-        .setExecutor(new SilkSpawnersShopCommands(this));
+        getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
 
-        // Metrics
-        try {
-            Metrics metrics = new Metrics(this);
-            Graph graph = metrics.createGraph("storage provider");
-            graph.addPlotter(new Metrics.Plotter(getConfig()
-                    .getString("storageMethod").toUpperCase(Locale.ENGLISH)) {
-                @Override
-                public int getValue() {
-                    return 1;
-                }
-            });
-            metrics.start();
-        } catch (IOException e) {
-            getLogger().info("Couldn't start Metrics, please report this!");
-            e.printStackTrace();
-        }
+        Metrics metrics = new Metrics(this);
+        metrics.addCustomChart(new Metrics.SimplePie("storage_provider") {
+            @Override
+            public String getValue() {
+                return getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH);
+            }
+        });
 
         // Updater
         boolean updaterDisabled = getConfig().getBoolean("disableUpdater",
