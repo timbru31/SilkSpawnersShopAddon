@@ -77,7 +77,6 @@ public class InternalConnectionFactoryBuilder {
         try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
             wr.write(data.getBytes("UTF-8"));
             wr.flush();
-            wr.close();
         } catch (UnknownHostException e) {
             // Handle being offline nice
             return -1;
