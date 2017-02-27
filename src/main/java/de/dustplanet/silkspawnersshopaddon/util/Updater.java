@@ -8,6 +8,8 @@ import java.net.URL;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lombok.Getter;
+
 /**
  *
  * Based on the Updater of PatoTheBest. Thanks for sharing this class.
@@ -26,9 +28,11 @@ public class Updater {
     private static final String QUERY = "/api/general.php";
     private String WRITE_STRING;
 
+    @Getter
     private String version;
     private String oldVersion;
 
+    @Getter
     private Updater.UpdateResult result = Updater.UpdateResult.DISABLED;
 
     private HttpURLConnection connection;
@@ -109,13 +113,5 @@ public class Updater {
 
     public boolean shouldUpdate(String localVersion, String remoteVersion) {
         return !localVersion.equalsIgnoreCase(remoteVersion);
-    }
-
-    public UpdateResult getResult() {
-        return result;
-    }
-
-    public String getVersion() {
-        return version;
     }
 }

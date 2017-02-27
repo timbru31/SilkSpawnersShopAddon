@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.exception.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.storage.ISilkSpawnersShopAddonStorage;
-import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonHSQLDBStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMongoStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonMySQLStorage;
 import de.dustplanet.silkspawnersshopaddon.storage.SilkSpawnersShopAddonYAMLStorage;
@@ -32,20 +31,15 @@ public class SilkSpawnersShopManager {
         this.su = plugin.getSilkUtil();
         String storageMethod = plugin.getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH);
         switch (storageMethod) {
-            case "YML":
-            case "YAML":
-                setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
-                break;
             case "MONGODB":
             case "MONGO":
                 setStorage(new SilkSpawnersShopAddonMongoStorage(plugin));
                 break;
-            case "HSQLDB":
-                setStorage(new SilkSpawnersShopAddonHSQLDBStorage(plugin));
-                break;
             case "MYSQL":
                 setStorage(new SilkSpawnersShopAddonMySQLStorage(plugin));
                 break;
+            case "YML":
+            case "YAML":
             default:
                 setStorage(new SilkSpawnersShopAddonYAMLStorage(plugin));
                 break;
@@ -123,7 +117,8 @@ public class SilkSpawnersShopManager {
         String mob = shop.getMob();
         short entityID = su.name2Eid.get(mob);
         String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
-        if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.buy") || player.hasPermission("silkspawners.use.buy." + mobName)) {
+        if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.buy")
+                || player.hasPermission("silkspawners.use.buy." + mobName)) {
             double price = shop.getPrice();
             if (!plugin.getEcon().has(player, price)) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
@@ -149,17 +144,15 @@ public class SilkSpawnersShopManager {
             }
             String priceString = plugin.getFormattedPrice(price);
             if (!plugin.isEggMode()) {
-                player.sendMessage(
-                        ChatColor.translateAlternateColorCodes('\u0026',
-                                plugin.getLocalization().getString("buying.successSpawner").replace("%creature%", mob)
-                                .replace("%price%", priceString)
-                                .replace("%amount%", Integer.toString(shop.getAmount()))));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("buying.successSpawner").replace("%creature%", mob)
+                        .replace("%price%", priceString)
+                        .replace("%amount%", Integer.toString(shop.getAmount()))));
             } else {
-                player.sendMessage(
-                        ChatColor.translateAlternateColorCodes('\u0026',
-                                plugin.getLocalization().getString("buying.successEgg").replace("%creature%", mob)
-                                .replace("%price%", priceString)
-                                .replace("%amount%", Integer.toString(shop.getAmount()))));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("buying.successEgg").replace("%creature%", mob)
+                        .replace("%price%", priceString)
+                        .replace("%amount%", Integer.toString(shop.getAmount()))));
             }
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
@@ -171,14 +164,14 @@ public class SilkSpawnersShopManager {
         String mob = shop.getMob();
         short entityID = su.name2Eid.get(mob);
         String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
-        if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.sell") || player.hasPermission("silkspawners.use.sell." + mobName)) {
+        if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.sell")
+                || player.hasPermission("silkspawners.use.sell." + mobName)) {
             double price = shop.getPrice();
             if (!hasItem) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                         plugin.getLocalization().getString("selling.noItemInHand")));
                 return;
-            }
-            else if (!plugin.isEggMode() && item.getType() != Material.MOB_SPAWNER) {
+            } else if (!plugin.isEggMode() && item.getType() != Material.MOB_SPAWNER) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                         plugin.getLocalization().getString("selling.noSpawnerInHand")));
                 return;
@@ -239,17 +232,15 @@ public class SilkSpawnersShopManager {
             }
             String priceString = plugin.getFormattedPrice(price);
             if (!plugin.isEggMode()) {
-                player.sendMessage(
-                        ChatColor.translateAlternateColorCodes('\u0026',
-                                plugin.getLocalization().getString("selling.successSpawner").replace("%creature%", creatureName)
-                                .replace("%price%", priceString)
-                                .replace("%amount%", Integer.toString(shop.getAmount()))));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("selling.successSpawner").replace("%creature%", creatureName)
+                        .replace("%price%", priceString)
+                        .replace("%amount%", Integer.toString(shop.getAmount()))));
             } else {
-                player.sendMessage(
-                        ChatColor.translateAlternateColorCodes('\u0026',
-                                plugin.getLocalization().getString("selling.successEgg").replace("%creature%", creatureName)
-                                .replace("%price%", priceString)
-                                .replace("%amount%", Integer.toString(shop.getAmount()))));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                        plugin.getLocalization().getString("selling.successEgg").replace("%creature%", creatureName)
+                        .replace("%price%", priceString)
+                        .replace("%amount%", Integer.toString(shop.getAmount()))));
             }
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
