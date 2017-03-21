@@ -17,7 +17,6 @@ price (only numbers)
   * yaml
   * mongoDB
   * MySQL
-  * HSQLDB
 
 *Third party features, all of them can be disabled*
 * bStats for usage statistics
@@ -31,7 +30,7 @@ One purchase is valid for one server, if you plan to use it on multiple servers 
 
 ## Standard config
 ```yaml
-# Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB
+# Valid storage methods are YAML, MONGODB, and MYSQL
 disableUpdater: false
 shopIdentifier: '&6[SilkSpawners]'
 numberFormat: '$ 00.##'
@@ -58,10 +57,6 @@ MySQL:
   user: 'root'
   pass: ''
   database: 'shops'
-HSQLDB:
-  user: 'SA'
-  pass: ''
-  database: 'shops.db'
 ```
 
 ## Permissions

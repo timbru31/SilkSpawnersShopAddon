@@ -266,7 +266,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadConfig() {
         // Add defaults
         FileConfiguration config = getConfig();
-        config.options().header("Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB");
+        config.options().header("Valid storage methods are YAML, MONGODB and MYSQL");
         config.addDefault("disableUpdater", false);
         config.addDefault("shopIdentifier", "&9[SilkSpawners]");
         config.addDefault("numberFormat", "$ 00.##");

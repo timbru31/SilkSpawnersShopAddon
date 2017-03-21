@@ -1,4 +1,4 @@
-# Valid storage methods are YAML, MONGODB, MYSQL and HSQLDB
+# Valid storage methods are YAML, MONGODB and MYSQL
 disableUpdater: false
 shopIdentifier: '&9[SilkSpawners]'
 numberFormat: '$ 00.##'
