@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>SilkSpawnersShopAddon</artifactId>
-  <version>1.4.3-SNAPSHOT</version>
+  <version>1.4.3</version>
   <name>SilkSpawnersShopAddon</name>
   <description>A sign shop for SilkSpawners</description>
   <url>https://www.spigotmc.org/resources/12028/</url>
@@ -66,7 +66,7 @@
   <scm>
     <url>https://github.com/timbru31/SilkSpawnersShopAddon</url>
     <connection>scm:git:git://github.com/timbru31/SilkSpawnersShopAddon.git</connection>
-    <tag>master</tag>
+    <tag>SilkSpawnersShopAddon-1.4.3</tag>
     <developerConnection>scm:git:git@github.com:timbru31/SilkSpawnersShopAddon.git</developerConnection>
   </scm>
 </project>
