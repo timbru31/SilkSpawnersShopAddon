@@ -20,7 +20,6 @@ public class InternalConnectionFactoryBuilder {
     private static final int TIMEOUT = 5000;
     private static final int SERVER_ERROR = 500;
     private SilkSpawnersShopAddon plugin;
-    private JsonParser parser = new JsonParser();
 
     public InternalConnectionFactoryBuilder(SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
@@ -54,11 +53,20 @@ public class InternalConnectionFactoryBuilder {
 
         // Get user id
         String serverPort = String.valueOf(plugin.getServer().getPort());
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("user_id", userId);
-        jsonObject.addProperty("port", serverPort);
-        jsonObject.addProperty("plugin", plugin.getDescription().getFullName());
-        String data = jsonObject.toString();
+        String data = null;
+        try {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("user_id", userId);
+            jsonObject.addProperty("port", serverPort);
+            jsonObject.addProperty("plugin", plugin.getDescription().getFullName());
+            data = jsonObject.toString();
+        } catch (NoClassDefFoundError e) {
+            org.bukkit.craftbukkit.libs.com.google.gson.JsonObject jsonObject = new org.bukkit.craftbukkit.libs.com.google.gson.JsonObject();
+            jsonObject.addProperty("user_id", userId);
+            jsonObject.addProperty("port", serverPort);
+            jsonObject.addProperty("plugin", plugin.getDescription().getFullName());
+            data = jsonObject.toString();
+        }
 
         // Make POST request
         try {
@@ -123,7 +131,11 @@ public class InternalConnectionFactoryBuilder {
         }
         boolean blacklisted = true;
         try {
-            JsonElement parse = parser.parse(response.toString());
+            JsonElement parse = new JsonParser().parse(response.toString());
+            blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
+        } catch (NoClassDefFoundError e) {
+            org.bukkit.craftbukkit.libs.com.google.gson.JsonElement parse = new org.bukkit.craftbukkit.libs.com.google.gson.JsonParser()
+                    .parse(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
         } catch (Exception e) {
             e.printStackTrace();
