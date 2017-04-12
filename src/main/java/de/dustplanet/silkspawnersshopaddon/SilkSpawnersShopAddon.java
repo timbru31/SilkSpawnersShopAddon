@@ -180,9 +180,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         HashMap<String, Boolean> childPermissions = new HashMap<>();
         for (String mobAlias : silkUtil.eid2DisplayName.values()) {
             mobAlias = mobAlias.toLowerCase().replace(" ", "");
-            childPermissions.put("silkspawners.use" + permissionPart + "." + mobAlias, true);
+            childPermissions.put("silkspawners.use." + permissionPart + "." + mobAlias, true);
         }
-        Permission perm = new Permission("silkspawners.use" + permissionPart + ".*", description,
+        Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description,
                 PermissionDefault.TRUE, childPermissions);
         getServer().getPluginManager().addPermission(perm);
     }
