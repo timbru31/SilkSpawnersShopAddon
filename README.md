@@ -63,25 +63,27 @@ MySQL:
 (Fallback to OPs, if no permissions system is found)
 All permissions are included in the silkspawners.* wildcard permission.
 
-| Permission node | Description |
-|:----------:|:----------:|
-| silkspawners.createshop | Grants the ability to create a shop |
-| silkspawners.destroyshop | Grants the ability to destroy a shop |
-| silkspawners.use.* | Allows to interact with buy and sell shops |
-| silkspawners.use.buy | Allows to interact with buy shops |
-| silkspawners.use.sell | Allows to interact with sell shops |
-| silkspawners.editshop | Allows you to edit shops via commands |
-| silkspawners.updateshops | Allows you to remove invalid shops. MAY CAUSE LAG |
+| Permission node          | Description                                |
+|:-------------------------|:-------------------------------------------|
+| silkspawners.createshop  | Grants the ability to create a shop        |
+| silkspawners.destroyshop | Grants the ability to destroy a shop       |
+| silkspawners.use.*       | Allows to interact with buy and sell shops |
+| silkspawners.use.buy     | Allows to interact with buy shops          |
+| silkspawners.use.buy.*   | Allows to interact with all buy shops      |
+| silkspawners.use.sell    | Allows to interact with sell shops         |
+| silkspawners.use.sell.*  | Allows to interact with all sell shops     |
+| silkspawners.editshop    | Allows you to edit shops via commands      |
+| silkspawners.updateshops | Allows you to remove invalid shops         |
 
 
 ## Commands
-| Command | Aliases | Description | Permission node |
-|:----------:|:----------:|:----------:|:----------:|
-| /silkspawnersshopaddon <mode OR mob OR price OR amount> <new value> | silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value | silkspawners.editshop |
-| /silkspawnersshopaddon check | same as above | Searches the database for invalid shops and removes them. MAY CAUSE LAG | silkspawners.updateshops |
+| Command                                                             | Aliases                                                | Description                                              | Permission node          |
+|:--------------------------------------------------------------------|:-------------------------------------------------------|:---------------------------------------------------------|:-------------------------|
+| /silkspawnersshopaddon <mode OR mob OR price OR amount> <new value> | silkspawnersshop, silkspawnershop, sshop, ssshop, shop | Edits the shop and updates the given value               | silkspawners.editshop    |
+| /silkspawnersshopaddon check                                        | same as above                                          | Searches the database for invalid shops and removes them | silkspawners.updateshops |
 
 ## Support
-For support visit the SpigotMC page: https://www.spigotmc.org/resources/12028/
+For support visit the [SpigotMC page](https://www.spigotmc.org/resources/12028/) or open an [issue](https://github.com/timbru31/SilkSpawnersShopAddon/issues).
 
 ## Usage statistics
 
@@ -90,7 +92,7 @@ _stats images are returning soon!_
 ## Data usage collection of bStats
 
 #### Disabling bStats
-The file _../plugins/bStats/config.yml_ contains an option to opt-out
+The file `./plugins/bStats/config.yml` contains an option to *opt-out*.
 
 #### The following data is **read and sent** to https://bstats.org and can be seen under https://bstats.org/plugin/bukkit/SilkSpawnersShopAddon
 * Your server's randomly generated UUID
