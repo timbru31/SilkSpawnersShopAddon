@@ -184,7 +184,11 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
         Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description,
                 PermissionDefault.TRUE, childPermissions);
-        getServer().getPluginManager().addPermission(perm);
+        try {
+            getServer().getPluginManager().addPermission(perm);
+        } catch (IllegalArgumentException e) {
+            getLogger().info("Permission " + perm.getName() + " is already registered. Skipping...");
+        }
     }
 
     public JavaPlugin getPlugin() {
