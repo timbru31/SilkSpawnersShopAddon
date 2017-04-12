@@ -1,5 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.listeners;
 
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -27,14 +29,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     }
 
     private boolean checkBlockFaces(Block block, BlockEvent event, String mode, Material[] signMaterials) {
-        boolean match = false;
-        for (Material m : signMaterials) {
-            if (block.getType() == m) {
-                match = true;
-                break;
-            }
-        }
-        if (match) {
+        if (Arrays.stream(signMaterials).anyMatch(block.getType()::equals)) {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
                 if (plugin.getConfig().getBoolean("invincibility." + mode, true)) {

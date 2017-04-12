@@ -22,6 +22,6 @@ public enum SilkspawnersShopMode {
     }
 
     public static boolean isValidMode(SilkspawnersShopMode mode) {
-        return Arrays.asList(SilkspawnersShopMode.values()).contains(mode);
+        return Arrays.stream(SilkspawnersShopMode.values()).anyMatch(mode::equals);
     }
 }

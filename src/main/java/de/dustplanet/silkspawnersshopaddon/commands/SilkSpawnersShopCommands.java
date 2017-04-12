@@ -41,29 +41,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     public boolean onCommand(final CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("check")) {
             if (sender.hasPermission("silkspawners.updateshops")) {
-                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        ArrayList<SilkSpawnersShop> shopList = getShopManager().getAllShops();
-                        ArrayList<SilkSpawnersShop> invalidShops = new ArrayList<>();
-                        String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.invalid"));
-                        for (SilkSpawnersShop shop : shopList) {
-                            Location shopLoc = shop.getLocation();
-                            if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN_POST) {
-                                continue;
-                            }
-                            sender.sendMessage(invalidMessage.replace("%world%", shopLoc.getWorld().getName())
-                                    .replace("%x%", Double.toString(shopLoc.getX()))
-                                    .replace("%y%", Double.toString(shopLoc.getY()))
-                                    .replace("%z%", Double.toString(shopLoc.getZ())));
-                            invalidShops.add(shop);
-                        }
-                        if (shopList.size() > 0 && !getShopManager().removeShops(invalidShops)) {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.error")));
-                        }
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.success")).replace("%size%", Integer.toString(invalidShops.size())));
-                    }
-                });
+                updateShops(sender);
             } else {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.check")));
             }
@@ -157,5 +135,28 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noConsole")));
         }
         return true;
+    }
+
+    private void updateShops(final CommandSender sender) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            ArrayList<SilkSpawnersShop> shopList = getShopManager().getAllShops();
+            ArrayList<SilkSpawnersShop> invalidShops = new ArrayList<>();
+            String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.invalid"));
+            for (SilkSpawnersShop shop : shopList) {
+                Location shopLoc = shop.getLocation();
+                if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN_POST) {
+                    continue;
+                }
+                sender.sendMessage(invalidMessage.replace("%world%", shopLoc.getWorld().getName())
+                        .replace("%x%", Double.toString(shopLoc.getX()))
+                        .replace("%y%", Double.toString(shopLoc.getY()))
+                        .replace("%z%", Double.toString(shopLoc.getZ())));
+                invalidShops.add(shop);
+            }
+            if (shopList.size() > 0 && !getShopManager().removeShops(invalidShops)) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.error")));
+            }
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.success")).replace("%size%", Integer.toString(invalidShops.size())));
+        });
     }
 }

@@ -1,5 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.listeners;
 
+import java.util.Arrays;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,14 +26,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     }
 
     private boolean checkBlockFaces(Block block, BlockBreakEvent event, Material[] signMaterials) {
-        boolean match = false;
-        for (Material m : signMaterials) {
-            if (block.getType() == m) {
-                match = true;
-                break;
-            }
-        }
-        if (match) {
+        if (Arrays.stream(signMaterials).anyMatch(block.getType()::equals)) {
             Sign sign = (Sign) block.getState();
             Player player = event.getPlayer();
             if (shopManager.isShop(sign)) {
@@ -57,9 +52,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        // Check block itself
         Block brokenBlock = event.getBlock();
-        // Check attached blocks if the block broken block wasn't a sign
         if (!checkBlockFaces(brokenBlock, event, new Material[] { Material.WALL_SIGN, Material.SIGN_POST })
                 && brokenBlock.getType() != Material.WALL_SIGN && brokenBlock.getType() != Material.SIGN_POST) {
             for (BlockFace face : plugin.getBlockFaces()) {
@@ -68,7 +61,6 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                     break;
                 }
             }
-            // Check block up (sign post)
             Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
             checkBlockFaces(attachedBlock, event, new Material[] { Material.SIGN_POST });
         }
@@ -87,7 +79,6 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                 Sign sign = (Sign) event.getBlock().getState();
                 if (shopManager.createOrUpdateShop(lines, sign, player)) {
                     event.setLine(0, shopIdentifier);
-                    // Strip everything else than numbers
                     event.setLine(3, plugin.getFormattedPrice(lines[3].replaceAll("[^0-9.]", "")));
                 } else {
                     event.setLine(0, ChatColor.RED + ChatColor.stripColor(shopIdentifier));

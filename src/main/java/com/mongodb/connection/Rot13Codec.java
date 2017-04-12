@@ -1,9 +1,8 @@
 package com.mongodb.connection;
 
-public class Rot13Codec {
-    private String cipher = "%%__USER__%%";
+import lombok.Getter;
 
-    public String getCipher() {
-        return cipher;
-    }
+public class Rot13Codec {
+    @Getter
+    private String cipher = "%%__USER__%%";
 }
