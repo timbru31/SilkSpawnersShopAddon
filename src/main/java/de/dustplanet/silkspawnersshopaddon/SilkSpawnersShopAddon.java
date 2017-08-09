@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
-import org.bstats.Metrics;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.Action;
@@ -142,12 +143,12 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
 
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SimplePie("storage_provider") {
+        metrics.addCustomChart(new Metrics.SimplePie("storage_provider", new Callable<String>() {
             @Override
-            public String getValue() {
+            public String call() throws Exception {
                 return getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH);
             }
-        });
+        }));
 
         // Updater
         boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
@@ -160,10 +161,9 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
                     if (result == UpdateResult.NO_UPDATE) {
                         getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
                     } else if (result == UpdateResult.UPDATE_AVAILABLE) {
+                        getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
                         getLogger().info(
-                                "There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
-                        getLogger().info("You are running " + getPlugin().getDescription().getVersion() + ", latest is "
-                                + updater.getVersion());
+                                "You are running " + getPlugin().getDescription().getVersion() + ", latest is " + updater.getVersion());
                     } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
                         getLogger().info("Update checking is disabled because you are running a dev build.");
                     } else {
@@ -182,8 +182,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             mobAlias = mobAlias.toLowerCase().replace(" ", "");
             childPermissions.put("silkspawners.use." + permissionPart + "." + mobAlias, true);
         }
-        Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description,
-                PermissionDefault.TRUE, childPermissions);
+        Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description, PermissionDefault.TRUE,
+                childPermissions);
         try {
             getServer().getPluginManager().addPermission(perm);
         } catch (IllegalArgumentException e) {
@@ -202,49 +202,36 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadLocalization() {
         localization.addDefault("buying.inventoryFull", "&6[SilkSpawners] &4Your inventory is full.");
         localization.addDefault("buying.notEnoughMoney", "&6[SilkSpawners] &4You do not have enough money.");
-        localization.addDefault("buying.successEgg",
-                "&6[SilkSpawners] &2You bought &e%amount% %creature% egg(s) &2for &e%price%&2.");
+        localization.addDefault("buying.successEgg", "&6[SilkSpawners] &2You bought &e%amount% %creature% egg(s) &2for &e%price%&2.");
         localization.addDefault("buying.successSpawner",
                 "&6[SilkSpawners] &2You bought &e%amount% %creature% spawner(s) &2for &e%price%&2.");
         localization.addDefault("checking.error", "&6[SilkSpawners] &4There was an error removing the invalid shops.");
         localization.addDefault("checking.invalid",
                 "&6[SilkSpawners] &4Found an invalid shop at &ex %x%&4, &ey %y%&4, &ez %z% &4in world &e%world%&4.");
-        localization.addDefault("checking.success",
-                "&6[SilkSpawners] &2Removed &e%size% &2invalid shops from the database.");
+        localization.addDefault("checking.success", "&6[SilkSpawners] &2Removed &e%size% &2invalid shops from the database.");
         localization.addDefault("creating.error", "&6[SilkSpawners] &4There was an error creating the shop.");
         localization.addDefault("creating.invalidAmount", "&6[SilkSpawners] &4The given amount is invalid.");
         localization.addDefault("creating.invalidMob", "&6[SilkSpawners] &4The given mob is invalid.");
         localization.addDefault("creating.invalidMode", "&6[SilkSpawners] &4The given shop mode is invalid.");
-        localization.addDefault("creating.invalidPrice",
-                "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
+        localization.addDefault("creating.invalidPrice", "&6[SilkSpawners] &4The given price is invalid. Please use numbers only!");
         localization.addDefault("creating.success", "&6[SilkSpawners] &2You created the shop successfully.");
-        localization.addDefault("noPermission.building",
-                "&6[SilkSpawners] &4You do not have the permission to create a shop.");
+        localization.addDefault("noPermission.building", "&6[SilkSpawners] &4You do not have the permission to create a shop.");
         localization.addDefault("noPermission.buy", "&6[SilkSpawners] &4You do not have the permission to buy items.");
-        localization.addDefault("noPermission.check",
-                "&6[SilkSpawners] &4You do not have the permission to check for invalid shops.");
-        localization.addDefault("noPermission.destroying",
-                "&6[SilkSpawners] &4You do not have the permission to destroy a shop.");
-        localization.addDefault("noPermission.edit",
-                "&6[SilkSpawners] &4You do not have the permission to edit a shop.");
-        localization.addDefault("noPermission.sell",
-                "&6[SilkSpawners] &4You do not have the permission to sell items.");
+        localization.addDefault("noPermission.check", "&6[SilkSpawners] &4You do not have the permission to check for invalid shops.");
+        localization.addDefault("noPermission.destroying", "&6[SilkSpawners] &4You do not have the permission to destroy a shop.");
+        localization.addDefault("noPermission.edit", "&6[SilkSpawners] &4You do not have the permission to edit a shop.");
+        localization.addDefault("noPermission.sell", "&6[SilkSpawners] &4You do not have the permission to sell items.");
         localization.addDefault("removing.error", "&6[SilkSpawners] &4There was an error removing the shop.");
         localization.addDefault("removing.success", "&6[SilkSpawners] &2You removed the shop successfully.");
         localization.addDefault("selling.error",
                 "&6[SilkSpawners] &4There was an error processing the transaction. The transaction has been cancelled.");
         localization.addDefault("selling.noEggInHand", "&6[SilkSpawners] &4You do not have an egg in your hand.");
         localization.addDefault("selling.noItemInHand", "&6[SilkSpawners] &4You do not have an item in your hand.");
-        localization.addDefault("selling.noSpawnerInHand",
-                "&6[SilkSpawners] &4You do not have a spawner in your hand.");
-        localization.addDefault("selling.notEnoughEggs",
-                "&6[SilkSpawners] &4You do not have enough eggs in your hand.");
-        localization.addDefault("selling.notEnoughSpawners",
-                "&6[SilkSpawners] &4You do not have enough spawners in your hand.");
-        localization.addDefault("selling.notTheSameMob",
-                "&6[SilkSpawners] &4The item in your hand is not a(n) &e%creature% item&4.");
-        localization.addDefault("selling.successEgg",
-                "&6[SilkSpawners] &2You sold &e%amount% %creature% egg(s) &2for &e%price%&2.");
+        localization.addDefault("selling.noSpawnerInHand", "&6[SilkSpawners] &4You do not have a spawner in your hand.");
+        localization.addDefault("selling.notEnoughEggs", "&6[SilkSpawners] &4You do not have enough eggs in your hand.");
+        localization.addDefault("selling.notEnoughSpawners", "&6[SilkSpawners] &4You do not have enough spawners in your hand.");
+        localization.addDefault("selling.notTheSameMob", "&6[SilkSpawners] &4The item in your hand is not a(n) &e%creature% item&4.");
+        localization.addDefault("selling.successEgg", "&6[SilkSpawners] &2You sold &e%amount% %creature% egg(s) &2for &e%price%&2.");
         localization.addDefault("selling.successSpawner",
                 "&6[SilkSpawners] &2You sold &e%amount% %creature% spawner(s) &2for &e%price%&2.");
         localization.addDefault("updating.commandUsage",
@@ -323,8 +310,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null || rsp.getProvider() == null) {
-            getLogger().severe(
-                    "There is no economy provider installed for Vault! Make sure to install an economy plugin!");
+            getLogger().severe("There is no economy provider installed for Vault! Make sure to install an economy plugin!");
             return false;
         }
         setEcon(rsp.getProvider());
