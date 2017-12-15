@@ -84,16 +84,13 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @Override
     public void onEnable() {
         if (setupEconomy()) {
-            // If Vault is enabled, load the economy
             getLogger().info("Loaded Vault successfully");
         } else {
-            // Else tell the admin about the missing of Vault
             getLogger().severe("Vault was not found! Disabling now...");
             onDisable();
             return;
         }
 
-        // Config
         configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             if (configFile.getParentFile().mkdirs()) {
@@ -108,7 +105,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         loadConfig();
 
-        // Localization
         localizationFile = new File(getDataFolder(), "localization.yml");
         if (!localizationFile.exists()) {
             copy("localization.yml", localizationFile);
@@ -117,20 +113,16 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         setLocalization(ScalarYamlConfiguration.loadConfiguration(localizationFile));
         loadLocalization();
 
-        // Load piracy task runner
         getServer().getScheduler().runTaskLaterAsynchronously(this, new DefaultServerFactory(userID, this), 20L * 120);
 
-        // Setup SilkUtil, shop manager and storage provider
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
         setShopManager(new SilkSpawnersShopManager(this));
 
-        // Load dynamic mob permissions
         if (isPerMobPermissions()) {
             loadPermissions("buy", "Allows you to use buy shops");
             loadPermissions("sell", "Allows you to use sell shops");
         }
 
-        // Register events
         PluginManager pluginManager = getServer().getPluginManager();
         SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
         SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(this);
@@ -139,7 +131,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
 
-        // Load command
         getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
 
         Metrics metrics = new Metrics(this);
@@ -150,7 +141,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             }
         }));
 
-        // Updater
         boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
         if (!updaterDisabled) {
             getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
@@ -255,7 +245,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     }
 
     private void loadConfig() {
-        // Add defaults
         FileConfiguration config = getConfig();
         config.options().header("Valid storage methods are YAML, MONGODB and MYSQL");
         config.addDefault("disableUpdater", false);
@@ -298,11 +287,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         setEggMode(config.getBoolean("eggMode", false));
     }
 
-    /**
-     * Hook into Vault.
-     *
-     * @return whether the hook into Vault was successful
-     */
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().severe("Vault seems to be missing. Make sure to install the latest version of Vault!");
@@ -317,7 +301,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         return getEcon() != null;
     }
 
-    // If no config is found, copy the default one(s)!
     public void copy(String yml, File file) {
         try (OutputStream out = new FileOutputStream(file); InputStream in = getResource(yml)) {
             byte[] buf = new byte[1024];
