@@ -13,7 +13,7 @@ BUY|SELL:amount
 mob (name or ID)
 price (only numbers)
 ```
-* Shops are stored via 4 different storage providers:
+* Shops are stored via three different storage providers:
   * yaml
   * mongoDB
   * MySQL
