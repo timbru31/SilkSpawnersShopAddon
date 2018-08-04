@@ -9,18 +9,15 @@
   </parent>
 
   <artifactId>SilkSpawnersShopAddon</artifactId>
-  <version>2.1.4-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>SilkSpawnersShopAddon</name>
   <description>A sign shop addon for SilkSpawners</description>
   <url>https://www.spigotmc.org/resources/12028/</url>
 
   <properties>
-    <obfuscate.options>-keep class com.mongodb.connection.** { *; }</obfuscate.options>
     <plugin.name>SilkSpawnersShopAddon</plugin.name>
     <plugin.main>de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon</plugin.main>
     <plugin.package>de.dustplanet.silkspawnersshopaddon</plugin.package>
-    <lombok.version>1.18.2</lombok.version>
-    <bukkit.version>1.13-R0.1-SNAPSHOT</bukkit.version>
   </properties>
 
   <repositories>
@@ -43,11 +40,6 @@
   </repositories>
 
   <dependencies>
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>${bukkit.version}</version>
-    </dependency>
     <dependency>
       <groupId>de.dustplanet</groupId>
       <artifactId>SilkSpawners</artifactId>
