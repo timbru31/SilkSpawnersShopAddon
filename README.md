@@ -23,9 +23,7 @@ price (only numbers)
 
 ## License
 
-This plugin is released under closed source.
 You do not have the permission to redistribute, share, sell or make this plugin in any other way available for others.
-Please not that decompilation is a violation of this license.
 One purchase is valid for one server, if you plan to use it on multiple servers you will need to purchase the resource again.
 
 ## Standard config
