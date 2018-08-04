@@ -19,6 +19,8 @@
     <plugin.name>SilkSpawnersShopAddon</plugin.name>
     <plugin.main>de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon</plugin.main>
     <plugin.package>de.dustplanet.silkspawnersshopaddon</plugin.package>
+    <lombok.version>1.18.2</lombok.version>
+    <bukkit.version>1.13-R0.1-SNAPSHOT</bukkit.version>
   </properties>
 
   <repositories>
