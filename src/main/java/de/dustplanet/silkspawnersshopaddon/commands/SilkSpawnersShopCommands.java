@@ -43,7 +43,8 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
             if (sender.hasPermission("silkspawners.updateshops")) {
                 updateShops(sender);
             } else {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.check")));
+                sender.sendMessage(
+                        ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.check")));
             }
             return true;
         }
@@ -51,64 +52,71 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
             Player player = (Player) sender;
             if (player.hasPermission("silkspawners.editshop")) {
                 if (args.length != 2) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.commandUsage")));
+                    player.sendMessage(
+                            ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.commandUsage")));
                     return true;
                 }
                 Block block = player.getTargetBlock((Set<Material>) null, 6);
-                if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
+                if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN) {
                     Sign sign = (Sign) block.getState();
                     if (shopManager.isShop(sign)) {
                         boolean change = true;
                         SilkSpawnersShop shop = shopManager.getShop(sign);
                         String argument = args[1];
                         switch (args[0].toUpperCase(Locale.ENGLISH)) {
-                        case "MODE":
-                            SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(argument);
-                            if (mode == null) {
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMode")));
-                                change = false;
-                            } else {
-                                shop.setMode(mode);
-                            }
-                            break;
-                        case "MOB":
-                            boolean knownMob = plugin.getSilkUtil().isKnown(argument);
-                            if (!knownMob) {
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidMob")));
-                                change = false;
-                            } else {
-                                shop.setMob(argument);
-                            }
-                            break;
-                        case "PRICE":
-                            try {
-                                double price = Double.parseDouble(argument.replaceAll("[^0-9.]", ""));
-                                shop.setPrice(price);
-                            } catch (NumberFormatException e) {
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
-                                change = false;
-                            }
-                            break;
-                        case "AMOUNT":
-                            try {
-                                int amount = Integer.parseInt(argument.replaceAll("[^0-9.]", ""));
-                                if (amount < 1) {
-                                    throw new InvalidAmountException("Amount must be greater or equal to 1");
+                            case "MODE":
+                                SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(argument);
+                                if (mode == null) {
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                            plugin.getLocalization().getString("creating.invalidMode")));
+                                    change = false;
+                                } else {
+                                    shop.setMode(mode);
                                 }
-                                shop.setAmount(amount);
-                            } catch (NumberFormatException | InvalidAmountException e) {
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidAmount")));
+                                break;
+                            case "MOB":
+                                boolean knownMob = plugin.getSilkUtil().isKnown(argument);
+                                if (!knownMob) {
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                            plugin.getLocalization().getString("creating.invalidMob")));
+                                    change = false;
+                                } else {
+                                    shop.setMob(argument);
+                                }
+                                break;
+                            case "PRICE":
+                                try {
+                                    double price = Double.parseDouble(argument.replaceAll("[^0-9.]", ""));
+                                    shop.setPrice(price);
+                                } catch (NumberFormatException e) {
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                            plugin.getLocalization().getString("creating.invalidPrice")));
+                                    change = false;
+                                }
+                                break;
+                            case "AMOUNT":
+                                try {
+                                    int amount = Integer.parseInt(argument.replaceAll("[^0-9.]", ""));
+                                    if (amount < 1) {
+                                        throw new InvalidAmountException("Amount must be greater or equal to 1");
+                                    }
+                                    shop.setAmount(amount);
+                                } catch (NumberFormatException | InvalidAmountException e) {
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                            plugin.getLocalization().getString("creating.invalidAmount")));
+                                    change = false;
+                                }
+                                break;
+                            default:
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                        plugin.getLocalization().getString("updating.commandUsage")));
                                 change = false;
-                            }
-                            break;
-                        default:
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.commandUsage")));
-                            change = false;
-                            break;
+                                break;
                         }
                         if (change) {
                             if (shopManager.updateShop(shop)) {
-                                sign.setLine(0, ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier")));
+                                sign.setLine(0,
+                                        ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier")));
                                 if (shop.getAmount() > 1) {
                                     sign.setLine(1, shop.getMode().toString() + ":" + shop.getAmount());
                                 } else {
@@ -117,19 +125,24 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                 sign.setLine(2, shop.getMob());
                                 sign.setLine(3, plugin.getFormattedPrice(shop.getPrice()));
                                 sign.update(true);
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.success")));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                        plugin.getLocalization().getString("updating.success")));
                             } else {
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.error")));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                        plugin.getLocalization().getString("updating.error")));
                             }
                         }
                     } else {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
+                        player.sendMessage(
+                                ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
                     }
                 } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
+                    player.sendMessage(
+                            ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noShop")));
                 }
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.edit")));
+                player.sendMessage(
+                        ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.edit")));
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("updating.noConsole")));
@@ -141,22 +154,24 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             ArrayList<SilkSpawnersShop> shopList = getShopManager().getAllShops();
             ArrayList<SilkSpawnersShop> invalidShops = new ArrayList<>();
-            String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.invalid"));
+            String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026',
+                    getPlugin().getLocalization().getString("checking.invalid"));
             for (SilkSpawnersShop shop : shopList) {
                 Location shopLoc = shop.getLocation();
-                if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN_POST) {
+                if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN) {
                     continue;
                 }
-                sender.sendMessage(invalidMessage.replace("%world%", shopLoc.getWorld().getName())
-                        .replace("%x%", Double.toString(shopLoc.getX()))
-                        .replace("%y%", Double.toString(shopLoc.getY()))
-                        .replace("%z%", Double.toString(shopLoc.getZ())));
+                sender.sendMessage(
+                        invalidMessage.replace("%world%", shopLoc.getWorld().getName()).replace("%x%", Double.toString(shopLoc.getX()))
+                                .replace("%y%", Double.toString(shopLoc.getY())).replace("%z%", Double.toString(shopLoc.getZ())));
                 invalidShops.add(shop);
             }
             if (shopList.size() > 0 && !getShopManager().removeShops(invalidShops)) {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.error")));
+                sender.sendMessage(
+                        ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.error")));
             }
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.success")).replace("%size%", Integer.toString(invalidShops.size())));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('\u0026', getPlugin().getLocalization().getString("checking.success"))
+                    .replace("%size%", Integer.toString(invalidShops.size())));
         });
     }
 }

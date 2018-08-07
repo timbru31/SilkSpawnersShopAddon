@@ -45,7 +45,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent event) {
         Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "ignite", new Material[] { Material.WALL_SIGN, Material.SIGN_POST })) {
+        if (!checkBlockFaces(block, event, "ignite", new Material[] { Material.WALL_SIGN, Material.SIGN })) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = block.getRelative(face);
                 if (checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.WALL_SIGN })) {
@@ -53,14 +53,14 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
                 }
             }
             Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.SIGN_POST });
+            checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.SIGN });
         }
     }
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "burn", new Material[] { Material.WALL_SIGN, Material.SIGN_POST })) {
+        if (!checkBlockFaces(block, event, "burn", new Material[] { Material.WALL_SIGN, Material.SIGN })) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = block.getRelative(face);
                 if (checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.WALL_SIGN })) {
@@ -68,14 +68,14 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
                 }
             }
             Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.SIGN_POST });
+            checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.SIGN });
         }
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
-            if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
+            if (block.getType() == Material.SIGN || block.getType() == Material.WALL_SIGN) {
                 Sign sign = (Sign) block.getState();
                 if (shopManager.isShop(sign)) {
                     if (plugin.getConfig().getBoolean("invincibility.explode", true)) {
@@ -91,7 +91,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Block block = event.getBlock();
-        if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
+        if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN) {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
                 @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")

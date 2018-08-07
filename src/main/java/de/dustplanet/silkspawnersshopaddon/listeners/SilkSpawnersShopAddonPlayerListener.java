@@ -23,8 +23,7 @@ public class SilkSpawnersShopAddonPlayerListener implements Listener {
         if (!event.hasBlock()) {
             return;
         }
-        if (event.getClickedBlock().getType() == Material.WALL_SIGN
-                || event.getClickedBlock().getType() == Material.SIGN_POST) {
+        if (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN) {
             if (!plugin.getAllowedActions().contains(event.getAction())) {
                 return;
             }

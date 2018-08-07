@@ -32,12 +32,12 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
             if (shopManager.isShop(sign)) {
                 if (player.hasPermission("silkspawners.destroyshop")) {
                     if (!shopManager.removeShop(shopManager.getShop(sign))) {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
-                                plugin.getLocalization().getString("removing.error")));
+                        player.sendMessage(
+                                ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.error")));
                         event.setCancelled(true);
                     } else {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
-                                plugin.getLocalization().getString("removing.success")));
+                        player.sendMessage(
+                                ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.success")));
                     }
                 } else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
@@ -53,8 +53,8 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block brokenBlock = event.getBlock();
-        if (!checkBlockFaces(brokenBlock, event, new Material[] { Material.WALL_SIGN, Material.SIGN_POST })
-                && brokenBlock.getType() != Material.WALL_SIGN && brokenBlock.getType() != Material.SIGN_POST) {
+        if (!checkBlockFaces(brokenBlock, event, new Material[] { Material.WALL_SIGN, Material.SIGN })
+                && brokenBlock.getType() != Material.WALL_SIGN && brokenBlock.getType() != Material.SIGN) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = brokenBlock.getRelative(face);
                 if (checkBlockFaces(attachedBlock, event, new Material[] { Material.WALL_SIGN })) {
@@ -62,7 +62,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                 }
             }
             Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, new Material[] { Material.SIGN_POST });
+            checkBlockFaces(attachedBlock, event, new Material[] { Material.SIGN });
         }
     }
 
@@ -70,8 +70,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     public void onSignChange(SignChangeEvent event) {
         // macOS sends weird \uF700 and \uF701 chars
         String[] lines = event.getLines();
-        String shopIdentifier = ChatColor.translateAlternateColorCodes('\u0026',
-                plugin.getConfig().getString("shopIdentifier"));
+        String shopIdentifier = ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier"));
         if (ChatColor.stripColor(lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""))
                 .equalsIgnoreCase(ChatColor.stripColor(shopIdentifier))) {
             Player player = event.getPlayer();
@@ -84,8 +83,8 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                     event.setLine(0, ChatColor.RED + ChatColor.stripColor(shopIdentifier));
                 }
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
-                        plugin.getLocalization().getString("noPermission.building")));
+                player.sendMessage(
+                        ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.building")));
                 event.setLine(0, ChatColor.RED + ChatColor.stripColor(shopIdentifier));
             }
         }

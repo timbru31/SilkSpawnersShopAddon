@@ -2,8 +2,9 @@ name: SilkSpawnersShopAddon
 author: xGhOsTkiLLeRx
 main: de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon
 version: ${project.version}${build.number}
-url: https://www.spigotmc.org/resources/12028/
+website: https://www.spigotmc.org/resources/12028/
 description: A sign shop for SilkSpawners
+api-version: 1.13
 commands:
   silkspawnersshopaddon:
     description: Used to edit shops, administrative command
