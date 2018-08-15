@@ -4,9 +4,9 @@
 [![Circle CI](https://img.shields.io/circleci/token/bd31b6c66e67b91f26ea508cc402402e8d53c0a1/project/github/timbru31/SilkSpawnersShopAddon/master.svg)](https://circleci.com/gh/timbru31/SilkSpawnersShopAddon)
 
 ## Info
-This CraftBukkit/Spigot plugin adds an optional store for selling and buying spawner via signs.
+This CraftBukkit/Spigot plugin adds an optional store for selling and buying spawners via signs.
 The two modes are specified via BUY or SELL.
-A valid sing looks like this.
+A valid sing looks like this:
 ```
 &6[SilkSpawners] (configurable)
 BUY|SELL:amount
