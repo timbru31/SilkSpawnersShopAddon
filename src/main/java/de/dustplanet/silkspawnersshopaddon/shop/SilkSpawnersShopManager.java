@@ -114,7 +114,7 @@ public class SilkSpawnersShopManager {
 
     public void handleBuy(Player player, SilkSpawnersShop shop) {
         String mob = shop.getMob();
-        short entityID = su.name2Eid.get(mob);
+        String entityID = su.getDisplayNameToMobID().get(mob);
         String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
         if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.buy")
                 || player.hasPermission("silkspawners.use.buy." + mobName)) {
@@ -133,10 +133,10 @@ public class SilkSpawnersShopManager {
             mob = su.getCreatureName(entityID);
             int amount = shop.getAmount();
             if (plugin.isEggMode()) {
-                player.getInventory().addItem(su.newEggItem(entityID, su.eid2MobID.get(entityID), amount));
+                player.getInventory().addItem(su.newEggItem(entityID, amount));
             } else {
                 player.getInventory()
-                        .addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(su.eid2MobID.get(entityID)), amount, false));
+                        .addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(entityID), amount, false));
             }
             if (plugin.getConfig().getBoolean("forceInventoryUpdate", false)) {
                 player.updateInventory();
@@ -158,7 +158,7 @@ public class SilkSpawnersShopManager {
 
     public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
         String mob = shop.getMob();
-        short entityID = su.name2Eid.get(mob);
+        String entityID = su.getDisplayNameToMobID().get(mob);
         String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
         if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.sell")
                 || player.hasPermission("silkspawners.use.sell." + mobName)) {
@@ -171,19 +171,19 @@ public class SilkSpawnersShopManager {
                 player.sendMessage(
                         ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noSpawnerInHand")));
                 return;
-            } else if (plugin.isEggMode() && item.getType() != SilkUtil.SPAWN_EGG) {
+            } else if (plugin.isEggMode() && item.getType() != su.nmsProvider.getSpawnEggMaterial()) {
                 player.sendMessage(
                         ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noEggInHand")));
                 return;
             }
-            short entityIDInHand = 0;
+            String entityIDInHand = null;
             if (plugin.isEggMode()) {
                 entityIDInHand = su.getStoredEggEntityID(item);
             } else {
                 entityIDInHand = su.getStoredSpawnerItemEntityID(item);
             }
             String creatureName = su.getCreatureName(entityID);
-            if (entityIDInHand != entityID) {
+            if (!entityIDInHand.equalsIgnoreCase(entityID)) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                         plugin.getLocalization().getString("selling.notTheSameMob").replace("%creature%", creatureName)));
                 return;
