@@ -1,7 +1,6 @@
 # SilkSpawnersShopAddon
 [![Build Status](https://ci.dustplanet.de/buildStatus/icon?job=SilkSpawnersShopAddon)](https://ci.dustplanet.de/job/SilkSpawnersShopAddon/)
 [![Build Status](https://travis-ci.com/timbru31/SilkSpawnersShopAddon.svg?token=xMwFbvUujsG645zQBus3&branch=master)](https://travis-ci.com/timbru31/SilkSpawnersShopAddon)
-[![Circle CI](https://img.shields.io/circleci/token/bd31b6c66e67b91f26ea508cc402402e8d53c0a1/project/github/timbru31/SilkSpawnersShopAddon/master.svg)](https://circleci.com/gh/timbru31/SilkSpawnersShopAddon)
 
 ## Info
 This CraftBukkit/Spigot plugin adds an optional store for selling and buying spawners via signs.
