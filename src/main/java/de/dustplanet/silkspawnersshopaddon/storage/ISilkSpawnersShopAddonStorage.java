@@ -1,6 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.storage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.block.Sign;
 
@@ -16,7 +17,7 @@ public interface ISilkSpawnersShopAddonStorage {
 
     boolean updateShop(SilkSpawnersShop shop);
 
-    ArrayList<SilkSpawnersShop> getAllShops();
+    List<SilkSpawnersShop> getAllShops();
 
     boolean isShop(Sign sign);
 

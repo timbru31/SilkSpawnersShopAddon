@@ -169,8 +169,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadPermissions(String permissionPart, String description) {
         HashMap<String, Boolean> childPermissions = new HashMap<>();
         for (String mobAlias : silkUtil.getDisplayNameToMobID().keySet()) {
-            mobAlias = mobAlias.toLowerCase().replace(" ", "");
-            childPermissions.put("silkspawners.use." + permissionPart + "." + mobAlias, true);
+            mobAlias = mobAlias.toLowerCase(Locale.ENGLISH).replace(" ", "");
+            childPermissions.put("silkspawners.use." + permissionPart + "." + mobAlias, Boolean.TRUE);
         }
         Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description, PermissionDefault.TRUE,
                 childPermissions);
@@ -247,18 +247,18 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadConfig() {
         FileConfiguration config = getConfig();
         config.options().header("Valid storage methods are YAML, MONGODB and MYSQL");
-        config.addDefault("disableUpdater", false);
+        config.addDefault("disableUpdater", Boolean.FALSE);
         config.addDefault("shopIdentifier", "&9[SilkSpawners]");
         config.addDefault("numberFormat", "$ 00.##");
         List<String> tempStringAllowedActions = new ArrayList<>();
         tempStringAllowedActions.add(Action.RIGHT_CLICK_BLOCK.toString());
         config.addDefault("allowedActions", tempStringAllowedActions);
-        config.addDefault("invincibility.burn", true);
-        config.addDefault("invincibility.explode", true);
-        config.addDefault("invincibility.ignite", true);
-        config.addDefault("forceInventoryUpdate", false);
-        config.addDefault("perMobPermissions", false);
-        config.addDefault("eggMode", false);
+        config.addDefault("invincibility.burn", Boolean.TRUE);
+        config.addDefault("invincibility.explode", Boolean.TRUE);
+        config.addDefault("invincibility.ignite", Boolean.TRUE);
+        config.addDefault("forceInventoryUpdate", Boolean.FALSE);
+        config.addDefault("perMobPermissions", Boolean.FALSE);
+        config.addDefault("eggMode", Boolean.FALSE);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
         config.addDefault("mongoDB.port", 27017);

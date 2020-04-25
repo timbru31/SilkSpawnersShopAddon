@@ -1,7 +1,7 @@
 package com.mongodb.connection;
 
 public class BaseQueryFactory extends Exception {
-    private static final long serialVersionUID = 551973567466799446L;
+    private static final long serialVersionUID = -2138842311141557820L;
 
     public BaseQueryFactory() {
         super();

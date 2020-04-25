@@ -41,7 +41,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         String db = plugin.getConfig().getString("mongoDB.database");
         String coll = plugin.getConfig().getString("mongoDB.collection");
         String userPass = "";
-        if (user != null && !user.isEmpty() && pass != null && !pass.isEmpty()) {
+        if (user != null && pass != null && !user.isEmpty() && !pass.isEmpty()) {
             userPass = user + ":" + pass + "@";
         }
         Builder mongoClientOptions = MongoClientOptions.builder().writeConcern(WriteConcern.ACKNOWLEDGED);
@@ -50,7 +50,6 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         database = mongoClient.getDatabase(db);
         collection = database.getCollection(coll);
     }
-
 
     private Document createDocumentFromShop(SilkSpawnersShop shop) {
         Location shopLoc = shop.getLocation();
@@ -144,7 +143,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         double y = loc.getY();
         double z = loc.getZ();
         String world = loc.getWorld().getName();
-        Document doc = collection.find(and(eq("location.world", world), eq("location.x", x), eq("location.y", y), eq("location.z", z))).first();
+        Document doc = collection.find(and(eq("location.world", world), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
+                .first();
         return doc != null;
     }
 
@@ -162,7 +162,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         double y = loc.getY();
         double z = loc.getZ();
         String world = loc.getWorld().getName();
-        Document doc = collection.find(and(eq("location.world", world), eq("location.x", x), eq("location.y", y), eq("location.z", z))).first();
+        Document doc = collection.find(and(eq("location.world", world), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
+                .first();
         if (doc == null) {
             return null;
         }
@@ -187,7 +188,6 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         mongoClient.close();
         super.disable();
     }
-
 
     @Override
     public boolean upgradeDatabase() {

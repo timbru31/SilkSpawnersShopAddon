@@ -41,7 +41,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(final CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1 && args[0].equalsIgnoreCase("check")) {
+        if (args.length == 1 && "check".equalsIgnoreCase(args[0])) {
             if (sender.hasPermission("silkspawners.updateshops")) {
                 updateShops(sender);
             } else {
@@ -100,7 +100,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                 try {
                                     int amount = Integer.parseInt(argument.replaceAll("[^0-9.]", ""));
                                     if (amount < 1) {
-                                        throw new InvalidAmountException("Amount must be greater or equal to 1");
+                                        throw new InvalidAmountException("Amount must be greater or equal to 1, but got " + amount);
                                     }
                                     shop.setAmount(amount);
                                 } catch (@SuppressWarnings("unused") NumberFormatException | InvalidAmountException e) {

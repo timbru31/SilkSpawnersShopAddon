@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -83,7 +84,7 @@ public class InternalConnectionFactoryBuilder {
         // Send POST request
         con.setDoOutput(true);
         try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-            wr.write(data.getBytes("UTF-8"));
+            wr.write(data.getBytes(StandardCharsets.UTF_8"));
             wr.flush();
         } catch (@SuppressWarnings("unused") UnknownHostException e) {
             // Handle being offline nice
@@ -106,12 +107,12 @@ public class InternalConnectionFactoryBuilder {
         }
 
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         // Ignore all server errors
         if (responseCode >= SERVER_ERROR) {
             return responseCode;
         } else if (responseCode == HttpURLConnection.HTTP_OK) {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
@@ -120,7 +121,7 @@ public class InternalConnectionFactoryBuilder {
                 return responseCode;
             }
         } else {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream(), "UTF-8"))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream(), StandardCharsets.UTF_8))) {
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }

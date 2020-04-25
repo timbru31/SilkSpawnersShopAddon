@@ -65,7 +65,8 @@ public abstract class SilkSpawnersShopAddonSQLStorage extends SilkSpawnersShopAd
     @Override
     public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
         StringBuilder builder = new StringBuilder();
-        for (SilkSpawnersShop element : shopList) {
+        for (@SuppressWarnings("unused")
+        SilkSpawnersShop element : shopList) {
             builder.append("?,");
         }
         @SuppressFBWarnings(justification = "builder is only used in for loop to calculate size of shops to remove", value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")

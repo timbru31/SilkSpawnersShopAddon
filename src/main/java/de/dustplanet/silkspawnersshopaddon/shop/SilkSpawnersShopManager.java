@@ -115,7 +115,7 @@ public class SilkSpawnersShopManager {
     public void handleBuy(Player player, SilkSpawnersShop shop) {
         String mob = shop.getMob();
         String entityID = su.getDisplayNameToMobID().get(mob);
-        String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
+        String mobName = su.getCreatureName(entityID).toLowerCase(Locale.ENGLISH).replace(" ", "");
         if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.buy")
                 || player.hasPermission("silkspawners.use.buy." + mobName)) {
             double price = shop.getPrice();
@@ -158,7 +158,7 @@ public class SilkSpawnersShopManager {
     public void handleSell(Player player, SilkSpawnersShop shop, boolean hasItem, ItemStack item) {
         String mob = shop.getMob();
         String entityID = su.getDisplayNameToMobID().get(mob);
-        String mobName = su.getCreatureName(entityID).toLowerCase().replace(" ", "");
+        String mobName = su.getCreatureName(entityID).toLowerCase(Locale.ENGLISH).replace(" ", "");
         if (!plugin.isPerMobPermissions() && player.hasPermission("silkspawners.use.sell")
                 || player.hasPermission("silkspawners.use.sell." + mobName)) {
             double price = shop.getPrice();
@@ -245,7 +245,7 @@ public class SilkSpawnersShopManager {
         String secondLine = lines[1].trim().replaceAll("\uF700", "").replaceAll("\uF701", "");
         SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(secondLine);
         if (SilkspawnersShopMode.isValidMode(mode)) {
-            String mob = lines[2].toLowerCase().trim().replaceAll("\uF700", "").replaceAll("\uF701", "");
+            String mob = lines[2].toLowerCase(Locale.ENGLISH).trim().replaceAll("\uF700", "").replaceAll("\uF701", "");
             if (su.isKnown(mob)) {
                 String priceString = lines[3];
                 try {
@@ -255,7 +255,7 @@ public class SilkSpawnersShopManager {
                         try {
                             amount = Integer.parseInt(secondLine.split(":")[1].replaceAll("[^0-9]", ""));
                             if (amount < 1) {
-                                throw new InvalidAmountException("Amount must be greater or equal to 1");
+                                throw new InvalidAmountException("Amount must be greater or equal to 1, but got " + amount);
                             }
                         } catch (@SuppressWarnings("unused") IndexOutOfBoundsException | InvalidAmountException | NumberFormatException e) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',

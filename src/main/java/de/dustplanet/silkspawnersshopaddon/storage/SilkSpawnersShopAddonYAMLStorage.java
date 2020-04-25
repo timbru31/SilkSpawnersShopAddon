@@ -80,15 +80,15 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
     }
 
     @Override
-    public ArrayList<SilkSpawnersShop> getAllShops() {
+    public List<SilkSpawnersShop> getAllShops() {
         Set<String> shopList = shopConfiguration.getKeys(false);
-        ArrayList<SilkSpawnersShop> shops = new ArrayList<>();
+        List<SilkSpawnersShop> shops = new ArrayList<>();
         for (String shopID : shopList) {
             List<String> rawShop = shopConfiguration.getStringList(shopID);
             String world = rawShop.get(0);
-            double x = Double.valueOf(rawShop.get(1));
-            double y = Double.valueOf(rawShop.get(2));
-            double z = Double.valueOf(rawShop.get(3));
+            double x = Double.parseDouble(rawShop.get(1));
+            double y = Double.parseDouble(rawShop.get(2));
+            double z = Double.parseDouble(rawShop.get(3));
             int amount;
             try {
                 amount = Integer.parseInt(rawShop.get(7));
@@ -96,7 +96,7 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
                 amount = 1;
             }
             SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5),
-                    amount, Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
+                    amount, Double.parseDouble(rawShop.get(6)), UUID.fromString(shopID));
             shops.add(shop);
         }
         return shops;

@@ -5,18 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 
 /**
- *
  * Based on the Updater of PatoTheBest. Thanks for sharing this class.
  *
  * @author PatoTheBest
  * @author xGhOsTkiLLeRx
- *
  */
 
 public class Updater {
@@ -73,14 +72,14 @@ public class Updater {
         connection.setDoOutput(true);
         try {
             connection.setRequestMethod(REQUEST_METHOD);
-            connection.getOutputStream().write(WRITE_STRING.getBytes("UTF-8"));
+            connection.getOutputStream().write(WRITE_STRING.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             plugin.getLogger().severe("Failed to open the connection to SpigotMC.");
             e.printStackTrace();
             result = UpdateResult.FAIL_SPIGOT;
         }
         String newVersion;
-        try (InputStreamReader isr = new InputStreamReader(connection.getInputStream(), "UTF-8");
+        try (InputStreamReader isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
                 BufferedReader br = new BufferedReader(isr)) {
             newVersion = br.readLine();
         } catch (IOException e) {
@@ -95,10 +94,10 @@ public class Updater {
             return;
         }
         // Check for "magic string"
-        if (newVersion.equalsIgnoreCase("Invalid resource")) {
+        if ("Invalid resource".equalsIgnoreCase(newVersion)) {
             result = UpdateResult.BAD_RESOURCEID;
             return;
-        } else if (newVersion.equalsIgnoreCase("Invalid access key")) {
+        } else if ("Invalid access key".equalsIgnoreCase(newVersion)) {
             result = UpdateResult.BAD_API_KEY;
             return;
         }
