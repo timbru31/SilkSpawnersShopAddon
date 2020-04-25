@@ -1,6 +1,7 @@
 package de.dustplanet.silkspawnersshopaddon.commands;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -154,8 +155,8 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
 
     private void updateShops(final CommandSender sender) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            ArrayList<SilkSpawnersShop> shopList = getShopManager().getAllShops();
-            ArrayList<SilkSpawnersShop> invalidShops = new ArrayList<>();
+            List<SilkSpawnersShop> shopList = getShopManager().getAllShops();
+            List<SilkSpawnersShop> invalidShops = new ArrayList<>();
             String invalidMessage = ChatColor.translateAlternateColorCodes('\u0026',
                     getPlugin().getLocalization().getString("checking.invalid"));
             for (SilkSpawnersShop shop : shopList) {

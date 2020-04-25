@@ -1,6 +1,6 @@
 package de.dustplanet.silkspawnersshopaddon.shop;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.bukkit.ChatColor;
@@ -62,7 +62,7 @@ public class SilkSpawnersShopManager {
         return removeShop(getShop(sign));
     }
 
-    public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
+    public boolean removeShops(List<SilkSpawnersShop> shopList) {
         return storage.removeShops(shopList);
     }
 
@@ -91,7 +91,7 @@ public class SilkSpawnersShopManager {
         return storage.getShop(sign);
     }
 
-    public ArrayList<SilkSpawnersShop> getAllShops() {
+    public List<SilkSpawnersShop> getAllShops() {
         return storage.getAllShops();
     }
 

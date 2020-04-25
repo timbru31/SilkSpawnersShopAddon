@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -63,7 +64,7 @@ public abstract class SilkSpawnersShopAddonSQLStorage extends SilkSpawnersShopAd
     }
 
     @Override
-    public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
+    public boolean removeShops(List<SilkSpawnersShop> shopList) {
         StringBuilder builder = new StringBuilder();
         for (@SuppressWarnings("unused")
         SilkSpawnersShop element : shopList) {
@@ -185,8 +186,8 @@ public abstract class SilkSpawnersShopAddonSQLStorage extends SilkSpawnersShopAd
     }
 
     @Override
-    public ArrayList<SilkSpawnersShop> getAllShops() {
-        ArrayList<SilkSpawnersShop> shopList = new ArrayList<>();
+    public List<SilkSpawnersShop> getAllShops() {
+        List<SilkSpawnersShop> shopList = new ArrayList<>();
         String query = "SELECT * FROM SHOPS";
         try (PreparedStatement statement = conn.prepareStatement(query); ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {

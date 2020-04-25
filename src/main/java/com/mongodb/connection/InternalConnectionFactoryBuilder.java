@@ -84,7 +84,7 @@ public class InternalConnectionFactoryBuilder {
         // Send POST request
         con.setDoOutput(true);
         try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-            wr.write(data.getBytes(StandardCharsets.UTF_8"));
+            wr.write(data.getBytes(StandardCharsets.UTF_8));
             wr.flush();
         } catch (@SuppressWarnings("unused") UnknownHostException e) {
             // Handle being offline nice

@@ -5,6 +5,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bson.Document;
@@ -102,9 +103,9 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
     }
 
     @Override
-    public boolean removeShops(ArrayList<SilkSpawnersShop> shopList) {
+    public boolean removeShops(List<SilkSpawnersShop> shopList) {
         try {
-            ArrayList<String> shopIdList = new ArrayList<>();
+            List<String> shopIdList = new ArrayList<>();
             cachedShops.removeAll(shopList);
             for (SilkSpawnersShop shop : shopList) {
                 shopIdList.add(shop.getId().toString());
@@ -173,8 +174,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
     }
 
     @Override
-    public ArrayList<SilkSpawnersShop> getAllShops() {
-        ArrayList<SilkSpawnersShop> shopList = new ArrayList<>();
+    public List<SilkSpawnersShop> getAllShops() {
+        List<SilkSpawnersShop> shopList = new ArrayList<>();
         FindIterable<Document> shopDocuments = collection.find();
         for (Document doc : shopDocuments) {
             SilkSpawnersShop shop = getShopFromDocument(doc);

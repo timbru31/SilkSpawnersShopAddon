@@ -1,6 +1,5 @@
 package de.dustplanet.silkspawnersshopaddon.storage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Sign;
@@ -13,7 +12,7 @@ public interface ISilkSpawnersShopAddonStorage {
 
     boolean removeShop(SilkSpawnersShop shop);
 
-    boolean removeShops(ArrayList<SilkSpawnersShop> shopList);
+    boolean removeShops(List<SilkSpawnersShop> shopList);
 
     boolean updateShop(SilkSpawnersShop shop);
 
