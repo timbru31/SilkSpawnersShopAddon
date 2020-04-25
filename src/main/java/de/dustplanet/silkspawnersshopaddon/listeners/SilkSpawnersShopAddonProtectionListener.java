@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -96,11 +97,21 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
         if (signHelper.getAllSignMaterials().contains(block.getType())) {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
-                @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
-                Block attachedBlock = block.getRelative(((org.bukkit.material.Sign) sign.getData()).getAttachedFace());
-                if (attachedBlock.getType() == Material.AIR) {
-                    shopManager.removeShop(sign);
-                    plugin.getLogger().info("Removed a shop due to physics event");
+                try {
+                    @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
+                    Block attachedBlock = block.getRelative(((org.bukkit.material.Sign) sign.getData()).getAttachedFace());
+                    if (attachedBlock.getType() == Material.AIR) {
+                        shopManager.removeShop(sign);
+                        plugin.getLogger().info("Removed a shop due to physics event");
+                    }
+                } catch (@SuppressWarnings("unused") ClassCastException e) {
+                    WallSign signData = (WallSign) block.getState().getBlockData();
+                    BlockFace attached = signData.getFacing().getOppositeFace();
+                    Block attachedBlock = block.getRelative(attached);
+                    if (attachedBlock.getType() == Material.AIR) {
+                        shopManager.removeShop(sign);
+                        plugin.getLogger().info("Removed a shop due to physics event");
+                    }
                 }
             }
         }
