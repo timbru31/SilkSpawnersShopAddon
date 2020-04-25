@@ -133,10 +133,9 @@ public class SilkSpawnersShopManager {
             mob = su.getCreatureName(entityID);
             int amount = shop.getAmount();
             if (plugin.isEggMode()) {
-                player.getInventory().addItem(su.newEggItem(entityID, amount));
+                player.getInventory().addItem(su.newEggItem(entityID, amount, su.getCreatureEggName(entityID)));
             } else {
-                player.getInventory()
-                        .addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(entityID), amount, false));
+                player.getInventory().addItem(su.newSpawnerItem(entityID, su.getCustomSpawnerName(entityID), amount, false));
             }
             if (plugin.getConfig().getBoolean("forceInventoryUpdate", false)) {
                 player.updateInventory();
@@ -171,7 +170,7 @@ public class SilkSpawnersShopManager {
                 player.sendMessage(
                         ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noSpawnerInHand")));
                 return;
-            } else if (plugin.isEggMode() && item.getType() != su.nmsProvider.getSpawnEggMaterial()) {
+            } else if (plugin.isEggMode() && !su.nmsProvider.getSpawnEggMaterials().contains(item.getType())) {
                 player.sendMessage(
                         ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("selling.noEggInHand")));
                 return;
@@ -191,7 +190,7 @@ public class SilkSpawnersShopManager {
             ItemStack itemInHand = null;
             try {
                 itemInHand = player.getInventory().getItemInMainHand();
-            } catch (NoSuchMethodError e) {
+            } catch (@SuppressWarnings("unused") NoSuchMethodError e) {
                 // 1.8 has getItemInHand
                 itemInHand = player.getItemInHand();
             }
@@ -215,7 +214,7 @@ public class SilkSpawnersShopManager {
             if (inHandAmount - shop.getAmount() == 0) {
                 try {
                     player.getInventory().setItemInMainHand(null);
-                } catch (NoSuchMethodError e) {
+                } catch (@SuppressWarnings("unused") NoSuchMethodError e) {
                     // 1.8 has setItemInHand
                     player.setItemInHand(null);
                 }
@@ -258,7 +257,7 @@ public class SilkSpawnersShopManager {
                             if (amount < 1) {
                                 throw new InvalidAmountException("Amount must be greater or equal to 1");
                             }
-                        } catch (IndexOutOfBoundsException | InvalidAmountException | NumberFormatException e) {
+                        } catch (@SuppressWarnings("unused") IndexOutOfBoundsException | InvalidAmountException | NumberFormatException e) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                                     plugin.getLocalization().getString("creating.invalidAmount")));
                             removeShop(sign);
@@ -291,7 +290,7 @@ public class SilkSpawnersShopManager {
                     }
                     player.sendMessage(
                             ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.error")));
-                } catch (NullPointerException | NumberFormatException e) {
+                } catch (@SuppressWarnings("unused") NullPointerException | NumberFormatException e) {
                     player.sendMessage(
                             ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("creating.invalidPrice")));
                     removeShop(sign);

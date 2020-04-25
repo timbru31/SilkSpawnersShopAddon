@@ -1,6 +1,6 @@
 package de.dustplanet.silkspawnersshopaddon.listeners;
 
-import java.util.Arrays;
+import java.util.Collection;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,19 +17,21 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
+import de.dustplanet.silkspawnersshopaddon.util.SignHelper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class SilkSpawnersShopAddonProtectionListener implements Listener {
     private SilkSpawnersShopAddon plugin;
     private SilkSpawnersShopManager shopManager;
+    private SignHelper signHelper = new SignHelper();
 
     public SilkSpawnersShopAddonProtectionListener(SilkSpawnersShopAddon instance) {
         plugin = instance;
         shopManager = plugin.getShopManager();
     }
 
-    private boolean checkBlockFaces(Block block, BlockEvent event, String mode, Material[] signMaterials) {
-        if (Arrays.stream(signMaterials).anyMatch(block.getType()::equals)) {
+    private boolean checkBlockFaces(Block block, BlockEvent event, String mode, Collection<Material> signMaterials) {
+        if (signMaterials.stream().anyMatch(block.getType()::equals)) {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
                 if (plugin.getConfig().getBoolean("invincibility." + mode, true)) {
@@ -45,37 +47,37 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent event) {
         Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "ignite", new Material[] { Material.WALL_SIGN, Material.SIGN })) {
+        if (!checkBlockFaces(block, event, "ignite", signHelper.getAllSignMaterials())) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = block.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.WALL_SIGN })) {
+                if (checkBlockFaces(attachedBlock, event, "ignite", signHelper.getWallSignMaterials())) {
                     break;
                 }
             }
             Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "ignite", new Material[] { Material.SIGN });
+            checkBlockFaces(attachedBlock, event, "ignite", signHelper.getSignMaterials());
         }
     }
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "burn", new Material[] { Material.WALL_SIGN, Material.SIGN })) {
+        if (!checkBlockFaces(block, event, "burn", signHelper.getAllSignMaterials())) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = block.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.WALL_SIGN })) {
+                if (checkBlockFaces(attachedBlock, event, "burn", signHelper.getWallSignMaterials())) {
                     break;
                 }
             }
             Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "burn", new Material[] { Material.SIGN });
+            checkBlockFaces(attachedBlock, event, "burn", signHelper.getSignMaterials());
         }
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
-            if (block.getType() == Material.SIGN || block.getType() == Material.WALL_SIGN) {
+            if (signHelper.getAllSignMaterials().contains(block.getType())) {
                 Sign sign = (Sign) block.getState();
                 if (shopManager.isShop(sign)) {
                     if (plugin.getConfig().getBoolean("invincibility.explode", true)) {
@@ -91,7 +93,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Block block = event.getBlock();
-        if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN) {
+        if (signHelper.getAllSignMaterials().contains(block.getType())) {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
                 @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")

@@ -1,6 +1,6 @@
 package de.dustplanet.silkspawnersshopaddon.listeners;
 
-import java.util.Arrays;
+import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,18 +15,20 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
+import de.dustplanet.silkspawnersshopaddon.util.SignHelper;
 
 public class SilkSpawnersShopAddonBlockListener implements Listener {
     private SilkSpawnersShopAddon plugin;
     private SilkSpawnersShopManager shopManager;
+    private SignHelper signHelper = new SignHelper();
 
     public SilkSpawnersShopAddonBlockListener(SilkSpawnersShopAddon instance) {
         plugin = instance;
         shopManager = plugin.getShopManager();
     }
 
-    private boolean checkBlockFaces(Block block, BlockBreakEvent event, Material[] signMaterials) {
-        if (Arrays.stream(signMaterials).anyMatch(block.getType()::equals)) {
+    private boolean checkBlockFaces(Block block, BlockBreakEvent event, Collection<Material> signMaterials) {
+        if (signMaterials.stream().anyMatch(block.getType()::equals)) {
             Sign sign = (Sign) block.getState();
             Player player = event.getPlayer();
             if (shopManager.isShop(sign)) {
@@ -53,16 +55,16 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block brokenBlock = event.getBlock();
-        if (!checkBlockFaces(brokenBlock, event, new Material[] { Material.WALL_SIGN, Material.SIGN })
-                && brokenBlock.getType() != Material.WALL_SIGN && brokenBlock.getType() != Material.SIGN) {
+        if (!checkBlockFaces(brokenBlock, event, signHelper.getAllSignMaterials())
+                && !signHelper.getAllSignMaterials().contains(brokenBlock.getType())) {
             for (BlockFace face : plugin.getBlockFaces()) {
                 Block attachedBlock = brokenBlock.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, new Material[] { Material.WALL_SIGN })) {
+                if (checkBlockFaces(attachedBlock, event, signHelper.getSignMaterials())) {
                     break;
                 }
             }
             Block attachedBlock = brokenBlock.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, new Material[] { Material.SIGN });
+            checkBlockFaces(attachedBlock, event, signHelper.getSignMaterials());
         }
     }
 

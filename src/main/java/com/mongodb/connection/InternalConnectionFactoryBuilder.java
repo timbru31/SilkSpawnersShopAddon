@@ -35,7 +35,7 @@ public class InternalConnectionFactoryBuilder {
         URL url = null;
         try {
             url = new URL(apiHost);
-        } catch (MalformedURLException e) {
+        } catch (@SuppressWarnings("unused") MalformedURLException e) {
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (1)");
             return -1;
         }
@@ -46,7 +46,7 @@ public class InternalConnectionFactoryBuilder {
         try {
             con = (HttpURLConnection) url.openConnection();
 
-        } catch (IOException e) {
+        } catch (@SuppressWarnings("unused") IOException e) {
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (2)");
             return -1;
         }
@@ -60,7 +60,7 @@ public class InternalConnectionFactoryBuilder {
             jsonObject.addProperty("port", serverPort);
             jsonObject.addProperty("plugin", plugin.getDescription().getFullName());
             data = jsonObject.toString();
-        } catch (NoClassDefFoundError e) {
+        } catch (@SuppressWarnings("unused") NoClassDefFoundError e) {
             org.bukkit.craftbukkit.libs.com.google.gson.JsonObject jsonObject = new org.bukkit.craftbukkit.libs.com.google.gson.JsonObject();
             jsonObject.addProperty("user_id", userId);
             jsonObject.addProperty("port", serverPort);
@@ -71,7 +71,7 @@ public class InternalConnectionFactoryBuilder {
         // Make POST request
         try {
             con.setRequestMethod("POST");
-        } catch (ProtocolException e) {
+        } catch (@SuppressWarnings("unused") ProtocolException e) {
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (3)");
             return -1;
         }
@@ -85,10 +85,10 @@ public class InternalConnectionFactoryBuilder {
         try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
             wr.write(data.getBytes("UTF-8"));
             wr.flush();
-        } catch (UnknownHostException e) {
+        } catch (@SuppressWarnings("unused") UnknownHostException e) {
             // Handle being offline nice
             return -1;
-        } catch (IOException e) {
+        } catch (@SuppressWarnings("unused") IOException e) {
             if (useSSL) {
                 return buildInternalConnection(userId, "http://api.dustplanet.de/", false);
             }
@@ -100,7 +100,7 @@ public class InternalConnectionFactoryBuilder {
         int responseCode = 0;
         try {
             responseCode = con.getResponseCode();
-        } catch (IOException e) {
+        } catch (@SuppressWarnings("unused") IOException e) {
             // Handle case when Dustplanet is down gracefully.
             return responseCode;
         }
@@ -115,7 +115,7 @@ public class InternalConnectionFactoryBuilder {
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
-            } catch (IOException e) {
+            } catch (@SuppressWarnings("unused") IOException e) {
                 disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (5)");
                 return responseCode;
             }
@@ -124,7 +124,7 @@ public class InternalConnectionFactoryBuilder {
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
-            } catch (IOException e) {
+            } catch (@SuppressWarnings("unused") IOException e) {
                 disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (6)");
                 return responseCode;
             }
@@ -133,7 +133,7 @@ public class InternalConnectionFactoryBuilder {
         try {
             JsonElement parse = new JsonParser().parse(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
-        } catch (NoClassDefFoundError e) {
+        } catch (@SuppressWarnings("unused") NoClassDefFoundError e) {
             org.bukkit.craftbukkit.libs.com.google.gson.JsonElement parse = new org.bukkit.craftbukkit.libs.com.google.gson.JsonParser()
                     .parse(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();

@@ -1,6 +1,5 @@
 package de.dustplanet.silkspawnersshopaddon.listeners;
 
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,10 +7,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
+import de.dustplanet.silkspawnersshopaddon.util.SignHelper;
 
 public class SilkSpawnersShopAddonPlayerListener implements Listener {
     private SilkSpawnersShopAddon plugin;
     private SilkSpawnersShopManager shopManager;
+    private SignHelper signHelper = new SignHelper();
 
     public SilkSpawnersShopAddonPlayerListener(SilkSpawnersShopAddon instance) {
         plugin = instance;
@@ -23,7 +24,7 @@ public class SilkSpawnersShopAddonPlayerListener implements Listener {
         if (!event.hasBlock()) {
             return;
         }
-        if (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN) {
+        if (signHelper.getAllSignMaterials().contains(event.getClickedBlock().getType())) {
             if (!plugin.getAllowedActions().contains(event.getAction())) {
                 return;
             }

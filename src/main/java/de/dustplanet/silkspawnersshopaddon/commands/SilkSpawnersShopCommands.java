@@ -19,10 +19,12 @@ import de.dustplanet.silkspawnersshopaddon.exception.InvalidAmountException;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
+import de.dustplanet.silkspawnersshopaddon.util.SignHelper;
 
 public class SilkSpawnersShopCommands implements CommandExecutor {
     private SilkSpawnersShopAddon plugin;
     private SilkSpawnersShopManager shopManager;
+    private SignHelper signHelper = new SignHelper();
 
     public SilkSpawnersShopAddon getPlugin() {
         return plugin;
@@ -57,7 +59,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                     return true;
                 }
                 Block block = player.getTargetBlock((Set<Material>) null, 6);
-                if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN) {
+                if (signHelper.getAllSignMaterials().contains(block.getType())) {
                     Sign sign = (Sign) block.getState();
                     if (shopManager.isShop(sign)) {
                         boolean change = true;
@@ -88,7 +90,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                 try {
                                     double price = Double.parseDouble(argument.replaceAll("[^0-9.]", ""));
                                     shop.setPrice(price);
-                                } catch (NumberFormatException e) {
+                                } catch (@SuppressWarnings("unused") NumberFormatException e) {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                                             plugin.getLocalization().getString("creating.invalidPrice")));
                                     change = false;
@@ -101,7 +103,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                                         throw new InvalidAmountException("Amount must be greater or equal to 1");
                                     }
                                     shop.setAmount(amount);
-                                } catch (NumberFormatException | InvalidAmountException e) {
+                                } catch (@SuppressWarnings("unused") NumberFormatException | InvalidAmountException e) {
                                     player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
                                             plugin.getLocalization().getString("creating.invalidAmount")));
                                     change = false;
@@ -158,7 +160,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
                     getPlugin().getLocalization().getString("checking.invalid"));
             for (SilkSpawnersShop shop : shopList) {
                 Location shopLoc = shop.getLocation();
-                if (shopLoc.getBlock().getType() == Material.WALL_SIGN || shopLoc.getBlock().getType() == Material.SIGN) {
+                if (signHelper.getAllSignMaterials().contains(shopLoc.getBlock().getType())) {
                     continue;
                 }
                 sender.sendMessage(

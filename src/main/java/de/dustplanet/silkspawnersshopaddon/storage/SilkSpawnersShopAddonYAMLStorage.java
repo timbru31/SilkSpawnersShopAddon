@@ -92,10 +92,11 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
             int amount;
             try {
                 amount = Integer.parseInt(rawShop.get(7));
-            } catch (IndexOutOfBoundsException e) {
+            } catch (@SuppressWarnings("unused") IndexOutOfBoundsException e) {
                 amount = 1;
             }
-            SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5), amount, Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
+            SilkSpawnersShop shop = new SilkSpawnersShop(x, y, z, world, SilkspawnersShopMode.getMode(rawShop.get(4)), rawShop.get(5),
+                    amount, Double.valueOf(rawShop.get(6)), UUID.fromString(shopID));
             shops.add(shop);
         }
         return shops;
