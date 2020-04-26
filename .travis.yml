@@ -13,4 +13,4 @@ before_install:
   - mvn --version
 
 install:
-  - mvn -s conf/settings.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn -s conf/settings.xml install -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2 -DskipTests=true -Dmaven.javadoc.skip=true -B -V
