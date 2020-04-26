@@ -1,0 +1,42 @@
+buying:
+  inventoryFull: "&6[SilkSpawners] &4Dein Inventar ist voll."
+  notEnoughMoney: "&6[SilkSpawners] &4Du hast nicht genug Geld hierfür."
+  successEgg: "&6[SilkSpawners] &2Du hast &e%amount% %creature% Eier &2für &e%price% &2.gekauft"
+  successSpawner: "&6[SilkSpawners] &2Du hast &e%amount% &e%creature% Spawner &2für &e%price% &2.gekauft"
+checking:
+  error: "&6[SilkSpawners] &4Ein Fehler ist beim Prüfen und Entfernen der ungültigen Shops aufgetreten."
+  invalid: "&6[SilkSpawners] &4Ungültiger Shop an der Stelle &ex %x%&4, &ey %y%&4, &ez %z% &4in der Welt &e%world% &4gefunden."
+  success: "&6[SilkSpawners] &2Es wurden &e%size% &2ungültige Shops aus der Datenbank entfernt."
+creating:
+  error: "&6[SilkSpawners] &4Beim Erstellen des Shops ist ein Fehler aufgetreten."
+  invalidAmount: "&6[SilkSpawners] &4Die gewählte Anzahl ist ungültig."
+  invalidMob: "&6[SilkSpawners] &4Der gewählte Mob ist ungültig."
+  invalidMode: "&6[SilkSpawners] &4Der gewählte Modus ist ungültig."
+  invalidPrice: "&6[SilkSpawners] &4Der gewählte Preis ist ungültig. Bitte nur Zahlen wählen!"
+  success: "&6[SilkSpawners] &2Du hast erfolgreich einen Shop erstellt."
+noPermission:
+  building: "&6[SilkSpawners] &4Du hast nicht die Berechtigung um einen Shop zu erstelen."
+  buy: "&6[SilkSpawners] &4Du hast nicht die Berechtigung um Spawner zu kaufen."
+  check: "&6[SilkSpawners] &4Du hast nicht die Berechtigung um ungültige Shops zu suchen."
+  destroying: "&6[SilkSpawners] &4Du hast nicht die Berechtigung um einen Shop zu zerstören."
+  edit: "&6[SilkSpawners] &4Du hast nicht die Berechtigung um einen Shop zu bearbeiten."
+  sell: "&6[SilkSpawners] &4Du hast nicht die Berechtigung um Spawner zu verkaufen."
+removing:
+  error: "&6[SilkSpawners] &4Ein Fehler ist beim Entfernen des Shops aufgetreten."
+  success: "&6[SilkSpawners] &2Du hast den Shop erfolgreich entfernt."
+selling:
+  error: "&6[SilkSpawners] &4Ein Fehler ist beim Ausführen der Transaktion aufgetreten. Die Transaktion wurde abgebrochen."
+  noEggInHand: "&6[SilkSpawners] &4Du hast kein Ei in der Hand."
+  noItemInHand: "&6[SilkSpawners] &4Du hast kein Item in der Hand."
+  noSpawnerInHand: "&6[SilkSpawners] &4Du hast keinen Spawner in der Hand."
+  notEnoughEggs: "&6[SilkSpawners] &4Du hast nicht genug Eier in der Hand."
+  notEnoughSpawners: "&6[SilkSpawners] &4Du hast nicht genug Spawner in der Hand."
+  notTheSameMob: "&6[SilkSpawners] &4Der Spawner in deiner Hand ist kein &e%creature% Spawner&4."
+  successEgg: "&6[SilkSpawners] &2Du hast &e%amount% &e%creature% Eier &2für &e%price% &2verkauft."
+  successSpawner: "&6[SilkSpawners] &2Du hast &e%amount% &e%creature% Spawner &2für &e%price% &2verkauft."
+updating:
+  commandUsage: "&6[SilkSpawners] &eBenutzung um einen Shop zu aktualisieren: /shop mode|mob|price <neuerWert>"
+  error: "&6[SilkSpawners] &4Ein Fehler ist beim Aktualisieren des Shops aufgetreten."
+  noConsole: "&6[SilkSpawners] &4Die Konsole kann keine Shops bearbeiten, nur ungültige suchen und entfernen via /shop check"
+  noShop: "&6[SilkSpawners] &4Es ist kein Shop in Sicht."
+  success: "&6[SilkSpawners] &2Der Shop wurde erfolgreich aktualisiert!"
