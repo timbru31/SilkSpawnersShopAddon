@@ -59,6 +59,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @Getter
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
     private static final int RESOURCEID = 12028;
+    private static final int BSTATS_PLUGIN_ID = 272;
     private String userID = "%%__USER__%%";
     @Getter
     @Setter
@@ -133,7 +134,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
 
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
         metrics.addCustomChart(new Metrics.SimplePie("storage_provider", new Callable<String>() {
             @Override
             public String call() throws Exception {
