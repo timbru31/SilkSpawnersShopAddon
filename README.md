@@ -87,7 +87,7 @@ For support visit the [SpigotMC page](https://www.spigotmc.org/resources/12028/)
 
 ## Usage statistics
 
-_stats images are returning soon!_
+[![Usage statistics](https://bstats.org/signatures/bukkit/SilkSpawnersShopAddon.svg)](https://bstats.org/plugin/bukkit/SilkSpawnersShopAddon/272)
 
 ## Data usage collection of bStats
 
