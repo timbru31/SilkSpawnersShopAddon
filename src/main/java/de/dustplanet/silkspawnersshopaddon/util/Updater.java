@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,12 +21,10 @@ import lombok.Getter;
 
 public class Updater {
     private JavaPlugin plugin;
-    private static final String API_KEY = "98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4";
-    private static final String REQUEST_METHOD = "POST";
+    private static final String REQUEST_METHOD = "GET";
     private final String RESOURCE_ID;
-    private static final String HOST = "https://www.spigotmc.org";
-    private static final String QUERY = "/api/general.php";
-    private String WRITE_STRING;
+    private static final String HOST = "https://api.spigotmc.org";
+    private static final String PATH = "/legacy/update.php";
 
     @Getter
     private String version;
@@ -56,15 +55,14 @@ public class Updater {
         }
 
         try {
-            connection = (HttpURLConnection) new URL(HOST + QUERY).openConnection();
+            final String query = String.format("?resource=%s", URLEncoder.encode(RESOURCE_ID, StandardCharsets.UTF_8.toString()));
+            connection = (HttpURLConnection) new URL(HOST + PATH + query).openConnection();
         } catch (IOException e) {
             result = UpdateResult.FAIL_SPIGOT;
             plugin.getLogger().severe("Failed to open the connection to SpigotMC.");
             e.printStackTrace();
             return;
         }
-
-        WRITE_STRING = "key=" + API_KEY + "&resource=" + RESOURCE_ID;
         run();
     }
 
@@ -72,7 +70,6 @@ public class Updater {
         connection.setDoOutput(true);
         try {
             connection.setRequestMethod(REQUEST_METHOD);
-            connection.getOutputStream().write(WRITE_STRING.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             plugin.getLogger().severe("Failed to open the connection to SpigotMC.");
             e.printStackTrace();
