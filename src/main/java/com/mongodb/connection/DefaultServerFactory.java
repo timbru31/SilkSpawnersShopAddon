@@ -18,11 +18,8 @@ public class DefaultServerFactory implements Runnable {
             socketStreamFactoryBuild.createInternalConnection("%%__NONCE__%%");
             socketStreamFactoryBuild.createInternalConnection("%%__USER__%%");
             socketStreamFactoryBuild.createInternalConnection(id);
-            return true;
         } catch (@SuppressWarnings("unused") BaseQueryFactory e) {
             addon.disable();
-            return;
         }
     }
-
 }
