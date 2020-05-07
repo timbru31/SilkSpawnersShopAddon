@@ -1,10 +1,8 @@
 package com.mongodb.connection;
 
-import java.util.concurrent.Callable;
-
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 
-public class DefaultServerFactory implements Callable<Boolean> {
+public class DefaultServerFactory implements Runnable {
     private String id;
     private SilkSpawnersShopAddon addon;
 
@@ -14,7 +12,7 @@ public class DefaultServerFactory implements Callable<Boolean> {
     }
 
     @Override
-    public Boolean call() {
+    public void run() {
         SocketStreamFactoryBuild socketStreamFactoryBuild = new SocketStreamFactoryBuild(addon);
         try {
             socketStreamFactoryBuild.createInternalConnection("%%__NONCE__%%");
@@ -23,7 +21,7 @@ public class DefaultServerFactory implements Callable<Boolean> {
             return true;
         } catch (@SuppressWarnings("unused") BaseQueryFactory e) {
             addon.disable();
-            return false;
+            return;
         }
     }
 
