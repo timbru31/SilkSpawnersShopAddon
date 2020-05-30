@@ -26,6 +26,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
     private SilkSpawnersShopManager shopManager;
     private SignHelper signHelper = new SignHelper();
 
+    @SuppressFBWarnings({ "CD_CIRCULAR_DEPENDENCY", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "IMC_IMMATURE_CLASS_NO_TOSTRING" })
     public SilkSpawnersShopAddonProtectionListener(SilkSpawnersShopAddon instance) {
         plugin = instance;
         shopManager = plugin.getShopManager();
@@ -98,6 +99,7 @@ public class SilkSpawnersShopAddonProtectionListener implements Listener {
             Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
                 try {
+                    @SuppressWarnings("deprecation")
                     @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
                     Block attachedBlock = block.getRelative(((org.bukkit.material.Sign) sign.getData()).getAttachedFace());
                     if (attachedBlock.getType() == Material.AIR) {

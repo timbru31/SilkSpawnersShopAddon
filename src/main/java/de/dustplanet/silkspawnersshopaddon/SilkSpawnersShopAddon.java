@@ -1,19 +1,20 @@
 package de.dustplanet.silkspawnersshopaddon;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
+import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.Action;
 import org.bukkit.permissions.Permission;
@@ -38,7 +39,10 @@ import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.economy.Economy;
 
+@SuppressFBWarnings({ "CD_CIRCULAR_DEPENDENCY", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" })
 public class SilkSpawnersShopAddon extends JavaPlugin {
+    private static final int RESOURCEID = 12028;
+    private static final int BSTATS_PLUGIN_ID = 272;
     @Getter
     @Setter
     private SilkSpawnersShopManager shopManager;
@@ -58,8 +62,6 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @SuppressFBWarnings(justification = "Would cost more to return a copy each time e.g. a BlockPhysicsEvent is called", value = "EI_EXPOSE_REP")
     @Getter
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
-    private static final int RESOURCEID = 12028;
-    private static final int BSTATS_PLUGIN_ID = 272;
     private String userID = "%%__USER__%%";
     @Getter
     @Setter
@@ -132,15 +134,15 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
 
-        getCommand("silkspawnersshopaddon").setExecutor(new SilkSpawnersShopCommands(this));
+        PluginCommand command = getCommand("silkspawnersshopaddon");
+        if (command != null) {
+            command.setExecutor(new SilkSpawnersShopCommands(this));
+        }
 
         Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
-        metrics.addCustomChart(new Metrics.SimplePie("storage_provider", new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return getConfig().getString("storageMethod").toUpperCase(Locale.ENGLISH);
-            }
-        }));
+
+        metrics.addCustomChart(
+                new Metrics.SimplePie("storage_provider", () -> getConfig().getString("storageMethod", "").toUpperCase(Locale.ENGLISH)));
 
         boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
         if (!updaterDisabled) {
@@ -153,8 +155,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
                         getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
                     } else if (result == UpdateResult.UPDATE_AVAILABLE) {
                         getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
-                        getLogger().info(
-                                "You are running " + getPlugin().getDescription().getVersion() + ", latest is " + updater.getVersion());
+                        getLogger().info("You are running " + getPlugin().getDescription().getVersion().replaceAll("[\r\n]", "")
+                                + ", latest is " + updater.getVersion().replaceAll("[\r\n]", ""));
                     } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
                         getLogger().info("Update checking is disabled because you are running a dev build.");
                     } else {
@@ -167,6 +169,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
     }
 
+    @SuppressFBWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "onEnable is the \"constructor\"")
     private void loadPermissions(String permissionPart, String description) {
         HashMap<String, Boolean> childPermissions = new HashMap<>();
         for (String mobAlias : silkUtil.getDisplayNameToMobID().keySet()) {
@@ -178,7 +181,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         try {
             getServer().getPluginManager().addPermission(perm);
         } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
-            getLogger().info("Permission " + perm.getName() + " is already registered. Skipping...");
+            getLogger().info("Permission " + perm.getName().replaceAll("[\r\n]", "") + " is already registered. Skipping...");
         }
     }
 
@@ -190,6 +193,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         this.setEnabled(false);
     }
 
+    @SuppressFBWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "onEnable is the \"constructor\"")
     private void loadLocalization() {
         localization.addDefault("buying.inventoryFull", "&6[SilkSpawners] &4Your inventory is full.");
         localization.addDefault("buying.notEnoughMoney", "&6[SilkSpawners] &4You do not have enough money.");
@@ -236,12 +240,12 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         saveLocalization();
     }
 
+    @SuppressFBWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "onEnable is the \"constructor\"")
     private void saveLocalization() {
         try {
             localization.save(localizationFile);
         } catch (IOException e) {
-            getLogger().warning("Failed to save the localization! Please report this! (I/O)");
-            e.printStackTrace();
+            getLogger().log(Level.WARNING, "Failed to save the localization! Please report this! (I/O)", e);
         }
     }
 
@@ -288,6 +292,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         setEggMode(config.getBoolean("eggMode", false));
     }
 
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", justification = "False positive")
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().severe("Vault seems to be missing. Make sure to install the latest version of Vault!");
@@ -302,16 +307,17 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         return getEcon() != null;
     }
 
+    @SuppressFBWarnings(value = { "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+            "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" }, justification = "False positive")
     public void copy(String yml, File file) {
-        try (OutputStream out = new FileOutputStream(file); InputStream in = getResource(yml)) {
+        try (OutputStream out = Files.newOutputStream(file.toPath()); InputStream in = getResource(yml)) {
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
         } catch (IOException e) {
-            getLogger().warning("Failed to copy the default config! (I/O)");
-            e.printStackTrace();
+            getLogger().log(Level.WARNING, "Failed to copy the default config! (I/O)", e);
         }
     }
 

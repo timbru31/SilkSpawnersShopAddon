@@ -7,9 +7,13 @@ import static com.mongodb.client.model.Filters.in;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+
+import javax.annotation.Nullable;
 
 import org.bson.Document;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Sign;
 
 import com.mongodb.MongoClient;
@@ -24,14 +28,17 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
+import de.dustplanet.silkspawnersshopaddon.shop.ISilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStorageImpl implements ISilkSpawnersShopAddonStorage {
     private MongoClient mongoClient;
     private MongoDatabase database;
     private MongoCollection<Document> collection;
 
+    @SuppressFBWarnings({ "IMC_IMMATURE_CLASS_NO_TOSTRING", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" })
     public SilkSpawnersShopAddonMongoStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
         plugin.getLogger().info("Loading mongo storage provider");
@@ -52,15 +59,22 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         collection = database.getCollection(coll);
     }
 
-    private Document createDocumentFromShop(SilkSpawnersShop shop) {
+    @SuppressWarnings("static-method")
+    @Nullable
+    private Document createDocumentFromShop(ISilkSpawnersShop shop) {
         Location shopLoc = shop.getLocation();
-        Document loc = new Document("world", shopLoc.getWorld().getName());
+        World world = shopLoc.getWorld();
+        if (world == null) {
+            return null;
+        }
+        String worldName = world.getName();
+        Document loc = new Document("world", worldName);
         loc.append("x", shopLoc.getX()).append("y", shopLoc.getY()).append("z", shopLoc.getZ());
-        Document doc = new Document("shopId", shop.getId().toString()).append("mode", shop.getMode().toString())
-                .append("mob", shop.getMob()).append("amount", shop.getAmount()).append("price", shop.getPrice()).append("location", loc);
-        return doc;
+        return new Document("shopId", shop.getId().toString()).append("mode", shop.getMode().toString()).append("mob", shop.getMob())
+                .append("amount", shop.getAmount()).append("price", shop.getPrice()).append("location", loc);
     }
 
+    @SuppressWarnings("static-method")
     private SilkSpawnersShop getShopFromDocument(Document doc) {
         Document location = (Document) doc.get("location");
         String world = location.getString("world");
@@ -78,15 +92,17 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
     @Override
     public boolean addShop(SilkSpawnersShop shop) {
         Document doc = createDocumentFromShop(shop);
+        if (doc == null) {
+            return false;
+        }
         try {
             collection.insertOne(doc);
             cachedShops.add(shop);
             return true;
         } catch (MongoWriteException | MongoWriteConcernException e) {
-            plugin.getLogger().severe("Failed to add shop to MongoDB");
-            e.printStackTrace();
-            return false;
+            plugin.getLogger().log(Level.SEVERE, "Failed to add shop to MongoDB", e);
         }
+        return false;
     }
 
     @Override
@@ -96,16 +112,15 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
             cachedShops.remove(shop);
             return true;
         } catch (MongoWriteException | MongoWriteConcernException e) {
-            plugin.getLogger().severe("Failed to remove shop from MongoDB");
-            e.printStackTrace();
-            return false;
+            plugin.getLogger().log(Level.SEVERE, "Failed to remove shop from MongoDB", e);
         }
+        return false;
     }
 
     @Override
     public boolean removeShops(List<SilkSpawnersShop> shopList) {
         try {
-            List<String> shopIdList = new ArrayList<>();
+            List<String> shopIdList = new ArrayList<>(shopList.size());
             cachedShops.removeAll(shopList);
             for (SilkSpawnersShop shop : shopList) {
                 shopIdList.add(shop.getId().toString());
@@ -113,10 +128,9 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
             collection.deleteMany(in("shopId", shopIdList));
             return true;
         } catch (MongoWriteException | MongoWriteConcernException e) {
-            plugin.getLogger().severe("Failed to remove shops from MongoDB");
-            e.printStackTrace();
-            return false;
+            plugin.getLogger().log(Level.SEVERE, "Failed to remove shops from MongoDB", e);
         }
+        return false;
     }
 
     @Override
@@ -143,13 +157,18 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         double x = loc.getX();
         double y = loc.getY();
         double z = loc.getZ();
-        String world = loc.getWorld().getName();
-        Document doc = collection.find(and(eq("location.world", world), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
+        World world = loc.getWorld();
+        if (world == null) {
+            return false;
+        }
+        String worldName = world.getName();
+        Document doc = collection.find(and(eq("location.world", worldName), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
                 .first();
         return doc != null;
     }
 
     @Override
+    @Nullable
     public SilkSpawnersShop getShop(Sign sign) {
         // Try to find in cache
         for (SilkSpawnersShop shop : cachedShops) {
@@ -162,8 +181,13 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         double x = loc.getX();
         double y = loc.getY();
         double z = loc.getZ();
-        String world = loc.getWorld().getName();
-        Document doc = collection.find(and(eq("location.world", world), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
+        World world = loc.getWorld();
+        if (world == null) {
+            return null;
+        }
+        String worldName = world.getName();
+
+        Document doc = collection.find(and(eq("location.world", worldName), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
                 .first();
         if (doc == null) {
             return null;

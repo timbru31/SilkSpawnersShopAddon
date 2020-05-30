@@ -6,7 +6,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@SuppressFBWarnings("IMC_IMMATURE_CLASS_NO_TOSTRING")
 public class SilkSpawnersShopAddonStorageImpl {
     protected ArrayList<SilkSpawnersShop> cachedShops = new ArrayList<>();
     protected SilkSpawnersShopAddon plugin;
@@ -21,7 +23,8 @@ public class SilkSpawnersShopAddonStorageImpl {
     }
 
     private class SilkSpawnersCleanupRunner implements Runnable {
-        public SilkSpawnersCleanupRunner() {}
+        public SilkSpawnersCleanupRunner() {
+        }
 
         @Override
         public void run() {

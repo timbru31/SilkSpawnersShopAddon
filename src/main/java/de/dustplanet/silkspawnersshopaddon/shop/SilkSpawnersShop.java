@@ -7,11 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.Setter;
 
+@SuppressFBWarnings({ "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID" })
 public class SilkSpawnersShop implements ISilkSpawnersShop, Serializable {
-    private static final long serialVersionUID = 4375338308025596438L;
+    private static final long serialVersionUID = 1282156635646920413L;
     @Getter
     @Setter
     private double x;
@@ -93,5 +95,11 @@ public class SilkSpawnersShop implements ISilkSpawnersShop, Serializable {
     @Override
     public Location getLocation() {
         return new Location(Bukkit.getWorld(world), x, y, z);
+    }
+
+    @Override
+    public String toString() {
+        return "SilkSpawnersShop [" + this.id + "] at [" + this.getLocation() + "] with mode [" + this.mode + "], mob [" + this.mob
+                + "], amount [" + this.amount + "] and price [" + this.price + "]";
     }
 }

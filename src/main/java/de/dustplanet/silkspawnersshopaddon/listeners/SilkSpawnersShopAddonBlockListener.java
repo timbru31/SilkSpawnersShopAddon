@@ -16,7 +16,9 @@ import org.bukkit.event.block.SignChangeEvent;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.silkspawnersshopaddon.util.SignHelper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@SuppressFBWarnings("IMC_IMMATURE_CLASS_NO_TOSTRING")
 public class SilkSpawnersShopAddonBlockListener implements Listener {
     private SilkSpawnersShopAddon plugin;
     private SilkSpawnersShopManager shopManager;
@@ -27,6 +29,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
         shopManager = plugin.getShopManager();
     }
 
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     private boolean checkBlockFaces(Block block, BlockBreakEvent event, Collection<Material> signMaterials) {
         if (signMaterials.stream().anyMatch(block.getType()::equals)) {
             Sign sign = (Sign) block.getState();
@@ -35,15 +38,15 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                 if (player.hasPermission("silkspawners.destroyshop")) {
                     if (!shopManager.removeShop(shopManager.getShop(sign))) {
                         player.sendMessage(
-                                ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.error")));
+                                ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.error", "")));
                         event.setCancelled(true);
                     } else {
-                        player.sendMessage(
-                                ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("removing.success")));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
+                                plugin.getLocalization().getString("removing.success", "")));
                     }
                 } else {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('\u0026',
-                            plugin.getLocalization().getString("noPermission.destroying")));
+                            plugin.getLocalization().getString("noPermission.destroying", "")));
                     event.setCancelled(true);
                 }
                 return true;
@@ -69,10 +72,11 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     }
 
     @EventHandler
+    @SuppressFBWarnings({ "CLI_CONSTANT_LIST_INDEX", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" })
     public void onSignChange(SignChangeEvent event) {
         // macOS sends weird \uF700 and \uF701 chars
         String[] lines = event.getLines();
-        String shopIdentifier = ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier"));
+        String shopIdentifier = ChatColor.translateAlternateColorCodes('\u0026', plugin.getConfig().getString("shopIdentifier", ""));
         if (ChatColor.stripColor(lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""))
                 .equalsIgnoreCase(ChatColor.stripColor(shopIdentifier))) {
             Player player = event.getPlayer();
@@ -86,7 +90,7 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
                 }
             } else {
                 player.sendMessage(
-                        ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.building")));
+                        ChatColor.translateAlternateColorCodes('\u0026', plugin.getLocalization().getString("noPermission.building", "")));
                 event.setLine(0, ChatColor.RED + ChatColor.stripColor(shopIdentifier));
             }
         }

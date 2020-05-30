@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({ "IMC_IMMATURE_CLASS_NO_TOSTRING", "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS" })
 public class SignHelper {
     private Collection<Material> allSigns = Arrays.stream(Material.values()).filter(material -> material.name().endsWith("SIGN"))
             .collect(Collectors.toList());

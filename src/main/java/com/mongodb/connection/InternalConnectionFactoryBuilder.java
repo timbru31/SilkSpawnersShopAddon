@@ -16,12 +16,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@SuppressFBWarnings("IMC_IMMATURE_CLASS_PRINTSTACKTRACE")
 public class InternalConnectionFactoryBuilder {
     private static final int TIMEOUT = 5000;
     private static final int SERVER_ERROR = 500;
     private SilkSpawnersShopAddon plugin;
 
+    @SuppressFBWarnings({ "CD_CIRCULAR_DEPENDENCY", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "IMC_IMMATURE_CLASS_NO_TOSTRING" })
     public InternalConnectionFactoryBuilder(SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
     }
@@ -31,6 +34,8 @@ public class InternalConnectionFactoryBuilder {
     }
 
     // HTTP POST request
+    @SuppressFBWarnings({ "SSCU_SUSPICIOUS_SHADED_CLASS_USE", "URLCONNECTION_SSRF_FD", "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            "CC_CYCLOMATIC_COMPLEXITY" })
     public int buildInternalConnection(String userId, String apiHost, boolean useSSL) throws BaseQueryFactory {
         // URL
         URL url = null;
@@ -149,6 +154,7 @@ public class InternalConnectionFactoryBuilder {
         return responseCode;
     }
 
+    @SuppressFBWarnings("CRLF_INJECTION_LOGS")
     private void disableDueToError(String... messages) throws BaseQueryFactory {
         for (String message : messages) {
             plugin.getLogger().severe(message);

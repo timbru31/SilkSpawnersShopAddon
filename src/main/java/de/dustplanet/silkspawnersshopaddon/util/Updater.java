@@ -7,9 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 
 /**
@@ -19,12 +21,13 @@ import lombok.Getter;
  * @author xGhOsTkiLLeRx
  */
 
+@SuppressFBWarnings("IMC_IMMATURE_CLASS_NO_TOSTRING")
 public class Updater {
-    private JavaPlugin plugin;
     private static final String REQUEST_METHOD = "GET";
-    private final String RESOURCE_ID;
     private static final String HOST = "https://api.spigotmc.org";
     private static final String PATH = "/legacy/update.php";
+    private final String RESOURCE_ID;
+    private JavaPlugin plugin;
 
     @Getter
     private String version;
@@ -39,6 +42,7 @@ public class Updater {
         NO_UPDATE, DISABLED, FAIL_SPIGOT, FAIL_NOVERSION, BAD_API_KEY, BAD_RESOURCEID, UPDATE_AVAILABLE, SNAPSHOT_DISABLED
     }
 
+    @SuppressFBWarnings("URLCONNECTION_SSRF_FD")
     public Updater(JavaPlugin plugin, Integer resourceId, boolean disabled) {
         RESOURCE_ID = Integer.toString(resourceId);
         this.plugin = plugin;
@@ -59,20 +63,18 @@ public class Updater {
             connection = (HttpURLConnection) new URL(HOST + PATH + query).openConnection();
         } catch (IOException e) {
             result = UpdateResult.FAIL_SPIGOT;
-            plugin.getLogger().severe("Failed to open the connection to SpigotMC.");
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to open the connection to SpigotMC", e);
             return;
         }
         run();
     }
 
-    private void run() {
+    private final void run() {
         connection.setDoOutput(true);
         try {
             connection.setRequestMethod(REQUEST_METHOD);
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to open the connection to SpigotMC.");
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to open the connection to SpigotMC.", e);
             result = UpdateResult.FAIL_SPIGOT;
         }
         String newVersion;
@@ -81,8 +83,7 @@ public class Updater {
             newVersion = br.readLine();
         } catch (IOException e) {
             result = UpdateResult.FAIL_NOVERSION;
-            plugin.getLogger().severe("Failed to read the version.");
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to read the version.", e);
             return;
         }
         if (newVersion == null) {
@@ -107,7 +108,8 @@ public class Updater {
         result = shouldUpdate(oldVersion, version) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;
     }
 
-    public boolean shouldUpdate(String localVersion, String remoteVersion) {
+    @SuppressWarnings("static-method")
+    private boolean shouldUpdate(String localVersion, String remoteVersion) {
         return !localVersion.equalsIgnoreCase(remoteVersion);
     }
 }

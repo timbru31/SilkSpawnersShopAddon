@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,11 +17,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStorageImpl implements ISilkSpawnersShopAddonStorage {
     protected FileConfiguration shopConfiguration;
     private File shopFile;
 
+    @SuppressFBWarnings({ "SCII_SPOILED_CHILD_INTERFACE_IMPLEMENTOR", "IMC_IMMATURE_CLASS_NO_TOSTRING" })
     public SilkSpawnersShopAddonYAMLStorage(SilkSpawnersShopAddon plugin) {
         super(plugin);
         plugin.getLogger().info("Loading yaml storage provider");
@@ -32,20 +37,25 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
                     throw new IOException();
                 }
             } catch (IOException e) {
-                plugin.getLogger().severe("Failed to create YAML shops file!");
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to create YAML shops file!", e);
             }
         }
-        // Try to load
         shopConfiguration = YamlConfiguration.loadConfiguration(shopFile);
     }
 
+    @SuppressFBWarnings({ "BL_BURYING_LOGIC", "EXS_EXCEPTION_SOFTENING_RETURN_FALSE", "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS" })
     private boolean saveToYAML(SilkSpawnersShop shop, boolean save) {
         List<String> data = new ArrayList<>();
-        data.add(shop.getLocation().getWorld().getName());
-        data.add(String.valueOf(shop.getLocation().getX()));
-        data.add(String.valueOf(shop.getLocation().getY()));
-        data.add(String.valueOf(shop.getLocation().getZ()));
+        Location shopLocation = shop.getLocation();
+        World world = shopLocation.getWorld();
+        if (world == null) {
+            return false;
+        }
+        String worldName = world.getName();
+        data.add(worldName);
+        data.add(String.valueOf(shopLocation.getX()));
+        data.add(String.valueOf(shopLocation.getY()));
+        data.add(String.valueOf(shopLocation.getZ()));
         data.add(shop.getMode().toString());
         data.add(shop.getMob());
         data.add(String.valueOf(shop.getPrice()));
@@ -54,11 +64,11 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
         if (save) {
             try {
                 shopConfiguration.save(shopFile);
+                return true;
             } catch (IOException e) {
-                plugin.getLogger().severe("Failed to add shop tp YAML");
-                e.printStackTrace();
-                return false;
+                plugin.getLogger().log(Level.SEVERE, "Failed to add shop tp YAML", e);
             }
+            return false;
         }
         return true;
     }
@@ -73,17 +83,16 @@ public class SilkSpawnersShopAddonYAMLStorage extends SilkSpawnersShopAddonStora
             shopConfiguration.save(shopFile);
             return true;
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save the YAML");
-            e.printStackTrace();
-            return false;
+            plugin.getLogger().log(Level.SEVERE, "Failed to save the YAML", e);
         }
+        return false;
     }
 
     @Override
     public List<SilkSpawnersShop> getAllShops() {
-        Set<String> shopList = shopConfiguration.getKeys(false);
-        List<SilkSpawnersShop> shops = new ArrayList<>();
-        for (String shopID : shopList) {
+        Set<String> shopSet = shopConfiguration.getKeys(false);
+        List<SilkSpawnersShop> shops = new ArrayList<>(shopSet.size());
+        for (String shopID : shopSet) {
             List<String> rawShop = shopConfiguration.getStringList(shopID);
             String world = rawShop.get(0);
             double x = Double.parseDouble(rawShop.get(1));
