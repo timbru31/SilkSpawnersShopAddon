@@ -47,7 +47,7 @@
     </dependency>
     <dependency>
       <groupId>de.dustplanet</groupId>
-      <artifactId>SilkSpawners</artifactId>
+      <artifactId>silkspawners</artifactId>
       <version>6.1.0</version>
       <exclusions>
         <exclusion>
