@@ -1,10 +1,15 @@
 package com.mongodb.connection;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.Getter;
 
+/**
+ * Rot13 codec implementation.
+ *
+ * @author timbru31
+ */
 @SuppressFBWarnings("IMC_IMMATURE_CLASS_NO_TOSTRING")
+@SuppressWarnings({ "checkstyle:MissingCtor", "PMD.AtLeastOneConstructor" })
 public class Rot13Codec {
-    @Getter
-    private String cipher = "%%__USER__%%";
+    @SuppressWarnings("unused")
+    private static final String CIPHER = "%%__USER__%%";
 }

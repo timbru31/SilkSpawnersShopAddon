@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
@@ -39,10 +40,20 @@ import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.economy.Economy;
 
+/**
+ * General loading of the plugin, config and localization files.
+ *
+ * @author timbru31
+ */
 @SuppressFBWarnings({ "CD_CIRCULAR_DEPENDENCY", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" })
+@SuppressWarnings({ "checkstyle:MultipleStringLiterals", "checkstyle:MissingCtor", "PMD.AvoidDuplicateLiterals",
+        "PMD.AtLeastOneConstructor", "PMD.ExcessiveImports", "PMD.TooManyMethods", "checkstyle:ClassFanOutComplexity",
+        "checkstyle:ClassDataAbstractionCoupling" })
 public class SilkSpawnersShopAddon extends JavaPlugin {
-    private static final int RESOURCEID = 12028;
+    private static final int BUFFER_LENGTH = 1024;
+    private static final int RESOURCEID = 12_028;
     private static final int BSTATS_PLUGIN_ID = 272;
+    private static final String USER_ID = "%%__USER__%%";
     @Getter
     @Setter
     private SilkSpawnersShopManager shopManager;
@@ -58,11 +69,10 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @Getter
     @Setter
     private FileConfiguration localization;
-    private File configFile, localizationFile;
-    @SuppressFBWarnings(justification = "Would cost more to return a copy each time e.g. a BlockPhysicsEvent is called", value = "EI_EXPOSE_REP")
+    private File localizationFile;
+    @SuppressFBWarnings(justification = "Would cost more to return a copy each time a BlockPhysicsEvent is called", value = "EI_EXPOSE_REP")
     @Getter
     private final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
-    private String userID = "%%__USER__%%";
     @Getter
     @Setter
     private boolean perMobPermissions;
@@ -85,6 +95,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:ReturnCount")
     public void onEnable() {
         if (setupEconomy()) {
             getLogger().info("Loaded Vault successfully");
@@ -94,7 +105,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             return;
         }
 
-        configFile = new File(getDataFolder(), "config.yml");
+        final File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             if (configFile.getParentFile().mkdirs()) {
                 copy("config.yml", configFile);
@@ -116,7 +127,8 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         setLocalization(ScalarYamlConfiguration.loadConfiguration(localizationFile));
         loadLocalization();
 
-        getServer().getScheduler().runTaskLaterAsynchronously(this, new DefaultServerFactory(userID, this), 20L * 120);
+        final long twoMinutesInTicks = 20L * 60L * 2L;
+        getServer().getScheduler().runTaskLaterAsynchronously(this, new DefaultServerFactory(USER_ID, this), twoMinutesInTicks);
 
         setSilkUtil(SilkUtil.hookIntoSilkSpanwers());
         setShopManager(new SilkSpawnersShopManager(this));
@@ -126,74 +138,91 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             loadPermissions("sell", "Allows you to use sell shops");
         }
 
-        PluginManager pluginManager = getServer().getPluginManager();
-        SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
-        SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(this);
-        SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(this);
+        loadListenersAndCommand();
+
+        loadMetrics();
+
+        final boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
+        if (updaterDisabled) {
+            getLogger().info("Updater is disabled");
+        } else {
+            runUpdater();
+        }
+    }
+
+    private void loadListenersAndCommand() {
+        final PluginManager pluginManager = getServer().getPluginManager();
+        final SilkSpawnersShopAddonBlockListener blockListener = new SilkSpawnersShopAddonBlockListener(this);
+        final SilkSpawnersShopAddonPlayerListener playerListener = new SilkSpawnersShopAddonPlayerListener(this);
+        final SilkSpawnersShopAddonProtectionListener entityListener = new SilkSpawnersShopAddonProtectionListener(this);
         pluginManager.registerEvents(blockListener, this);
         pluginManager.registerEvents(playerListener, this);
         pluginManager.registerEvents(entityListener, this);
 
-        PluginCommand command = getCommand("silkspawnersshopaddon");
+        final PluginCommand command = getCommand("silkspawnersshopaddon");
         if (command != null) {
             command.setExecutor(new SilkSpawnersShopCommands(this));
         }
-
-        Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
-
-        metrics.addCustomChart(
-                new Metrics.SimplePie("storage_provider", () -> getConfig().getString("storageMethod", "").toUpperCase(Locale.ENGLISH)));
-
-        boolean updaterDisabled = getConfig().getBoolean("disableUpdater", false);
-        if (!updaterDisabled) {
-            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
-                @Override
-                public void run() {
-                    Updater updater = new Updater(getPlugin(), RESOURCEID, false);
-                    UpdateResult result = updater.getResult();
-                    if (result == UpdateResult.NO_UPDATE) {
-                        getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
-                    } else if (result == UpdateResult.UPDATE_AVAILABLE) {
-                        getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
-                        getLogger().info("You are running " + getPlugin().getDescription().getVersion().replaceAll("[\r\n]", "")
-                                + ", latest is " + updater.getVersion().replaceAll("[\r\n]", ""));
-                    } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
-                        getLogger().info("Update checking is disabled because you are running a dev build.");
-                    } else {
-                        getLogger().warning("The Updater returned the following value: " + result.name());
-                    }
-                }
-            }, 40L);
-        } else {
-            getLogger().info("Updater is disabled");
-        }
     }
 
-    @SuppressFBWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "onEnable is the \"constructor\"")
-    private void loadPermissions(String permissionPart, String description) {
-        HashMap<String, Boolean> childPermissions = new HashMap<>();
-        for (String mobAlias : silkUtil.getDisplayNameToMobID().keySet()) {
-            mobAlias = mobAlias.toLowerCase(Locale.ENGLISH).replace(" ", "");
-            childPermissions.put("silkspawners.use." + permissionPart + "." + mobAlias, Boolean.TRUE);
+    private void loadMetrics() {
+        final Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
+        metrics.addCustomChart(
+                new Metrics.SimplePie("storage_provider", () -> getConfig().getString("storageMethod", "").toUpperCase(Locale.ENGLISH)));
+    }
+
+    private void runUpdater() {
+        final long twoSecondsInTicks = 40L;
+        getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                final Updater updater = new Updater(getPlugin(), RESOURCEID, false);
+                final UpdateResult result = updater.getResult();
+                if (result == UpdateResult.NO_UPDATE) {
+                    getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
+                } else if (result == UpdateResult.UPDATE_AVAILABLE) {
+                    getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
+                    getLogger().info("You are running " + getPlugin().getDescription().getVersion().replaceAll("[\r\n]", "")
+                            + ", latest is " + updater.getVersion().replaceAll("[\r\n]", ""));
+                } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
+                    getLogger().info("Update checking is disabled because you are running a dev build.");
+                } else {
+                    getLogger().warning("The Updater returned the following value: " + result.name());
+                }
+            }
+        }, twoSecondsInTicks);
+    }
+
+    @SuppressFBWarnings(value = { "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", "PSC_PRESIZE_COLLECTIONS",
+            "STT_TOSTRING_MAP_KEYING" }, justification = "onEnable is the \"constructor\"")
+    private void loadPermissions(final String permissionPart, final String description) {
+        @SuppressWarnings("PMD.UseConcurrentHashMap")
+        final Map<String, Boolean> childPermissions = new HashMap<>();
+        for (final String mobAlias : silkUtil.getDisplayNameToMobID().keySet()) {
+            final String safeMobAlias = mobAlias.toLowerCase(Locale.ENGLISH).replace(" ", "");
+            childPermissions.put("silkspawners.use." + permissionPart + "." + safeMobAlias, Boolean.TRUE);
         }
-        Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description, PermissionDefault.TRUE,
+        final Permission perm = new Permission("silkspawners.use." + permissionPart + ".*", description, PermissionDefault.TRUE,
                 childPermissions);
         try {
             getServer().getPluginManager().addPermission(perm);
-        } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+        } catch (@SuppressWarnings("unused") final IllegalArgumentException e) {
             getLogger().info("Permission " + perm.getName().replaceAll("[\r\n]", "") + " is already registered. Skipping...");
         }
     }
 
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
     public JavaPlugin getPlugin() {
         return this;
     }
 
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
     public void disable() {
         this.setEnabled(false);
     }
 
     @SuppressFBWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "onEnable is the \"constructor\"")
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     private void loadLocalization() {
         localization.addDefault("buying.inventoryFull", "&6[SilkSpawners] &4Your inventory is full.");
         localization.addDefault("buying.notEnoughMoney", "&6[SilkSpawners] &4You do not have enough money.");
@@ -244,13 +273,14 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void saveLocalization() {
         try {
             localization.save(localizationFile);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             getLogger().log(Level.WARNING, "Failed to save the localization! Please report this! (I/O)", e);
         }
     }
 
+    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:MagicNumber" })
     private void loadConfig() {
-        FileConfiguration config = getConfig();
+        final FileConfiguration config = getConfig();
         config.options().header("Valid storage methods are YAML, MONGODB and MYSQL");
         config.addDefault("disableUpdater", Boolean.FALSE);
         config.addDefault("shopIdentifier", "&9[SilkSpawners]");
@@ -266,7 +296,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         config.addDefault("eggMode", Boolean.FALSE);
         config.addDefault("storageMethod", "YAML");
         config.addDefault("mongoDB.host", "localhost");
-        config.addDefault("mongoDB.port", 27017);
+        config.addDefault("mongoDB.port", 27_017);
         config.addDefault("mongoDB.user", "");
         config.addDefault("mongoDB.pass", "");
         config.addDefault("mongoDB.database", "silkspawners");
@@ -280,11 +310,11 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         saveConfig();
 
         // Load values
-        String numberFormatString = config.getString("numberFormat", "$ 00.##");
+        final String numberFormatString = config.getString("numberFormat", "$ 00.##");
         setNumberFormat(new DecimalFormat(numberFormatString));
         tempStringAllowedActions = config.getStringList("allowedActions");
-        ArrayList<Action> tempAllowedActions = new ArrayList<>();
-        for (String allowedAction : tempStringAllowedActions) {
+        final ArrayList<Action> tempAllowedActions = new ArrayList<>();
+        for (final String allowedAction : tempStringAllowedActions) {
             tempAllowedActions.add(Action.valueOf(allowedAction));
         }
         setAllowedActions(tempAllowedActions);
@@ -293,12 +323,13 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     }
 
     @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", justification = "False positive")
+    @SuppressWarnings("checkstyle:ReturnCount")
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().severe("Vault seems to be missing. Make sure to install the latest version of Vault!");
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null || rsp.getProvider() == null) {
             getLogger().severe("There is no economy provider installed for Vault! Make sure to install an economy plugin!");
             return false;
@@ -309,23 +340,26 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
     @SuppressFBWarnings(value = { "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
             "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" }, justification = "False positive")
-    public void copy(String yml, File file) {
-        try (OutputStream out = Files.newOutputStream(file.toPath()); InputStream in = getResource(yml)) {
-            byte[] buf = new byte[1024];
+    @SuppressWarnings({ "PMD.AssignmentInOperand", "PMD.DataflowAnomalyAnalysis" })
+    private void copy(final String yml, final File file) {
+        try (OutputStream out = Files.newOutputStream(file.toPath()); InputStream inputStream = getResource(yml)) {
+            final byte[] buf = new byte[BUFFER_LENGTH];
             int len;
-            while ((len = in.read(buf)) > 0) {
+            while ((len = inputStream.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             getLogger().log(Level.WARNING, "Failed to copy the default config! (I/O)", e);
         }
     }
 
-    public String getFormattedPrice(String price) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public String getFormattedPrice(final String price) {
         return getFormattedPrice(Double.parseDouble(price));
     }
 
-    public String getFormattedPrice(double price) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public String getFormattedPrice(final double price) {
         return getNumberFormat().format(price);
     }
 }

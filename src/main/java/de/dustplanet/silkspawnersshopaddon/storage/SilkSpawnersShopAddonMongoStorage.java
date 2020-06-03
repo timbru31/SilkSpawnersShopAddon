@@ -33,176 +33,186 @@ import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStorageImpl implements ISilkSpawnersShopAddonStorage {
-    private MongoClient mongoClient;
-    private MongoDatabase database;
-    private MongoCollection<Document> collection;
+/**
+ * The MongoDB implementation of the storage class.
+ *
+ * @author timbru31
+ */
+@SuppressWarnings("checkstyle:MultipleStringLiterals")
+public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStorageCleanupTaskTimer
+        implements ISilkSpawnersShopAddonStorage {
+    private final MongoClient mongoClient;
+    private final MongoCollection<Document> collection;
 
     @SuppressFBWarnings({ "IMC_IMMATURE_CLASS_NO_TOSTRING", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" })
-    public SilkSpawnersShopAddonMongoStorage(SilkSpawnersShopAddon plugin) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public SilkSpawnersShopAddonMongoStorage(final SilkSpawnersShopAddon plugin) {
         super(plugin);
-        plugin.getLogger().info("Loading mongo storage provider");
-        String host = plugin.getConfig().getString("mongoDB.host");
-        int port = plugin.getConfig().getInt("mongoDB.port");
-        String user = plugin.getConfig().getString("mongoDB.user");
-        String pass = plugin.getConfig().getString("mongoDB.pass");
-        String db = plugin.getConfig().getString("mongoDB.database");
-        String coll = plugin.getConfig().getString("mongoDB.collection");
+        getPlugin().getLogger().info("Loading mongo storage provider");
+        final String host = getPlugin().getConfig().getString("mongoDB.host");
+        final int port = getPlugin().getConfig().getInt("mongoDB.port");
+        final String user = getPlugin().getConfig().getString("mongoDB.user");
+        final String pass = getPlugin().getConfig().getString("mongoDB.pass");
+        final String databaseName = getPlugin().getConfig().getString("mongoDB.database");
+        final String coll = getPlugin().getConfig().getString("mongoDB.collection");
         String userPass = "";
         if (user != null && pass != null && !user.isEmpty() && !pass.isEmpty()) {
             userPass = user + ":" + pass + "@";
         }
-        Builder mongoClientOptions = MongoClientOptions.builder().writeConcern(WriteConcern.ACKNOWLEDGED);
-        MongoClientURI connectionString = new MongoClientURI("mongodb://" + userPass + host + ":" + port + "/" + db, mongoClientOptions);
+        final Builder mongoClientOptions = MongoClientOptions.builder().writeConcern(WriteConcern.ACKNOWLEDGED);
+        final MongoClientURI connectionString = new MongoClientURI("mongodb://" + userPass + host + ":" + port + "/" + databaseName,
+                mongoClientOptions);
         mongoClient = new MongoClient(connectionString);
-        database = mongoClient.getDatabase(db);
+        final MongoDatabase database = mongoClient.getDatabase(databaseName);
         collection = database.getCollection(coll);
     }
 
-    @SuppressWarnings("static-method")
+    @SuppressWarnings({ "static-method", "PMD.AvoidDuplicateLiterals", "checkstyle:SeparatorWrap" })
     @Nullable
-    private Document createDocumentFromShop(ISilkSpawnersShop shop) {
-        Location shopLoc = shop.getLocation();
-        World world = shopLoc.getWorld();
+    private Document createDocumentFromShop(final ISilkSpawnersShop shop) {
+        final Location shopLoc = shop.getLocation();
+        final World world = shopLoc.getWorld();
         if (world == null) {
             return null;
         }
-        String worldName = world.getName();
-        Document loc = new Document("world", worldName);
+        final String worldName = world.getName();
+        final Document loc = new Document("world", worldName);
         loc.append("x", shopLoc.getX()).append("y", shopLoc.getY()).append("z", shopLoc.getZ());
         return new Document("shopId", shop.getId().toString()).append("mode", shop.getMode().toString()).append("mob", shop.getMob())
                 .append("amount", shop.getAmount()).append("price", shop.getPrice()).append("location", loc);
     }
 
-    @SuppressWarnings("static-method")
-    private SilkSpawnersShop getShopFromDocument(Document doc) {
-        Document location = (Document) doc.get("location");
-        String world = location.getString("world");
-        double x = location.getDouble("x");
-        double y = location.getDouble("y");
-        double z = location.getDouble("z");
-        String shopId = doc.getString("shopId");
-        String mob = doc.getString("mob");
-        double price = doc.getDouble("price");
-        SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(doc.getString("mode"));
-        int amount = doc.getInteger("amount", 1);
+    @SuppressWarnings({ "PMD.ShortVariable", "static-method" })
+    private SilkSpawnersShop getShopFromDocument(final Document doc) {
+        final Document location = (Document) doc.get("location");
+        final String world = location.getString("world");
+        final double x = location.getDouble("x");
+        final double y = location.getDouble("y");
+        final double z = location.getDouble("z");
+        final String shopId = doc.getString("shopId");
+        final String mob = doc.getString("mob");
+        final double price = doc.getDouble("price");
+        final SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(doc.getString("mode"));
+        final int amount = doc.getInteger("amount", 1);
         return new SilkSpawnersShop(x, y, z, world, mode, mob, amount, price, UUID.fromString(shopId));
     }
 
     @Override
-    public boolean addShop(SilkSpawnersShop shop) {
-        Document doc = createDocumentFromShop(shop);
+    public boolean addShop(final SilkSpawnersShop shop) {
+        final Document doc = createDocumentFromShop(shop);
         if (doc == null) {
             return false;
         }
         try {
             collection.insertOne(doc);
-            cachedShops.add(shop);
+            getCachedShops().add(shop);
             return true;
         } catch (MongoWriteException | MongoWriteConcernException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to add shop to MongoDB", e);
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to add shop to MongoDB", e);
         }
         return false;
     }
 
     @Override
-    public boolean removeShop(SilkSpawnersShop shop) {
+    public boolean removeShop(final SilkSpawnersShop shop) {
         try {
             collection.deleteOne(eq("shopId", shop.getId().toString()));
-            cachedShops.remove(shop);
+            getCachedShops().remove(shop);
             return true;
         } catch (MongoWriteException | MongoWriteConcernException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to remove shop from MongoDB", e);
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to remove shop from MongoDB", e);
         }
         return false;
     }
 
     @Override
-    public boolean removeShops(List<SilkSpawnersShop> shopList) {
+    public boolean removeShops(final List<SilkSpawnersShop> shopList) {
         try {
-            List<String> shopIdList = new ArrayList<>(shopList.size());
-            cachedShops.removeAll(shopList);
-            for (SilkSpawnersShop shop : shopList) {
+            final List<String> shopIdList = new ArrayList<>(shopList.size());
+            getCachedShops().removeAll(shopList);
+            for (final SilkSpawnersShop shop : shopList) {
                 shopIdList.add(shop.getId().toString());
             }
             collection.deleteMany(in("shopId", shopIdList));
             return true;
         } catch (MongoWriteException | MongoWriteConcernException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to remove shops from MongoDB", e);
+            getPlugin().getLogger().log(Level.SEVERE, "Failed to remove shops from MongoDB", e);
         }
         return false;
     }
 
     @Override
-    public boolean updateShop(SilkSpawnersShop shop) {
-        Document doc = createDocumentFromShop(shop);
+    public boolean updateShop(final SilkSpawnersShop shop) {
+        final Document doc = createDocumentFromShop(shop);
         collection.replaceOne(eq("shopId", shop.getId().toString()), doc);
-        int index = cachedShops.indexOf(shop);
+        final int index = getCachedShops().indexOf(shop);
         if (index != -1) {
-            cachedShops.set(index, shop);
+            getCachedShops().set(index, shop);
         }
         return true;
     }
 
     @Override
-    public boolean isShop(Sign sign) {
+    @SuppressWarnings({ "PMD.ShortVariable", "checkstyle:SeparatorWrap" })
+    public boolean isShop(final Sign sign) {
         // Try to find in cache
-        for (SilkSpawnersShop shop : cachedShops) {
+        for (final SilkSpawnersShop shop : getCachedShops()) {
             if (shop.getLocation().equals(sign.getLocation())) {
                 return true;
             }
         }
 
-        Location loc = sign.getLocation();
-        double x = loc.getX();
-        double y = loc.getY();
-        double z = loc.getZ();
-        World world = loc.getWorld();
+        final Location loc = sign.getLocation();
+        final World world = loc.getWorld();
         if (world == null) {
             return false;
         }
-        String worldName = world.getName();
-        Document doc = collection.find(and(eq("location.world", worldName), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
-                .first();
+        final double x = loc.getX();
+        final double y = loc.getY();
+        final double z = loc.getZ();
+        final String worldName = world.getName();
+        final Document doc = collection
+                .find(and(eq("location.world", worldName), eq("location.x", x), eq("location.y", y), eq("location.z", z))).first();
         return doc != null;
     }
 
     @Override
     @Nullable
-    public SilkSpawnersShop getShop(Sign sign) {
+    @SuppressWarnings({ "PMD.ShortVariable", "checkstyle:ReturnCount", "checkstyle:SeparatorWrap" })
+    public SilkSpawnersShop getShop(final Sign sign) {
         // Try to find in cache
-        for (SilkSpawnersShop shop : cachedShops) {
+        for (final SilkSpawnersShop shop : getCachedShops()) {
             if (shop.getLocation().equals(sign.getLocation())) {
                 return shop;
             }
         }
 
-        Location loc = sign.getLocation();
-        double x = loc.getX();
-        double y = loc.getY();
-        double z = loc.getZ();
-        World world = loc.getWorld();
+        final Location loc = sign.getLocation();
+        final World world = loc.getWorld();
         if (world == null) {
             return null;
         }
-        String worldName = world.getName();
+        final double x = loc.getX();
+        final double y = loc.getY();
+        final double z = loc.getZ();
+        final String worldName = world.getName();
 
-        Document doc = collection.find(and(eq("location.world", worldName), eq("location.x", x), eq("location.y", y), eq("location.z", z)))
-                .first();
+        final Document doc = collection
+                .find(and(eq("location.world", worldName), eq("location.x", x), eq("location.y", y), eq("location.z", z))).first();
         if (doc == null) {
             return null;
         }
-        SilkSpawnersShop shop = getShopFromDocument(doc);
-        cachedShops.add(shop);
+        final SilkSpawnersShop shop = getShopFromDocument(doc);
+        getCachedShops().add(shop);
         return shop;
     }
 
     @Override
     public List<SilkSpawnersShop> getAllShops() {
-        List<SilkSpawnersShop> shopList = new ArrayList<>();
-        FindIterable<Document> shopDocuments = collection.find();
-        for (Document doc : shopDocuments) {
-            SilkSpawnersShop shop = getShopFromDocument(doc);
+        final List<SilkSpawnersShop> shopList = new ArrayList<>();
+        final FindIterable<Document> shopDocuments = collection.find();
+        for (final Document doc : shopDocuments) {
+            final SilkSpawnersShop shop = getShopFromDocument(doc);
             shopList.add(shop);
         }
         return shopList;

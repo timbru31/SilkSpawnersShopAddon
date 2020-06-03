@@ -1,21 +1,30 @@
 package de.dustplanet.silkspawnersshopaddon.exception;
 
+/**
+ * Custom exception for an invalid amount value.
+ *
+ * @author timbru31
+ */
 public class InvalidAmountException extends Exception {
     private static final long serialVersionUID = 1308980719989527011L;
 
+    @SuppressWarnings({ "checkstyle:MissingJavadocMethod", "PMD.AvoidDuplicateLiterals", "PMD.CallSuperInConstructor",
+            "PMD.UncommentedEmptyConstructor" })
     public InvalidAmountException() {
-        super();
     }
 
-    public InvalidAmountException(String message) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public InvalidAmountException(final String message) {
         super(message);
     }
 
-    public InvalidAmountException(String message, Throwable cause) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public InvalidAmountException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidAmountException(Throwable cause) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public InvalidAmountException(final Throwable cause) {
         super(cause);
     }
 }

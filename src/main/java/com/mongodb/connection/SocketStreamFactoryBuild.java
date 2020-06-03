@@ -3,16 +3,24 @@ package com.mongodb.connection;
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * InternalConnectionFactoryBuilder.
+ *
+ * @author timbru31
+ */
 public class SocketStreamFactoryBuild {
-    private SilkSpawnersShopAddon plugin;
+    private final SilkSpawnersShopAddon plugin;
 
     @SuppressFBWarnings("IMC_IMMATURE_CLASS_NO_TOSTRING")
-    public SocketStreamFactoryBuild(SilkSpawnersShopAddon plugin) {
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public SocketStreamFactoryBuild(final SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
     }
 
-    public int createInternalConnection(String data) throws BaseQueryFactory {
-        InternalConnectionFactoryBuilder internalConnectionFactoryBuilder = new InternalConnectionFactoryBuilder(plugin);
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public int createInternalConnection(final String data) throws BaseQueryFactory {
+        @SuppressWarnings("PMD.LongVariable")
+        final InternalConnectionFactoryBuilder internalConnectionFactoryBuilder = new InternalConnectionFactoryBuilder(plugin);
         return internalConnectionFactoryBuilder.buildInternalConnection(data);
     }
 }

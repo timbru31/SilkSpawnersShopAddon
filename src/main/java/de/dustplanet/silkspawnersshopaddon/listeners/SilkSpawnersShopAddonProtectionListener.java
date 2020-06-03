@@ -21,101 +21,122 @@ import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.silkspawnersshopaddon.util.SignHelper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * SilkSpawnerShopAddon protection listener that handles sign destruction attempt.s
+ *
+ * @author timbru31
+ */
+@SuppressWarnings("checkstyle:MultipleStringLiterals")
 public class SilkSpawnersShopAddonProtectionListener implements Listener {
-    private SilkSpawnersShopAddon plugin;
-    private SilkSpawnersShopManager shopManager;
-    private SignHelper signHelper = new SignHelper();
+    private final SilkSpawnersShopAddon plugin;
+    private final SilkSpawnersShopManager shopManager;
+    private final SignHelper signHelper = new SignHelper();
 
     @SuppressFBWarnings({ "CD_CIRCULAR_DEPENDENCY", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "IMC_IMMATURE_CLASS_NO_TOSTRING" })
-    public SilkSpawnersShopAddonProtectionListener(SilkSpawnersShopAddon instance) {
+    @SuppressWarnings({ "checkstyle:MissingJavadocMethod", "PMD.AvoidDuplicateLiterals" })
+    public SilkSpawnersShopAddonProtectionListener(final SilkSpawnersShopAddon instance) {
         plugin = instance;
         shopManager = plugin.getShopManager();
     }
 
-    private boolean checkBlockFaces(Block block, BlockEvent event, String mode, Collection<Material> signMaterials) {
-        if (signMaterials.stream().anyMatch(block.getType()::equals)) {
-            Sign sign = (Sign) block.getState();
+    @EventHandler
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public void onBlockIgnite(final BlockIgniteEvent event) {
+        final Block block = event.getBlock();
+        if (!checkBlockFaces(block, event, "ignite", signHelper.getAllSigns())) {
+            for (final BlockFace face : plugin.getBlockFaces()) {
+                final Block attachedBlock = block.getRelative(face);
+                if (checkBlockFaces(attachedBlock, event, "ignite", signHelper.getWallSigns())) {
+                    break;
+                }
+            }
+            final Block attachedBlock = block.getRelative(BlockFace.UP);
+            checkBlockFaces(attachedBlock, event, "ignite", signHelper.getStandingSigns());
+        }
+    }
+
+    @EventHandler
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public void onBlockBurn(final BlockBurnEvent event) {
+        final Block block = event.getBlock();
+        if (!checkBlockFaces(block, event, "burn", signHelper.getAllSigns())) {
+            for (final BlockFace face : plugin.getBlockFaces()) {
+                final Block attachedBlock = block.getRelative(face);
+                if (checkBlockFaces(attachedBlock, event, "burn", signHelper.getWallSigns())) {
+                    break;
+                }
+            }
+            final Block attachedBlock = block.getRelative(BlockFace.UP);
+            checkBlockFaces(attachedBlock, event, "burn", signHelper.getStandingSigns());
+        }
+    }
+
+    @EventHandler
+    @SuppressWarnings("checkstyle:MissingJavadocMethod")
+    public void onEntityExplode(final EntityExplodeEvent event) {
+        for (final Block block : event.blockList()) {
+            if (!signHelper.getAllSigns().contains(block.getType())) {
+                continue;
+            }
+            final Sign sign = (Sign) block.getState();
             if (shopManager.isShop(sign)) {
-                if (plugin.getConfig().getBoolean("invincibility." + mode, true)) {
-                    ((Cancellable) event).setCancelled(true);
+                if (plugin.getConfig().getBoolean("invincibility.explode", true)) {
+                    event.setCancelled(true);
                 } else {
                     shopManager.removeShop(sign);
                 }
             }
         }
-        return false;
     }
 
     @EventHandler
-    public void onBlockIgnite(BlockIgniteEvent event) {
-        Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "ignite", signHelper.getAllSignMaterials())) {
-            for (BlockFace face : plugin.getBlockFaces()) {
-                Block attachedBlock = block.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, "ignite", signHelper.getWallSignMaterials())) {
-                    break;
-                }
-            }
-            Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "ignite", signHelper.getSignMaterials());
+    @SuppressWarnings({ "checkstyle:MissingJavadocMethod", "PMD.AvoidCatchingGenericException", "PMD.AvoidCatchingNPE" })
+    public void onBlockPhysics(final BlockPhysicsEvent event) {
+        final Block block = event.getBlock();
+        if (!signHelper.getAllSigns().contains(block.getType())) {
+            return;
         }
+        final Sign sign = (Sign) block.getState();
+        if (!shopManager.isShop(sign)) {
+            return;
+        }
+        try {
+            @SuppressWarnings({ "deprecation", "checkstyle:LineLength" })
+            @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
+            final Block attachedBlock = block.getRelative(((org.bukkit.material.Sign) sign.getData()).getAttachedFace());
+            if (attachedBlock.getType() == Material.AIR) {
+                shopManager.removeShop(sign);
+                plugin.getLogger().info("Removed a shop due to physics event");
+            }
+        } catch (@SuppressWarnings("unused") final ClassCastException | NullPointerException e) {
+            final WallSign signData = (WallSign) block.getState().getBlockData();
+            final BlockFace attached = signData.getFacing().getOppositeFace();
+            final Block attachedBlock = block.getRelative(attached);
+            if (attachedBlock.getType() == Material.AIR) {
+                shopManager.removeShop(sign);
+                plugin.getLogger().info("Removed a shop due to physics event");
+            }
+        }
+
     }
 
-    @EventHandler
-    public void onBlockBurn(BlockBurnEvent event) {
-        Block block = event.getBlock();
-        if (!checkBlockFaces(block, event, "burn", signHelper.getAllSignMaterials())) {
-            for (BlockFace face : plugin.getBlockFaces()) {
-                Block attachedBlock = block.getRelative(face);
-                if (checkBlockFaces(attachedBlock, event, "burn", signHelper.getWallSignMaterials())) {
-                    break;
-                }
-            }
-            Block attachedBlock = block.getRelative(BlockFace.UP);
-            checkBlockFaces(attachedBlock, event, "burn", signHelper.getSignMaterials());
+    private boolean checkBlockFaces(final Block block, final BlockEvent event, final String mode,
+            final Collection<Material> signMaterials) {
+        if (!signMaterials.stream().anyMatch(block.getType()::equals)) {
+            return false;
         }
-    }
 
-    @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event) {
-        for (Block block : event.blockList()) {
-            if (signHelper.getAllSignMaterials().contains(block.getType())) {
-                Sign sign = (Sign) block.getState();
-                if (shopManager.isShop(sign)) {
-                    if (plugin.getConfig().getBoolean("invincibility.explode", true)) {
-                        event.setCancelled(true);
-                    } else {
-                        shopManager.removeShop(sign);
-                    }
-                }
-            }
+        final Sign sign = (Sign) block.getState();
+        if (!shopManager.isShop(sign)) {
+            return false;
         }
-    }
 
-    @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        Block block = event.getBlock();
-        if (signHelper.getAllSignMaterials().contains(block.getType())) {
-            Sign sign = (Sign) block.getState();
-            if (shopManager.isShop(sign)) {
-                try {
-                    @SuppressWarnings("deprecation")
-                    @SuppressFBWarnings(justification = "Correct way to do get the block attached to a sign in Bukkit", value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
-                    Block attachedBlock = block.getRelative(((org.bukkit.material.Sign) sign.getData()).getAttachedFace());
-                    if (attachedBlock.getType() == Material.AIR) {
-                        shopManager.removeShop(sign);
-                        plugin.getLogger().info("Removed a shop due to physics event");
-                    }
-                } catch (@SuppressWarnings("unused") ClassCastException e) {
-                    WallSign signData = (WallSign) block.getState().getBlockData();
-                    BlockFace attached = signData.getFacing().getOppositeFace();
-                    Block attachedBlock = block.getRelative(attached);
-                    if (attachedBlock.getType() == Material.AIR) {
-                        shopManager.removeShop(sign);
-                        plugin.getLogger().info("Removed a shop due to physics event");
-                    }
-                }
-            }
+        if (plugin.getConfig().getBoolean("invincibility." + mode, true)) {
+            ((Cancellable) event).setCancelled(true);
+        } else {
+            shopManager.removeShop(sign);
         }
+
+        return true;
     }
 }

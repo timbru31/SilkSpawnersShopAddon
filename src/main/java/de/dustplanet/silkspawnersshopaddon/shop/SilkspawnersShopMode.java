@@ -5,11 +5,23 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+/**
+ * Enum for possible shop operation modes.
+ *
+ * @author timbru31
+ */
 public enum SilkspawnersShopMode {
     SELL, BUY;
 
+    /**
+     * Helper method to retrieve the shop mode from a string.
+     *
+     * @param stringMode the shop mode as a string value to resolve
+     * @return the shop mode if found, null otherwise
+     */
     @Nullable
-    public static SilkspawnersShopMode getMode(String stringMode) {
+    @SuppressWarnings("checkstyle:ReturnCount")
+    public static SilkspawnersShopMode getMode(final String stringMode) {
         if (stringMode == null) {
             return null;
         }
@@ -24,7 +36,13 @@ public enum SilkspawnersShopMode {
         }
     }
 
-    public static boolean isValidMode(SilkspawnersShopMode mode) {
+    /**
+     * Checks whether a given shop mode is valid or not.
+     *
+     * @param mode the shop mode to check
+     * @return the result - true or false
+     */
+    public static boolean isValidMode(final SilkspawnersShopMode mode) {
         return Arrays.stream(SilkspawnersShopMode.values()).anyMatch(mode::equals);
     }
 }
