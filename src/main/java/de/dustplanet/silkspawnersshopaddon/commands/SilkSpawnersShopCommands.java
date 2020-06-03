@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.exception.InvalidAmountException;
+import de.dustplanet.silkspawnersshopaddon.shop.ISilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
@@ -90,6 +93,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @SuppressWarnings({ "PMD.AvoidLiteralsInIfCondition", "PMD.AvoidLiteralsInIfCondition", "checkstyle:ReturnCount" })
+    @Nullable
     private Sign checkAbortCriteriaOrGetSign(final String[] args, final CommandSender sender) {
         if (args.length == 1 && "check".equalsIgnoreCase(args[0])) {
             if (sender.hasPermission("silkspawners.updateshops")) {
@@ -133,7 +137,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @SuppressWarnings({ "PMD.AvoidLiteralsInIfCondition", "checkstyle:MagicNumber" })
-    private void updateShopSign(final Player player, final Sign sign, final SilkSpawnersShop shop) {
+    private void updateShopSign(final Player player, final Sign sign, final ISilkSpawnersShop shop) {
         sign.setLine(0, ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("shopIdentifier", "")));
         if (shop.getAmount() > 1) {
             sign.setLine(1, shop.getMode().toString() + ":" + shop.getAmount());
@@ -152,7 +156,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @SuppressWarnings({ "PMD.DataflowAnomalyAnalysis", "PMD.AvoidLiteralsInIfCondition" })
-    private boolean changeAmount(final Player player, final SilkSpawnersShop shop, final String argument) {
+    private boolean changeAmount(final Player player, final ISilkSpawnersShop shop, final String argument) {
         boolean change = true;
         try {
             final int amount = Integer.parseInt(argument.replaceAll("[^0-9.]", ""));
@@ -169,7 +173,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private boolean changePrice(final Player player, final SilkSpawnersShop shop, final String argument) {
+    private boolean changePrice(final Player player, final ISilkSpawnersShop shop, final String argument) {
         boolean change = true;
         try {
             final double price = Double.parseDouble(argument.replaceAll("[^0-9.]", ""));
@@ -183,7 +187,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private boolean changeMob(final Player player, final SilkSpawnersShop shop, final String argument) {
+    private boolean changeMob(final Player player, final ISilkSpawnersShop shop, final String argument) {
         boolean change = true;
         final boolean knownMob = plugin.getSilkUtil().isKnown(argument);
         if (knownMob) {
@@ -196,7 +200,7 @@ public class SilkSpawnersShopCommands implements CommandExecutor {
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private boolean changeMode(final Player player, final SilkSpawnersShop shop, final String argument) {
+    private boolean changeMode(final Player player, final ISilkSpawnersShop shop, final String argument) {
         boolean change = true;
         final SilkspawnersShopMode mode = SilkspawnersShopMode.getMode(argument);
         if (mode == null) {

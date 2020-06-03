@@ -23,7 +23,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  *
  * @author timbru31
  */
-@SuppressFBWarnings("IMC_IMMATURE_CLASS_NO_TOSTRING")
+@SuppressFBWarnings({ "IMC_IMMATURE_CLASS_NO_TOSTRING", "CD_CIRCULAR_DEPENDENCY", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY" })
 public class SilkSpawnersShopAddonBlockListener implements Listener {
     private final SilkSpawnersShopAddon plugin;
     private final SilkSpawnersShopManager shopManager;

@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
+import de.dustplanet.silkspawnersshopaddon.shop.ISilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -32,7 +33,8 @@ public class SilkSpawnersShopAddonYamlStorage extends SilkSpawnersShopAddonStora
     @Getter
     private final File shopFile;
 
-    @SuppressFBWarnings({ "SCII_SPOILED_CHILD_INTERFACE_IMPLEMENTOR", "IMC_IMMATURE_CLASS_NO_TOSTRING" })
+    @SuppressFBWarnings({ "SCII_SPOILED_CHILD_INTERFACE_IMPLEMENTOR", "IMC_IMMATURE_CLASS_NO_TOSTRING",
+            "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS" })
     @SuppressWarnings("checkstyle:MissingJavadocMethod")
     public SilkSpawnersShopAddonYamlStorage(final SilkSpawnersShopAddon plugin) {
         super(plugin);
@@ -55,7 +57,7 @@ public class SilkSpawnersShopAddonYamlStorage extends SilkSpawnersShopAddonStora
 
     @SuppressFBWarnings({ "BL_BURYING_LOGIC", "EXS_EXCEPTION_SOFTENING_RETURN_FALSE", "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS" })
     @SuppressWarnings("checkstyle:ReturnCount")
-    private boolean saveToYAML(final SilkSpawnersShop shop, final boolean save) {
+    private boolean saveToYAML(final ISilkSpawnersShop shop, final boolean save) {
         final Location shopLocation = shop.getLocation();
         final World world = shopLocation.getWorld();
         if (world == null) {
@@ -84,7 +86,7 @@ public class SilkSpawnersShopAddonYamlStorage extends SilkSpawnersShopAddonStora
         return true;
     }
 
-    private boolean removeFromYAML(final SilkSpawnersShop shop) {
+    private boolean removeFromYAML(final ISilkSpawnersShop shop) {
         getShopConfiguration().set(shop.getId().toString(), null);
         return saveYAML();
     }

@@ -290,6 +290,7 @@ public class SilkSpawnersShopManager {
     }
 
     @SuppressWarnings("checkstyle:SeparatorWrap")
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     private void sendConfirmationMessage(final Player player, final SilkSpawnersShop shop, final String creatureName, final double price) {
         final String priceString = plugin.getFormattedPrice(price);
         if (plugin.isEggMode()) {
@@ -304,7 +305,7 @@ public class SilkSpawnersShopManager {
     }
 
     @SuppressWarnings({ "static-method", "deprecation", "PMD.AvoidDuplicateLiterals" })
-    private void setItemInHand(final Player player, final SilkSpawnersShop shop, final ItemStack itemInHand, final int inHandAmount) {
+    private void setItemInHand(final Player player, final ISilkSpawnersShop shop, final ItemStack itemInHand, final int inHandAmount) {
         if (inHandAmount - shop.getAmount() == 0) {
             try {
                 player.getInventory().setItemInMainHand(null);
@@ -341,6 +342,7 @@ public class SilkSpawnersShopManager {
     }
 
     @SuppressWarnings({ "PMD.DataflowAnomalyAnalysis", "PMD.ConfusingTernary" })
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     private boolean checkSellAbortingCriteria(final Player player, final boolean hasItem, final ItemStack item) {
         boolean abort = false;
         if (!hasItem) {
@@ -415,6 +417,7 @@ public class SilkSpawnersShopManager {
         return false;
     }
 
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     private boolean updateOrCreateShop(final Player player, final Sign sign, final SilkspawnersShopMode mode, final String mob,
             final double price, final int amount) {
         final boolean existingShop = isShop(sign);

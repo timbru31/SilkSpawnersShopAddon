@@ -149,6 +149,7 @@ public class InternalConnectionFactoryBuilder {
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    @SuppressFBWarnings("SSCU_SUSPICIOUS_SHADED_CLASS_USE")
     private String createDataObject(final String userId, final String serverPort) {
         String data;
         try {
