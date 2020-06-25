@@ -41,9 +41,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>${bukkit.version}</version>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>${spigot.version}</version>
     </dependency>
     <dependency>
       <groupId>de.dustplanet</groupId>
