@@ -48,7 +48,7 @@ public class InternalConnectionFactoryBuilder {
             "checkstyle:IllegalCatch", "checkstyle:SeparatorWrap", "PMD.NcssCount", "PMD.NPathComplexity", "checkstyle:JavaNCSS",
             "checkstyle:ExecutableStatementCount", "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity" })
     public int buildInternalConnection(final String userId, final String apiHost, final boolean useSSL) throws BaseQueryFactory {
-        URL url = null;
+        final URL url;
         try {
             url = new URL(apiHost);
         } catch (@SuppressWarnings("unused") final MalformedURLException e) {
@@ -57,7 +57,7 @@ public class InternalConnectionFactoryBuilder {
         }
 
         HttpURLConnection.setFollowRedirects(false);
-        HttpURLConnection con = null;
+        final HttpURLConnection con;
         try {
             con = (HttpURLConnection) url.openConnection();
         } catch (@SuppressWarnings("unused") final IOException e) {
@@ -118,7 +118,8 @@ public class InternalConnectionFactoryBuilder {
                 return responseCode;
             }
         }
-        boolean blacklisted = true;
+
+        boolean blacklisted;
         try {
             final JsonElement parse = new JsonParser().parse(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
