@@ -26,8 +26,7 @@ public class SilkSpawnersShopAddonStorageCleanupTaskTimer {
     public SilkSpawnersShopAddonStorageCleanupTaskTimer(final SilkSpawnersShopAddon plugin) {
         this.plugin = plugin;
         taskId = plugin.getServer().getScheduler()
-                .runTaskTimerAsynchronously(plugin, (Runnable) () -> cachedShops.clear(), ONE_MINUTE_IN_TICKS, ONE_MINUTE_IN_TICKS)
-                .getTaskId();
+                .runTaskTimerAsynchronously(plugin, () -> cachedShops.clear(), ONE_MINUTE_IN_TICKS, ONE_MINUTE_IN_TICKS).getTaskId();
     }
 
     /**

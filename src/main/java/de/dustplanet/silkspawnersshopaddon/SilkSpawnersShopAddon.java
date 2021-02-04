@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -168,27 +169,24 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     private void loadMetrics() {
         final Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
         metrics.addCustomChart(
-                new Metrics.SimplePie("storage_provider", () -> getConfig().getString("storageMethod", "").toUpperCase(Locale.ENGLISH)));
+                new SimplePie("storage_provider", () -> getConfig().getString("storageMethod", "").toUpperCase(Locale.ENGLISH)));
     }
 
     private void runUpdater() {
         final long twoSecondsInTicks = 40L;
-        getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
-            @Override
-            public void run() {
-                final Updater updater = new Updater(getPlugin(), RESOURCEID, false);
-                final UpdateResult result = updater.getResult();
-                if (result == UpdateResult.NO_UPDATE) {
-                    getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
-                } else if (result == UpdateResult.UPDATE_AVAILABLE) {
-                    getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
-                    getLogger().info("You are running " + getPlugin().getDescription().getVersion().replaceAll("[\r\n]", "")
-                            + ", latest is " + updater.getVersion().replaceAll("[\r\n]", ""));
-                } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
-                    getLogger().info("Update checking is disabled because you are running a dev build.");
-                } else {
-                    getLogger().warning("The Updater returned the following value: " + result.name());
-                }
+        getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
+            final Updater updater = new Updater(getPlugin(), RESOURCEID, false);
+            final UpdateResult result = updater.getResult();
+            if (result == UpdateResult.NO_UPDATE) {
+                getLogger().info("You are running the latest version of SilkSpawnersShopAddon!");
+            } else if (result == UpdateResult.UPDATE_AVAILABLE) {
+                getLogger().info("There is an update available for SilkSpawnersShopAddon. Go grab it from SpigotMC!");
+                getLogger().info("You are running " + getPlugin().getDescription().getVersion().replaceAll("[\r\n]", "") + ", latest is "
+                        + updater.getVersion().replaceAll("[\r\n]", ""));
+            } else if (result == UpdateResult.SNAPSHOT_DISABLED) {
+                getLogger().info("Update checking is disabled because you are running a dev build.");
+            } else {
+                getLogger().warning("The Updater returned the following value: " + result.name());
             }
         }, twoSecondsInTicks);
     }
