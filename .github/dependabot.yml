@@ -1,4 +1,11 @@
 version: 2
+registries:
+  maven-repository-repo-dustplanet-de:
+    type: maven-repository
+    url: https://repo.dustplanet.de
+    username: "${{secrets.CI_USER}}"
+    password: "${{secrets.CI_PASSWORD}}"
+
 updates:
 - package-ecosystem: "maven"
   directory: "/"
