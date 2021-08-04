@@ -11,6 +11,8 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  registries:
+  - maven-repository-repo-dustplanet-de
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
