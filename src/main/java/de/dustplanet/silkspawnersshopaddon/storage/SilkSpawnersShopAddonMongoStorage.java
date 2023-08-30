@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import javax.annotation.Nullable;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.ISilkSpawnersShop;
@@ -64,6 +65,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         collection = database.getCollection(coll);
     }
 
+    @SuppressWarnings({ "static-method", "PMD.AvoidDuplicateLiterals", "checkstyle:SeparatorWrap" })
+    @Nullable
     private Document createDocumentFromShop(final ISilkSpawnersShop shop) {
         final Location shopLoc = shop.getLocation();
         final World world = shopLoc.getWorld();
