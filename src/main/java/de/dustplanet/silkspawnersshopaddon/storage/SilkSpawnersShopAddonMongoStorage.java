@@ -2,7 +2,7 @@ package de.dustplanet.silkspawnersshopaddon.storage;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
-import com.mongodb.MongoException;
+import com.mongodb.MongoWriteConcernException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
@@ -112,7 +112,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
             collection.insertOne(doc);
             getCachedShops().add(shop);
             return true;
-        } catch (MongoWriteException | MongoException e) {
+        } catch (MongoWriteConcernException | MongoWriteException e) {
             getPlugin().getLogger().log(Level.SEVERE, "Failed to add shop to MongoDB", e);
         }
         return false;
@@ -124,7 +124,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
             collection.deleteOne(Filters.eq("shopId", shop.getId().toString()));
             getCachedShops().remove(shop);
             return true;
-        } catch (MongoWriteException | MongoException e) {
+        } catch (MongoWriteConcernException | MongoWriteException e) {
             getPlugin().getLogger().log(Level.SEVERE, "Failed to remove shop from MongoDB", e);
         }
         return false;
@@ -140,7 +140,7 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
             }
             collection.deleteMany(Filters.in("shopId", shopIdList));
             return true;
-        } catch (MongoWriteException | MongoException e) {
+        } catch (MongoWriteConcernException | MongoWriteException e) {
             getPlugin().getLogger().log(Level.SEVERE, "Failed to remove shops from MongoDB", e);
         }
         return false;
