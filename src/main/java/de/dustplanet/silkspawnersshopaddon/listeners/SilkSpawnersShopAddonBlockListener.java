@@ -55,11 +55,14 @@ public class SilkSpawnersShopAddonBlockListener implements Listener {
     @SuppressFBWarnings({ "CLI_CONSTANT_LIST_INDEX", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" })
     @SuppressWarnings({ "checkstyle:MissingJavadocMethod", "checkstyle:SeparatorWrap", "checkstyle:AvoidEscapedUnicodeCharacters" })
     public void onSignChange(final SignChangeEvent event) {
-        // macOS sends weird \uF700 and \uF701 chars
         final String[] lines = event.getLines();
         final String shopIdentifier = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("shopIdentifier", ""));
-        if (!ChatColor.stripColor(lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""))
-                .equalsIgnoreCase(ChatColor.stripColor(shopIdentifier))) {
+        final String cleanShopIdentifier = ChatColor.stripColor(shopIdentifier);
+        final String shopIdentifierLine = ChatColor.translateAlternateColorCodes('&',
+                // macOS sends weird \uF700 and \uF701 chars
+                lines[0].trim().replaceAll("\uF700", "").replaceAll("\uF701", ""));
+        final String cleanShopIdentifierLine = ChatColor.stripColor(shopIdentifierLine);
+        if (!cleanShopIdentifierLine.equalsIgnoreCase(cleanShopIdentifier)) {
             return;
         }
         final Player player = event.getPlayer();

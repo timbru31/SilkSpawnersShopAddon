@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +19,7 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.block.Action;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -32,7 +34,6 @@ import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonBlockL
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonPlayerListener;
 import de.dustplanet.silkspawnersshopaddon.listeners.SilkSpawnersShopAddonProtectionListener;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShopManager;
-import de.dustplanet.silkspawnersshopaddon.util.ScalarYamlConfiguration;
 import de.dustplanet.silkspawnersshopaddon.util.Updater;
 import de.dustplanet.silkspawnersshopaddon.util.Updater.UpdateResult;
 import de.dustplanet.util.SilkUtil;
@@ -108,7 +109,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
 
         final File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
-            if (configFile.getParentFile().mkdirs()) {
+            if (configFile.getParentFile().exists() || configFile.getParentFile().mkdirs()) {
                 copy("config.yml", configFile);
             } else {
                 getLogger().severe("The config folder could NOT be created, make sure it's writable!");
@@ -125,7 +126,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
             copy("localization.yml", localizationFile);
         }
 
-        setLocalization(ScalarYamlConfiguration.loadConfiguration(localizationFile));
+        setLocalization(YamlConfiguration.loadConfiguration(localizationFile));
         loadLocalization();
 
         final long twoMinutesInTicks = 20L * 60L * 2L;
@@ -279,7 +280,7 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
     @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:MagicNumber" })
     private void loadConfig() {
         final FileConfiguration config = getConfig();
-        config.options().header("Valid storage methods are YAML, MONGODB and MYSQL");
+        config.options().setHeader(Collections.singletonList("Valid storage methods are YAML, MONGODB and MYSQL"));
         config.addDefault("disableUpdater", Boolean.FALSE);
         config.addDefault("shopIdentifier", "&9[SilkSpawners]");
         config.addDefault("numberFormat", "$ 00.##");

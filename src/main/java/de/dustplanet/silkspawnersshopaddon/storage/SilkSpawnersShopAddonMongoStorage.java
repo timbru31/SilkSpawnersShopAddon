@@ -1,5 +1,18 @@
 package de.dustplanet.silkspawnersshopaddon.storage;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+
+import javax.annotation.Nullable;
+
+import org.bson.Document;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Sign;
+
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoWriteConcernException;
@@ -12,23 +25,12 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.bson.Document;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Sign;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import javax.annotation.Nullable;
 
 import de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon;
 import de.dustplanet.silkspawnersshopaddon.shop.ISilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkSpawnersShop;
 import de.dustplanet.silkspawnersshopaddon.shop.SilkspawnersShopMode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * The MongoDB implementation of the storage class.
@@ -52,14 +54,11 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         final String pass = getPlugin().getConfig().getString("mongoDB.pass");
         final String databaseName = getPlugin().getConfig().getString("mongoDB.database");
         final String coll = getPlugin().getConfig().getString("mongoDB.collection");
-        String userPass = "";
-        if (user != null && pass != null && !user.isEmpty() && !pass.isEmpty()) {
-            userPass = user + ":" + pass + "@";
-        }
         final MongoClientSettings.Builder mongoClientSettings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder -> builder.hosts(Collections.singletonList(new ServerAddress(host, port))))
                 .writeConcern(WriteConcern.ACKNOWLEDGED);
-        if (user != null && pass != null) {
+        if (user != null && pass != null && !user.isEmpty() && !pass.isEmpty()) {
+            System.out.println("we have creds");
             final MongoCredential credential = MongoCredential.createCredential(user, databaseName, pass.toCharArray());
             mongoClientSettings.credential(credential);
         }
@@ -79,12 +78,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         final String worldName = world.getName();
         final Document loc = new Document("world", worldName);
         loc.append("x", shopLoc.getX()).append("y", shopLoc.getY()).append("z", shopLoc.getZ());
-        return new Document("shopId", shop.getId().toString())
-                .append("mode", shop.getMode().toString())
-                .append("mob", shop.getMob())
-                .append("amount", shop.getAmount())
-                .append("price", shop.getPrice())
-                .append("location", loc);
+        return new Document("shopId", shop.getId().toString()).append("mode", shop.getMode().toString()).append("mob", shop.getMob())
+                .append("amount", shop.getAmount()).append("price", shop.getPrice()).append("location", loc);
     }
 
     @SuppressWarnings({ "PMD.ShortVariable", "static-method" })
@@ -175,9 +170,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         final double y = loc.getY();
         final double z = loc.getZ();
         final String worldName = world.getName();
-        final Document doc = collection
-                .find(Filters.and(Filters.eq("location.world", worldName), Filters.eq("location.x", x), Filters.eq("location.y", y), Filters.eq("location.z", z)))
-                .first();
+        final Document doc = collection.find(Filters.and(Filters.eq("location.world", worldName), Filters.eq("location.x", x),
+                Filters.eq("location.y", y), Filters.eq("location.z", z))).first();
         return doc != null;
     }
 
@@ -201,9 +195,8 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
         final double z = loc.getZ();
         final String worldName = world.getName();
 
-        final Document doc = collection
-                .find(Filters.and(Filters.eq("location.world", worldName), Filters.eq("location.x", x), Filters.eq("location.y", y), Filters.eq("location.z", z)))
-                .first();
+        final Document doc = collection.find(Filters.and(Filters.eq("location.world", worldName), Filters.eq("location.x", x),
+                Filters.eq("location.y", y), Filters.eq("location.z", z))).first();
         if (doc == null) {
             return null;
         }

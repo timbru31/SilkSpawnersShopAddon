@@ -1,5 +1,5 @@
 name: SilkSpawnersShopAddon
-author: xGhOsTkiLLeRx
+author: timbru31
 main: de.dustplanet.silkspawnersshopaddon.SilkSpawnersShopAddon
 version: ${project.version}${build.number}
 website: https://www.spigotmc.org/resources/12028/
