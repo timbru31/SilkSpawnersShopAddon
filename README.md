@@ -3,7 +3,7 @@
 [![Build Status](https://ci.dustplanet.de/buildStatus/icon?job=SilkSpawnersShopAddon)](https://ci.dustplanet.de/job/SilkSpawnersShopAddon/)
 [![Build the plugin](https://github.com/timbru31/SilkSpawnersShopAddon/workflows/Build%20the%20plugin/badge.svg)](https://github.com/timbru31/SilkSpawnersShopAddon/actions?query=workflow%3A%22Build+the+plugin%22)
 
-[![SpigotMC](https://img.shields.io/badge/SpigotMC-v3.0.3-orange.svg)](https://www.spigotmc.org/resources/12028/)
+[![SpigotMC](https://img.shields.io/badge/SpigotMC-v3.0.4-orange.svg)](https://www.spigotmc.org/resources/12028/)
 
 ## Info
 
@@ -36,6 +36,7 @@ One purchase is valid for one server, if you plan to use it on multiple servers 
 
 ```yaml
 # Valid storage methods are YAML, MONGODB, and MYSQL
+
 disableUpdater: false
 shopIdentifier: "&6[SilkSpawners]"
 numberFormat: "$ 00.##"
@@ -90,7 +91,9 @@ All permissions are included in the silkspawners.\* wildcard permission.
 
 ## Support
 
-For support visit the [SpigotMC page](https://www.spigotmc.org/resources/12028/) or open an [issue](https://github.com/timbru31/SilkSpawnersShopAddon/issues).
+For support visit the [SpigotMC page](https://www.spigotmc.org/resources/12028/) or open an [issue](https://github.com/timbru31/SilkSpawnersShopAddon/issues).  
+In addition to reporting bugs here on GitHub you can join my Discord and ask your questions right away!  
+[![Discord support](https://discordapp.com/api/guilds/387315912283521027/widget.png?style=banner2)](https://discord.gg/mbCRgzQRvj)
 
 ## Usage statistics
 
@@ -116,3 +119,12 @@ The file `./plugins/bStats/config.yml` contains an option to _opt-out_.
 - bStats-supported plugins
 - Plugin version of bStats-supported plugins
 - Storage method of SilkSpawnersShopAddon
+
+## Partnership\*
+
+[![ScalaCube partnership](https://scalacube.com/images/banners/modpack.jpg)](https://scalacube.com/p/_hosting_server_minecraft/2986301)  
+<sub><sup>\*As an affiliate partner I earn from qualified purchases</sup></sub>
+
+---
+
+Built by (c) Tim Brust and contributors. Released under the custom license.
