@@ -277,10 +277,15 @@ public class SilkSpawnersShopAddon extends JavaPlugin {
         }
     }
 
-    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:MagicNumber" })
+    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:MagicNumber", "deprecation" })
     private void loadConfig() {
         final FileConfiguration config = getConfig();
-        config.options().setHeader(Collections.singletonList("Valid storage methods are YAML, MONGODB and MYSQL"));
+        try {
+            config.options().setHeader(Collections.singletonList("Valid storage methods are YAML, MONGODB and MYSQL"));
+        } catch (@SuppressWarnings("unused") final NoSuchMethodError e) {
+            config.options().header("Valid storage methods are YAML, MONGODB and MYSQL");
+
+        }
         config.addDefault("disableUpdater", Boolean.FALSE);
         config.addDefault("shopIdentifier", "&9[SilkSpawners]");
         config.addDefault("numberFormat", "$ 00.##");
