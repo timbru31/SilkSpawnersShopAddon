@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -50,8 +52,8 @@ public class InternalConnectionFactoryBuilder {
     public int buildInternalConnection(final String userId, final String apiHost, final boolean useSSL) throws BaseQueryFactory {
         final URL url;
         try {
-            url = new URL(apiHost);
-        } catch (@SuppressWarnings("unused") final MalformedURLException e) {
+            url = new URI(apiHost).toURL();
+        } catch (@SuppressWarnings("unused") final MalformedURLException | URISyntaxException e) {
             disableDueToError("An error occurred, disabling SilkSpawnersShopAddon (1)");
             return -1;
         }
@@ -121,12 +123,11 @@ public class InternalConnectionFactoryBuilder {
 
         boolean blacklisted;
         try {
-            final JsonElement parse = new JsonParser().parse(response.toString());
+            final JsonElement parse = JsonParser.parseString(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
         } catch (@SuppressWarnings("unused") final NoClassDefFoundError e) {
             @SuppressWarnings("checkstyle:LineLength")
-            final org.bukkit.craftbukkit.libs.com.google.gson.JsonElement parse = new org.bukkit.craftbukkit.libs.com.google.gson.JsonParser()
-                    .parse(response.toString());
+            final JsonElement parse = JsonParser.parseString(response.toString());
             blacklisted = parse.getAsJsonObject().get("blacklisted").getAsBoolean();
         } catch (final Exception e) {
             e.printStackTrace();
@@ -161,7 +162,7 @@ public class InternalConnectionFactoryBuilder {
             data = jsonObject.toString();
         } catch (@SuppressWarnings("unused") final NoClassDefFoundError e) {
             @SuppressWarnings("checkstyle:LineLength")
-            final org.bukkit.craftbukkit.libs.com.google.gson.JsonObject jsonObject = new org.bukkit.craftbukkit.libs.com.google.gson.JsonObject();
+            final JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("user_id", userId);
             jsonObject.addProperty("port", serverPort);
             jsonObject.addProperty("plugin", plugin.getDescription().getFullName());

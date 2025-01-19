@@ -58,7 +58,6 @@ public class SilkSpawnersShopAddonMongoStorage extends SilkSpawnersShopAddonStor
                 .applyToClusterSettings(builder -> builder.hosts(Collections.singletonList(new ServerAddress(host, port))))
                 .writeConcern(WriteConcern.ACKNOWLEDGED);
         if (user != null && pass != null && !user.isEmpty() && !pass.isEmpty()) {
-            System.out.println("we have creds");
             final MongoCredential credential = MongoCredential.createCredential(user, databaseName, pass.toCharArray());
             mongoClientSettings.credential(credential);
         }

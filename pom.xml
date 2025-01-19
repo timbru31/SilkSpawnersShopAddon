@@ -4,12 +4,12 @@
   <parent>
     <groupId>de.dustplanet</groupId>
     <artifactId>bukkit-plugin</artifactId>
-    <version>8.0.1</version>
+    <version>9.1.0</version>
     <relativePath />
   </parent>
 
   <artifactId>SilkSpawnersShopAddon</artifactId>
-  <version>3.0.5-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <name>SilkSpawnersShopAddon</name>
   <description>A sign shop addon for SilkSpawners</description>
   <url>https://www.spigotmc.org/resources/12028/</url>
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>de.dustplanet</groupId>
       <artifactId>silkspawners</artifactId>
-      <version>8.1.0</version>
+      <version>8.2.0</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
@@ -69,16 +69,9 @@
       <version>5.3.0</version>
     </dependency>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.8-R0.1-SNAPSHOT</version>
-      <type>jar</type>
-      <exclusions>
-        <exclusion>
-          <groupId>org.spigotmc</groupId>
-          <artifactId>minecraft-server</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.11.0</version>
     </dependency>
   </dependencies>
 

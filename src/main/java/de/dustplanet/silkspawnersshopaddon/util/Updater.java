@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
@@ -72,8 +73,8 @@ public class Updater {
         final String resourceId = Integer.toString(intResourceId);
         try {
             final String query = String.format("?resource=%s", URLEncoder.encode(resourceId, StandardCharsets.UTF_8.toString()));
-            connection = (HttpURLConnection) new URL(HOST + PATH + query).openConnection();
-        } catch (final IOException e) {
+            connection = (HttpURLConnection) new URI(HOST + PATH + query).toURL().openConnection();
+        } catch (final IOException | URISyntaxException e) {
             result = UpdateResult.FAIL_SPIGOT;
             plugin.getLogger().log(Level.SEVERE, "Failed to open the connection to SpigotMC", e);
             return;
